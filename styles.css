@@ -1,0 +1,19 @@
+table#main td {
+  margin: 0;
+  padding: 2px 5px;
+  border: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table tr td a {
+  display:block;
+  height:100%;
+  width:100%;
+}
+
+tr.plots:hover {
+  background-color: lightgreen;
+  /*cursor: pointer;*/
+  /*color: white;*/
+}

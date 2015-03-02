@@ -2,6 +2,7 @@
 <html>
   <head>
   <title>ntuples plots</title>
+  <link rel="stylesheet" href="styles.css" type="text/css">
   <script type="text/javascript">
 
     var data = [
@@ -102,9 +103,11 @@
           var cell = document.createElement('td');
           var a = document.createElement('a');
           a.setAttribute("href",link);
+          a.setAttribute("target","_blank");
           a.innerHTML = "plots";
           cell.appendChild(a);
           row.appendChild(cell);
+          // row.setAttribute("onclick","document.location = '"+link+"';");
           table.appendChild(row);
         }
       }
@@ -153,7 +156,7 @@
   </head>
 
   <body>
-    <table id="main">
+    <table id="main" cellspacing="0">
       <tr>
         <td>Process</td>
         <td>Energy</td>
