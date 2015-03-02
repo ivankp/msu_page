@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>ntuples plots</title>
+  <script type="text/javascript">
+
+    var data = [
+["H1j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H1j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H1j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H1j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H1j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H2j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H2j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H2j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H2j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H2j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H2j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H2j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H2j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H2j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H2j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H2j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H2j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H2j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H2j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H2j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H2j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H2j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H2j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H2j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H2j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H3j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H3j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H3j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H3j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "B"],
+["H3j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "I"],
+["H3j-ggf", "13TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "V"],
+["H3j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H3j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H3j-ggf", "13TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "B"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "I"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "RS"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "V"],
+["H3j-ggf", "8TeV", "HT2-mH-cmp", "AntiKt5", "CT10nlo", "pt30-eta4.4", "NLO"],
+["H3j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "B"],
+["H3j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "I"],
+["H3j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "RS"],
+["H3j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "V"],
+["H3j-ggf", "8TeV", "HT2-unc", "AntiKt4", "CT10nlo", "pt30-eta4.4", "NLO"]
+    ];
+
+    var fields = [
+      "process", "energy", "weights", "jetalg", "pdf", "cuts", "part"
+    ];
+
+    var values = [ ];
+
+    var selected = [ ];
+
+    function updateTable() {
+      var table = document.getElementById("main");
+
+      for (var r=0; r<table.rows.length; ++r) {
+        var row = table.rows[r];
+        if ( table.rows[r].getAttribute("class") == "plots" ) {
+          table.removeChild( table.rows[r--] );
+        }
+      }
+
+      for (var i=0; i<data.length; i++) {
+        var ok = true;
+        for (var j=0; j<fields.length; j++) {
+          if (selected[j] != "Any") {
+            if (data[i][j] != selected[j]) {
+              ok = false;
+              continue;
+            }
+          }
+        }
+
+        // insert content
+        if (ok == true) {
+          var link = "plots/";
+          var row = document.createElement('tr');
+          row.setAttribute('class',"plots");
+          var k;
+          for (k=0; k<fields.length; ++k) {
+            var cell = document.createElement('td');
+            cell.innerHTML = data[i][k];
+            row.appendChild(cell);
+            if (k!=0) link += "_";
+            link += data[i][k];
+          }
+          link += ".pdf"
+          var cell = document.createElement('td');
+          var a = document.createElement('a');
+          a.setAttribute("href",link);
+          a.innerHTML = "plots";
+          cell.appendChild(a);
+          row.appendChild(cell);
+          table.appendChild(row);
+        }
+      }
+    }
+
+    function makeChange(i) {
+      selected[i] = document.getElementById(fields[i]).value;
+      updateTable();
+    }
+
+    window.onload = function() {
+      for (var j=0; j<fields.length; j++) values[j] = ["Any"];
+
+      for (var i=0; i<data.length; i++) {
+        for (var j=0; j<fields.length; j++) {
+
+          var found = false;
+
+          var k;
+          for (var k=1; k<values[j].length; ++k) {
+            if ( values[j][k] == data[i][j] ) found = true;
+          }
+
+          if (!found) values[j][k] = data[i][j];
+        }
+      }
+
+      for (var i=0; i<fields.length; i++) {
+        var select = document.getElementById(fields[i]);
+
+        for (var j=0; j<values[i].length; j++) {
+          var opt = document.createElement('option');
+          opt.setAttribute('value',values[i][j]);
+          opt.innerHTML = values[i][j];
+          select.appendChild(opt);
+        }
+
+        selected[i] = document.getElementById(fields[i]).value;
+
+        select.setAttribute('onchange',"makeChange("+i+")");
+      }
+      updateTable();
+    };
+
+  </script>
+  </head>
+
+  <body>
+    <table id="main">
+      <tr>
+        <td>Process</td>
+        <td>Energy</td>
+        <td>Weights</td>
+        <td>JetAlg</td>
+        <td>PDF</td>
+        <td>Cuts</td>
+        <td>Part</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td> <select id="process"></select> </td>
+        <td> <select id="energy" ></select> </td>
+        <td> <select id="weights"></select> </td>
+        <td> <select id="jetalg"></select> </td>
+        <td> <select id="pdf"></select> </td>
+        <td> <select id="cuts"></select> </td>
+        <td> <select id="part"></select> </td>
+        <td></td>
+      </tr>
+    </table>
+  </body>
+</html>
