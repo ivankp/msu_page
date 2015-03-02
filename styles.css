@@ -17,3 +17,11 @@ tr.plots:hover {
   /*cursor: pointer;*/
   /*color: white;*/
 }
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
