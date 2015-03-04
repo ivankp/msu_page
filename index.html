@@ -68,7 +68,7 @@
     var selected = [ ];
 
     function updateTable() {
-      var table = document.getElementById("main");
+      var table = document.getElementById("plots_table");
 
       for (var r=0; r<table.rows.length; ++r) {
         var row = table.rows[r];
@@ -165,7 +165,31 @@
   </head>
 
   <body>
-    <table id="main" cellspacing="0">
+
+    <nav>
+      <ul>
+        <li><a href="index.html">Index</a></li>
+        <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
+          Code on github</a></li>
+        <li><a href="http://arxiv.org/abs/1310.7439" target="_blank">
+          Ntuples paper</a></li>
+      </ul>
+    </nav>
+
+    <div class="date">
+      Last updated: March 4, 2015
+    </div>
+
+    <!-- <div>
+      |
+      <a href="https://github.com/ivankp/bh_analysis" target="_blank">
+        Code on github</a> |
+      <a href="http://arxiv.org/abs/1310.7439" target="_blank">
+        Ntuples paper</a> |
+    </div>
+    <hr> -->
+
+    <table id="plots_table" cellspacing="0">
       <tr>
         <td>Process</td>
         <td>Energy</td>
