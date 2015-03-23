@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>ntuples plots</title>
+  <link rel="stylesheet" href="styles.css" type="text/css">
+  <script type="text/javascript">
+
+    var data = [
+[  "H2-3j-ggf",   "8TeV",  "HT2-unc",  "AntiKt4",  "CT10nlo",  "pt30-eta4.4" ],
+[  "H2-3j-ggf",  "13TeV",  "HT2-unc",  "AntiKt4",  "CT10nlo",  "pt30-eta4.4" ]
+    ];
+
+    var fields = [
+      "process", "energy", "weights", "jetalg", "pdf", "cuts"
+    ];
+
+    var values = [ ];
+
+    var selected = [ ];
+
+    function updateTable() {
+      var table = document.getElementById("plots_table");
+
+      for (var r=0; r<table.rows.length; ++r) {
+        var row = table.rows[r];
+        if ( table.rows[r].getAttribute("class") == "plots" ) {
+          table.removeChild( table.rows[r--] );
+        }
+      }
+
+      for (var i=0; i<data.length; i++) {
+        var ok = true;
+        for (var j=0; j<fields.length; j++) {
+          if (selected[j] != "Any") {
+            if (data[i][j] != selected[j]) {
+              ok = false;
+              continue;
+            }
+          }
+        }
+
+        // insert content
+        if (ok == true) {
+          var link = "";
+          var row = document.createElement('tr');
+          row.setAttribute('class',"plots");
+          for (var k=0; k<fields.length; ++k) {
+            var cell = document.createElement('td');
+            cell.innerHTML = data[i][k];
+            row.appendChild(cell);
+            if (k!=0) link += "_";
+            link += data[i][k];
+          }
+
+          var cell = document.createElement('td');
+          var a = document.createElement('a');
+          a.setAttribute("href","exclsums/"+link+".pdf");
+          a.setAttribute("target","_blank");
+          a.innerHTML = "plots";
+          cell.appendChild(a);
+          row.appendChild(cell);
+
+          cell = document.createElement('td');
+          a = document.createElement('a');
+          a.setAttribute("href","exclsums/"+link+".root");
+          a.setAttribute("download",'');
+          a.innerHTML = "root";
+          cell.appendChild(a);
+          row.appendChild(cell);
+
+          table.appendChild(row);
+        }
+      }
+    }
+
+    function makeChange(i) {
+      selected[i] = document.getElementById(fields[i]).value;
+      updateTable();
+    }
+
+    window.onload = function() {
+      for (var j=0; j<fields.length; j++) values[j] = ["Any"];
+
+      for (var i=0; i<data.length; i++) {
+        for (var j=0; j<fields.length; j++) {
+
+          var found = false;
+
+          var k;
+          for (var k=1; k<values[j].length; ++k) {
+            if ( values[j][k] == data[i][j] ) found = true;
+          }
+
+          if (!found) values[j][k] = data[i][j];
+        }
+      }
+
+      for (var i=0; i<fields.length; i++) {
+        var select = document.getElementById(fields[i]);
+
+        for (var j=0; j<values[i].length; j++) {
+          var opt = document.createElement('option');
+          opt.setAttribute('value',values[i][j]);
+          opt.innerHTML = values[i][j];
+          select.appendChild(opt);
+        }
+
+        selected[i] = document.getElementById(fields[i]).value;
+
+        select.setAttribute('onchange',"makeChange("+i+")");
+      }
+      updateTable();
+    };
+
+  </script>
+  </head>
+
+  <body>
+
+    <nav>
+      <ul>
+        <li><a href="index.html">Index</a></li>
+        <li><a href="exclsums.html">Exclusive sums</a></li>
+        <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
+          Code on github</a></li>
+        <li><a href="http://arxiv.org/abs/1310.7439" target="_blank">
+          Ntuples paper</a></li>
+      </ul>
+    </nav>
+
+    <div class="date">
+      Last updated: March 22, 2015
+    </div>
+
+    <div class="note">
+      [ nj B + nj RS + nj I + nj V ] + [ (n+1)j RS + (n+1)j I + (n+1)j V ]
+    </div>
+
+    <table id="plots_table" cellspacing="0">
+      <tr>
+        <td>Process</td>
+        <td>Energy</td>
+        <td>Weights</td>
+        <td>Jet Alg</td>
+        <td>PDF</td>
+        <td>Jet Cuts</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td> <select id="process"></select> </td>
+        <td> <select id="energy" ></select> </td>
+        <td> <select id="weights"></select> </td>
+        <td> <select id="jetalg"></select> </td>
+        <td> <select id="pdf"></select> </td>
+        <td> <select id="cuts"></select> </td>
+        <td align="center"><img src="icons/format_pdf.png"></td>
+        <td align="center"><img src="icons/format_th1.png"></td>
+      </tr>
+    </table>
+  </body>
+</html>

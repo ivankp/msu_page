@@ -111,3 +111,8 @@ div.date {
   right: 5px;
   font-size: 10pt;
 }
+
+div.note {
+  position: relative;
+  padding: 10px 5px 0px 7px;
+}
