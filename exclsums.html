@@ -6,12 +6,11 @@
   <script type="text/javascript">
 
     var data = [
-[  "H2-3j-ggf",   "8TeV",  "HT2-unc",  "AntiKt4",  "CT10nlo",  "pt30-eta4.4" ],
-[  "H2-3j-ggf",  "13TeV",  "HT2-unc",  "AntiKt4",  "CT10nlo",  "pt30-eta4.4" ]
+[  "H", "1-2", "8TeV",  "HT2-unc",  "AntiKt4",  "none",     "none" ],
     ];
 
     var fields = [
-      "process", "energy", "weights", "jetalg", "pdf", "cuts"
+      "particle", "njets", "energy", "scales", "jet-alg", "VBF-cut", "MAA-cut"
     ];
 
     var values = [ ];
@@ -41,20 +40,23 @@
 
         // insert content
         if (ok == true) {
-          var link = "";
           var row = document.createElement('tr');
           row.setAttribute('class',"plots");
           for (var k=0; k<fields.length; ++k) {
             var cell = document.createElement('td');
             cell.innerHTML = data[i][k];
             row.appendChild(cell);
-            if (k!=0) link += "_";
-            link += data[i][k];
           }
+          
+          var link = data[i][0] + data[i][1] + "j_"
+                   + data[i][2] +'_'+ data[i][3] +'_'+ data[i][4];
+
+          if (data[i][5]!="none") link += "_VBF" + data[i][5];
+          if (data[i][6]!="none") link += "_MAA" + data[i][6];
 
           var cell = document.createElement('td');
           var a = document.createElement('a');
-          a.setAttribute("href","exclsums/"+link+".pdf");
+          a.setAttribute("href","plots/"+link+".pdf");
           a.setAttribute("target","_blank");
           a.innerHTML = "plots";
           cell.appendChild(a);
@@ -62,7 +64,7 @@
 
           cell = document.createElement('td');
           a = document.createElement('a');
-          a.setAttribute("href","exclsums/"+link+".root");
+          a.setAttribute("href","hists/"+link+".root");
           a.setAttribute("download",'');
           a.innerHTML = "root";
           cell.appendChild(a);
@@ -76,6 +78,11 @@
     function makeChange(i) {
       selected[i] = document.getElementById(fields[i]).value;
       updateTable();
+    }
+
+    function changeTo(i,val) {
+      document.getElementById(fields[i]).value = val;
+      makeChange(i);
     }
 
     window.onload = function() {
@@ -109,6 +116,13 @@
 
         select.setAttribute('onchange',"makeChange("+i+")");
       }
+      
+      changeTo(3,"HT2-unc");
+      changeTo(4,"AntiKt4");
+      changeTo(5,"none");
+      changeTo(6,"none");
+      changeTo(7,"NLO");
+      
       updateTable();
     };
 
@@ -129,31 +143,37 @@
     </nav>
 
     <div class="date">
-      Last updated: March 27, 2015
+      Last updated: May 26, 2015
     </div>
 
     <div class="note">
+      PDF: CT10nlo <br>
+      Jet cuts: pT > 30 GeV &nbsp;&amp;&amp;&nbsp; rapidity < 4.4 <br>
+      VBF cut: jj_dy > 2.8 &nbsp;&amp;&amp;&nbsp; jj_mass > 400 GeV <br><br>
+      Exclusive sum definition:<br>
       [ nj B + nj RS + nj I + nj V ] + [ (n+1)j RS + (n+1)j I + (n+1)j V ]
     </div>
 
     <table id="plots_table" cellspacing="0">
       <tr>
-        <td>Process</td>
+        <td>Particle</td>
+        <td>N jets</td>
         <td>Energy</td>
-        <td>Weights</td>
+        <td>Scales</td>
         <td>Jet Alg</td>
-        <td>PDF</td>
-        <td>Jet Cuts</td>
+        <td>VBF cut</td>
+        <td>MAA cut</td>
         <td></td>
         <td></td>
       </tr>
       <tr>
-        <td> <select id="process"></select> </td>
-        <td> <select id="energy" ></select> </td>
-        <td> <select id="weights"></select> </td>
-        <td> <select id="jetalg"></select> </td>
-        <td> <select id="pdf"></select> </td>
-        <td> <select id="cuts"></select> </td>
+        <td> <select id="particle"></select> </td>
+        <td> <select id="njets" ></select> </td>
+        <td> <select id="energy"></select> </td>
+        <td> <select id="scales"></select> </td>
+        <td> <select id="jet-alg"></select> </td>
+        <td> <select id="VBF-cut"></select> </td>
+        <td> <select id="MAA-cut"></select> </td>
         <td align="center"><img src="icons/format_pdf.png"></td>
         <td align="center"><img src="icons/format_th1.png"></td>
       </tr>
