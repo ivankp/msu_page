@@ -105,14 +105,15 @@ nav ul {
 	}
 
 div.date {
-  position:absolute;
-  float:right;
+  position: absolute;
+  float: right;
   top: 2px;
   right: 5px;
   font-size: 10pt;
 }
 
 div.note {
+  font-size: small;
   position: relative;
   padding: 10px 5px 0px 7px;
 }
