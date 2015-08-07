@@ -452,6 +452,14 @@
           cell.appendChild(a);
           row.appendChild(cell);
 
+          cell = document.createElement('td');
+          a = document.createElement('a');
+          a.setAttribute("href","hist/"+link+".yoda.tar.bz2");
+          a.setAttribute("download",'');
+          a.innerHTML = "yoda";
+          cell.appendChild(a);
+          row.appendChild(cell);
+
           table.appendChild(row);
         }
       }
@@ -524,7 +532,7 @@
     </nav>
 
     <div class="date">
-      Last updated: May 27, 2015
+      Last updated: Aug 7, 2015
     </div>
 
     <div class="note">
@@ -546,6 +554,7 @@
         <td>Part</td>
         <td></td>
         <td></td>
+        <td></td>
       </tr>
       <tr>
         <td> <select id="particle"></select> </td>
@@ -558,7 +567,9 @@
         <td> <select id="part"></select> </td>
         <td align="center"><img src="icons/format_pdf.png"></td>
         <td align="center"><img src="icons/format_th1.png"></td>
+        <td align="center"><img src="icons/format_yoda.png"></td>
       </tr>
     </table>
   </body>
 </html>
+
