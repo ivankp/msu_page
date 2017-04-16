@@ -551,10 +551,11 @@ function updateTable() {
         row.appendChild(cell);
       }
 
-      var link = data[i][0] + data[i][1] + "j_"
-               + data[i][2] +'_'+ data[i][9]+'_'
-               + data[i][3] +'_'+ data[i][4]+'_'
-               + data[i][5];
+      var link = "https://msu.edu/~ivanp/hist/"
+        + data[i][0] + data[i][1] + "j_"
+        + data[i][2] +'_'+ data[i][9]+'_'
+        + data[i][3] +'_'+ data[i][4]+'_'
+        + data[i][5];
 
       if (data[i][6]!="none") link += "_VBF" + data[i][6];
       if (data[i][7]!="none") link += "_MAA" + data[i][7];
@@ -562,7 +563,7 @@ function updateTable() {
 
       var cell = document.createElement('td');
       var a = document.createElement('a');
-      a.setAttribute("href","hist/"+link+".pdf");
+      a.setAttribute("href",link+".pdf");
       a.setAttribute("target","_blank");
       a.innerHTML = "plots";
       cell.appendChild(a);
@@ -570,7 +571,7 @@ function updateTable() {
 
       cell = document.createElement('td');
       a = document.createElement('a');
-      a.setAttribute("href","hist/"+link+".root");
+      a.setAttribute("href",link+".root");
       a.setAttribute("download",'');
       a.innerHTML = "root";
       cell.appendChild(a);
@@ -578,7 +579,7 @@ function updateTable() {
 
       cell = document.createElement('td');
       a = document.createElement('a');
-      a.setAttribute("href","hist/"+link+".yoda.tar.bz2");
+      a.setAttribute("href",link+".yoda.tar.bz2");
       a.setAttribute("download",'');
       a.innerHTML = "yoda";
       cell.appendChild(a);
