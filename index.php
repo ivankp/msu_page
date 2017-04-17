@@ -13,7 +13,9 @@
 
 <?php
   if ($page === 'hist') {
-    echo "<script src=\"table.js\"></script>\n";
+    echo "<script src=\"hist.js\"></script>\n";
+  } elseif ($page === 'scale') {
+    echo "<script src=\"scale.js\"></script>\n";
   }
 ?>
 </head>
