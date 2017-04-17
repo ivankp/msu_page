@@ -1,11 +1,23 @@
 var data = [
-// [ "H", "1", "13TeV", "AntiKt4", "CT10nlo", "30GeV", "17" ],
-[ "H", "2", "13TeV", "AntiKt4", "CT10nlo", "30GeV", "16" ]
-// [ "H", "3", "13TeV", "AntiKt4", "CT10nlo", "30GeV", "18" ]
+[ "H", "3", "13TeV", "CT10nlo", "AntiKt4",  "30GeV", "20" ],
+[ "H", "3", "13TeV", "CT10nlo", "AntiKt4",  "50GeV", "28" ],
+[ "H", "3", "13TeV", "CT10nlo", "AntiKt4", "100GeV", "34" ],
+[ "H", "3",  "8TeV", "CT10nlo", "AntiKt4",  "30GeV", "46" ],
+[ "H", "3",  "8TeV", "CT10nlo", "AntiKt4",  "50GeV", "38" ],
+[ "H", "2", "13TeV", "CT10nlo", "AntiKt4",  "30GeV", "18" ],
+[ "H", "2", "13TeV", "CT10nlo", "AntiKt4",  "50GeV", "24" ],
+[ "H", "2", "13TeV", "CT10nlo", "AntiKt4", "100GeV", "30" ],
+[ "H", "2",  "8TeV", "CT10nlo", "AntiKt4",  "30GeV", "44" ],
+[ "H", "2",  "8TeV", "CT10nlo", "AntiKt4",  "50GeV", "40" ],
+[ "H", "1", "13TeV", "CT10nlo", "AntiKt4",  "30GeV", "22" ],
+[ "H", "1", "13TeV", "CT10nlo", "AntiKt4",  "50GeV", "26" ],
+[ "H", "1", "13TeV", "CT10nlo", "AntiKt4", "100GeV", "32" ],
+[ "H", "1",  "8TeV", "CT10nlo", "AntiKt4",  "30GeV", "42" ],
+[ "H", "1",  "8TeV", "CT10nlo", "AntiKt4",  "50GeV", "36" ]
 ];
 
 var fields = [
-  "particle", "njets", "energy", "jet-alg", "pdf", "pt-cut"
+  "particle", "njets", "energy", "pdf", "jet-alg", "pt-cut"
 ];
 
 var values = [ ];
