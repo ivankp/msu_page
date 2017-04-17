@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE HTML>
+<html lang="en-US">
 <head>
 <title><?php
   $page = isset($_GET['page']) ? $_GET['page'] : '';
@@ -36,9 +37,13 @@
 <ul>
   <?php page_li('hist') ?>
   <?php page_li('scale') ?>
-  <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
-    <img src="icons/github.png">
-    Code on GitHub</a></li>
+  <li><p><img src="icons/github.png">Code on GitHub</p>
+  <ul>
+    <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
+        bh_analysis</a></li>
+    <li><a href="https://github.com/ivankp/bh_analysis2" target="_blank">
+        bh_analysis2</a></li>
+  </ul>
   <li><p>References</p>
   <ul>
     <li><a href="http://arxiv.org/abs/1310.7439" target="_blank">
@@ -52,7 +57,7 @@
 </div>
 
 <div id="date">
-  Last updated: Apr 16, 2017
+  Last updated: Apr 17, 2017
 </div>
 
 <?php include $page . '.html'; ?>
