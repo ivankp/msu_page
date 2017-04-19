@@ -1,23 +1,26 @@
 var data = [
-[ "H", "3", "13TeV", "CT10nlo", "AntiKt4",  "30GeV", "20" ],
-[ "H", "3", "13TeV", "CT10nlo", "AntiKt4",  "50GeV", "28" ],
-[ "H", "3", "13TeV", "CT10nlo", "AntiKt4", "100GeV", "34" ],
-[ "H", "3",  "8TeV", "CT10nlo", "AntiKt4",  "30GeV", "46" ],
-[ "H", "3",  "8TeV", "CT10nlo", "AntiKt4",  "50GeV", "38" ],
-[ "H", "2", "13TeV", "CT10nlo", "AntiKt4",  "30GeV", "18" ],
-[ "H", "2", "13TeV", "CT10nlo", "AntiKt4",  "50GeV", "24" ],
-[ "H", "2", "13TeV", "CT10nlo", "AntiKt4", "100GeV", "30" ],
-[ "H", "2",  "8TeV", "CT10nlo", "AntiKt4",  "30GeV", "44" ],
-[ "H", "2",  "8TeV", "CT10nlo", "AntiKt4",  "50GeV", "40" ],
-[ "H", "1", "13TeV", "CT10nlo", "AntiKt4",  "30GeV", "22" ],
-[ "H", "1", "13TeV", "CT10nlo", "AntiKt4",  "50GeV", "26" ],
-[ "H", "1", "13TeV", "CT10nlo", "AntiKt4", "100GeV", "32" ],
-[ "H", "1",  "8TeV", "CT10nlo", "AntiKt4",  "30GeV", "42" ],
-[ "H", "1",  "8TeV", "CT10nlo", "AntiKt4",  "50GeV", "36" ]
+[ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "HThp",  "76" ],
+[ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "HThp",  "50" ],
+[ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",  "100GeV",  "HThp",  "62" ],
+[ "H", "3",  "8TeV",   "CT10nlo",  "antikt4",   "30GeV",  "HThp",  "48" ],
+[ "H", "3",  "8TeV",   "CT10nlo",  "antikt4",   "50GeV",  "HThp",  "60" ],
+[ "H", "3",  "8TeV",   "CT10nlo",  "antikt4",  "100GeV",  "HThp",  "66" ],
+[ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "HThp",  "54" ],
+[ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "HThp",  "52" ],
+[ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",  "100GeV",  "HThp",  "72" ],
+[ "H", "2",  "8TeV",   "CT10nlo",  "antikt4",   "30GeV",  "HThp",  "58" ],
+[ "H", "2",  "8TeV",   "CT10nlo",  "antikt4",   "50GeV",  "HThp",  "78" ],
+[ "H", "2",  "8TeV",   "CT10nlo",  "antikt4",  "100GeV",  "HThp",  "74" ],
+[ "H", "1",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "HThp",  "80" ],
+[ "H", "1",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "HThp",  "56" ],
+[ "H", "1",  "13TeV",  "CT10nlo",  "antikt4",  "100GeV",  "HThp",  "70" ],
+[ "H", "1",  "8TeV",   "CT10nlo",  "antikt4",   "30GeV",  "HThp",  "68" ],
+[ "H", "1",  "8TeV",   "CT10nlo",  "antikt4",   "50GeV",  "HThp",  "82" ],
+[ "H", "1",  "8TeV",   "CT10nlo",  "antikt4",  "100GeV",  "HThp",  "64" ]
 ];
 
 var fields = [
-  "particle", "njets", "energy", "pdf", "jet-alg", "pt-cut"
+  "particle", "njets", "energy", "pdf", "jet-alg", "pt-cut", "scale"
 ];
 
 var values = [ ];
@@ -55,7 +58,7 @@ function updateTable() {
         row.appendChild(cell);
       }
 
-      var link = "https://plot.ly/~ivanp/" + data[i][6] + "/";
+      var link = "https://plot.ly/~ivanp/" + data[i][7] + "/";
 
       var cell = document.createElement('td');
       var a = document.createElement('a');
@@ -68,7 +71,7 @@ function updateTable() {
       cell = document.createElement('td');
       a = document.createElement('button');
       a.setAttribute("type",'button');
-      a.setAttribute("onclick",'showPlot('+data[i][6]+')');
+      a.setAttribute("onclick",'showPlot('+data[i][7]+')');
       a.innerHTML = "show";
       cell.appendChild(a);
       row.appendChild(cell);
@@ -120,6 +123,9 @@ window.onload = function() {
     select.setAttribute('onchange',"makeChange("+i+")");
   }
 
+  changeTo(2,"13TeV");
+  changeTo(5,"30GeV");
+
   updateTable();
 };
 
@@ -128,17 +134,4 @@ function showPlot(id) {
   frame.setAttribute('width','900');
   frame.setAttribute('height','800');
   frame.setAttribute('src','//plot.ly/~ivanp/'+id+'.embed');
-
-  // var div = document.getElementById("plot_frame");
-  // while (div.hasChildNodes()) {
-  //   div.removeChild(div.lastChild);
-  // }
-  // var frame = document.createElement('frame');
-  // frame.setAttribute('src','//plot.ly/~ivanp/'+id+'.embed');
-  // frame.setAttribute('width','900');
-  // frame.setAttribute('height','800');
-  // frame.setAttribute('frameborder','0');
-  // frame.setAttribute('scrolling','no');
-  //
-  // div.appendChild(frame);
 }

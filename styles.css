@@ -4,6 +4,10 @@ body, ul, li, caption, tr, div {
 html {
   background: #fff;
 }
+p {
+  margin: 0px 0px 7px 0px;
+  padding: 0;
+}
 
 /* Table of histograms ============================================ */
 
@@ -57,6 +61,19 @@ div.text {
   font-size: small;
   padding: 0px 5px 5px 7px;
 }
+#note ul {
+  margin: 0px 0px 0px 20px;
+}
+#note li {
+  padding-left: 10px;
+}
+.eq {
+  vertical-align: middle;
+  /* height: 50px; */
+  /* width: 15%; */
+  /* transform: scale(1.5); */
+  /* padding: 5px; */
+}
 
 /* Navigation panel =============================================== */
 
@@ -73,7 +90,7 @@ div.text {
   margin: 0; padding: 0;
 }
 
-#nav ul a, p {
+#nav ul a, #nav p {
   display: block;
   color: #333;
   text-decoration: none;
@@ -138,7 +155,6 @@ div.text {
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-#wrapper div, iframe {
+#float-left div {
   float: left;
 }
-

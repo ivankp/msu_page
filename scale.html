@@ -1,8 +1,22 @@
 <div id="note">
+<p>
   3D plots showing NLO cross section dependence on factorization and renormalization scales.
+</p><p>
+  Central scale choices:
+  <ul>
+    <!-- $$ \mathtt{HThp} = \hat{H}_\mathrm{T}' = \sqrt{\left(p_\mathrm{T}^\mathrm{H}\right)^2 + m_\mathrm{H}^2} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j} $$ -->
+    <li><object data="eq/HThp.svg" type="image/svg+xml" class="eq" height="55px">
+      <img src="eq/HThp.png" height="50px">
+    </object></li>
+    <!-- $$ \mathtt{HThpp} = \hat{H}_\mathrm{T}'' = m_\mathrm{H} + \frac{1}{2}\left( p_\mathrm{T}^\mathrm{H} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j} \right) $$ -->
+    <li><object data="eq/HThpp.svg" type="image/svg+xml" class="eq" height="57px">
+      <img src="eq/HThpp.png" height="50px">
+    </object></li>
+  </ul>
+</p>
 </div>
 
-<div id="wrapper">
+<div id="float-left">
 <div>
 <table id="plots_table">
   <tr>
@@ -12,6 +26,7 @@
     <td>PDF</td>
     <td>Jet Alg</td>
     <td>pT cut</td>
+    <td>Scale</td>
     <td></td>
   </tr>
   <tr>
@@ -21,6 +36,7 @@
     <td> <select id="pdf"></select> </td>
     <td> <select id="jet-alg"></select> </td>
     <td> <select id="pt-cut"></select> </td>
+    <td> <select id="scale"></select> </td>
     <td align="center"><img src="icons/plotly.png" title="plot.ly"></td>
     <td></td>
   </tr>
