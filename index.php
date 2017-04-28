@@ -57,10 +57,13 @@
 </div>
 
 <div id="date">
-  Last updated: Apr 17, 2017
+  Last updated: Apr 20, 2017
 </div>
 
-<?php include $page . '.html'; ?>
+<?php
+  if (file_exists($page . '.html')) include $page . '.html';
+  else if (file_exists($page . '.php')) include $page . '.php';
+?>
 
 </body>
 </html>

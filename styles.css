@@ -9,6 +9,13 @@ p {
   padding: 0;
 }
 
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
 /* Table of histograms ============================================ */
 
 #plots_table {
@@ -25,14 +32,6 @@ p {
 
 #plots_table tr.plots:hover {
   background-color: lightgreen;
-}
-
-#plots_table a {
-  text-decoration: none;
-}
-
-#plots_table a:hover {
-  text-decoration: underline;
 }
 
 /* Date =========================================================== */
@@ -53,8 +52,14 @@ p {
 
 /* Text =========================================================== */
 
-div.text {
+#text {
   padding: 0px 5px 5px 7px;
+}
+#text ul {
+  margin: 0px 0px 0px 20px;
+}
+#text li {
+  padding-left: 10px;
 }
 
 #note {
