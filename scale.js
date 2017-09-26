@@ -1,6 +1,7 @@
 var data = [
 [ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "ĤT'" ,   "76" ],
 [ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "ĤT''",  "108" ],
+[ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "minlo ĤT''" ,   "124" ],
 [ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "ĤT'" ,   "50" ],
 [ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "ĤT''",   "98" ],
 [ "H", "3",  "13TeV",  "CT10nlo",  "antikt4",  "100GeV",  "ĤT'" ,   "62" ],
@@ -13,6 +14,7 @@ var data = [
 [ "H", "3",  "8TeV",   "CT10nlo",  "antikt4",  "100GeV",  "ĤT''",  "118" ],
 [ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "ĤT'" ,   "54" ],
 [ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "ĤT''",  "112" ],
+[ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "30GeV",  "minlo ĤT''" ,   "126" ],
 [ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "ĤT'" ,   "52" ],
 [ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",   "50GeV",  "ĤT''",   "90" ],
 [ "H", "2",  "13TeV",  "CT10nlo",  "antikt4",  "100GeV",  "ĤT'" ,   "72" ],
@@ -76,7 +78,7 @@ function updateTable() {
         row.appendChild(cell);
       }
 
-      var link = "https://plot.ly/~ivanp/" + data[i][7] + "/";
+      var link = "https://plot.ly/~ivanp/" + data[i][7];
 
       var cell = document.createElement('td');
       var a = document.createElement('a');

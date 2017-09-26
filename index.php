@@ -53,6 +53,14 @@
   </ul>
   </li>
   <?php page_li('sherpa') ?>
+  <li><p>Notes</p>
+  <ul>
+    <li><a href="build.html">
+      Building from source</a></li>
+    <li><a href="INSTALL">
+      INSTALL</a></li>
+  </ul>
+  </li>
 </ul>
 </div>
 

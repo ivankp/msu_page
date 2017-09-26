@@ -1,0 +1,35 @@
+/* h2::before { content: "\2619"; padding-right: 5px; } */
+/* h4 { */
+/*   font-weight: normal; */
+/*   font-style: normal; */
+/*   font-size: 1em; */
+/* } */
+
+p.todo { color: red; }
+p.todo:before { content: "TODO: "; }
+
+h4::before { content: "\261e"; padding-right: 5px; }
+
+ul.toc > li { list-style-type: "\2619"; padding-left: 4px; }
+ul.toc ul { list-style-type: none; }
+
+code {
+  background-color: #EFF0F1;
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+p.code, p.shell {
+  font-family: monospace;
+  background-color: #EFF0F1;
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+p.shell:before { content: "$"; }
+
+a:link { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+a.dl { text-decoration: none; }
+
+a.dl:after { content: "\21E9"; }
+a.dl:hover:after { content: "\2b07"; }
