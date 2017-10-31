@@ -1,6 +1,14 @@
-/plots
-/hists
-/exclsums
-/doc
-/*.tar*
+/*
+
+!.gitignore
+
+!*.html
+!*.php
+!*.css
+!*.js
+
+!/icons
+!/eq
+
+**.swp
 

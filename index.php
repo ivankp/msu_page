@@ -4,8 +4,9 @@
 <title><?php
   $page = isset($_GET['page']) ? $_GET['page'] : '';
   $title = array(
-    "hist"   => "Histograms",
-    "scale"  => "Scale dependence",
+    "hist" => "Histograms",
+    "scale" => "Scale dependence",
+    "unweighted" => "Unweighted",
     "sherpa" => "Sherpa+MINLO",
   );
   echo $title[$page]
@@ -17,6 +18,8 @@
     echo "<script src=\"hist.js\"></script>\n";
   } elseif ($page === 'scale') {
     echo "<script src=\"scale.js\"></script>\n";
+  } elseif ($page === 'unweighted') {
+    echo "<script src=\"unweighted.js\"></script>\n";
   }
 ?>
 </head>
@@ -37,6 +40,7 @@
 <ul>
   <?php page_li('hist') ?>
   <?php page_li('scale') ?>
+  <?php page_li('unweighted') ?>
   <li><p><img src="icons/github.png">Code on GitHub</p>
   <ul>
     <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">

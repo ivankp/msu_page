@@ -29,6 +29,9 @@ a:hover {
   padding: 2px 5px;
   border: 0;
 }
+#plots_table select {
+  width: 100%;
+}
 
 #plots_table tr.plots:hover {
   background-color: lightgreen;
