@@ -1,6 +1,5 @@
 var data = [
 [ "H", "1", "13TeV", "175GeV", "LO", "AntiKt4", "ATLAS", "ATLAS", "H1j", "14M", "14M", "246,407" ],
-[ "H", "1", "13TeV", "175GeV", "LO", "AntiKt4", "ATLAS", "ATLAS", "H2j", "14M", "14M", "246,407" ],
 ];
 
 var fields = [
