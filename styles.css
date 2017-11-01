@@ -77,11 +77,10 @@ a:hover {
 }
 .eq {
   vertical-align: middle;
-  /* height: 50px; */
-  /* width: 15%; */
-  /* transform: scale(1.5); */
-  /* padding: 5px; */
 }
+
+.math { font-style: italic; }
+.mathrm { font-style: normal; }
 
 /* Navigation panel =============================================== */
 

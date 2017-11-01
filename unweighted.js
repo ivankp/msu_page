@@ -1,5 +1,8 @@
 var data = [
-[ "H", "1", "13TeV", "175GeV", "LO", "AntiKt4", "ATLAS", "ATLAS", "H1j", "14M", "14M", "246,407" ],
+[ "H", "1", "13TeV", "175GeV", "LO", "AntiKt4", "ATLAS", "ATLAS", "H1j_mtop_unweighted", "26M", "26M", "463,587" ],
+[ "H", "2", "13TeV", "175GeV", "LO", "AntiKt4", "ATLAS", "ATLAS", "H2j_mtop_unweighted", "6.9M", "6.9M", "70,376" ],
+[ "H", "3", "13TeV", "175GeV", "LO", "AntiKt4", "ATLAS", "ATLAS", "H3j_mtop_unweighted", "396K", "400K", "2,956" ],
+[ "H", "1", "13TeV", "∞", "LO", "AntiKt4", "ATLAS", "ATLAS", "H1j_heft_unweighted", "12M", "15M", "294,472" ],
 ];
 
 var fields = [
@@ -63,6 +66,7 @@ function updateTable() {
 
       cell = document.createElement('td');
       cell.innerHTML = data[i][n+3];
+      cell.setAttribute("align","right");
       row.appendChild(cell);
 
       table.appendChild(row);
