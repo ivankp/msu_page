@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scale dependence</title>
+
+  <style type="text/css">
+    #container {
+      height: 400px; 
+      min-width: 310px; 
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+  <!-- <script src="../Highcharts&#45;6.0.7/code/highcharts.js"></script> -->
+  <!-- <script src="../Highcharts&#45;6.0.7/code/highcharts&#45;3d.js"></script> -->
+  <!-- <script src="../Highcharts&#45;6.0.7/code/modules/exporting.js"></script> -->
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="http://code.highcharts.com/highcharts-3d.js"></script>
+  <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+  <div id="container" style="height: 500px; width: 600px"></div>
+
+  <script>
+    var ren = [0.5,1.0,0.5,1.0,2.0,1.0,2.0];
+    var fac = [0.5,0.5,1.0,1.0,1.0,2.0,2.0];
+    var xsec = [10440.3, 10097.17, 10364.46, 9983.85, 10530.01, 10339.39, 10341.16];
+  </script>
+  <script src="scale_dep.js"></script>
+</body>
+</html>

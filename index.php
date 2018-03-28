@@ -39,8 +39,12 @@
 <div id="nav">
 <ul>
   <?php page_li('hist') ?>
-  <?php page_li('scale') ?>
-  <?php page_li('unweighted') ?>
+  <li><p>Scale dependence</p>
+  <ul>
+    <li><a href="?page=scale">GoSam</a></li>
+    <li><a href="http://hep.pa.msu.edu/people/ivanp/scale_dep/index.html" target="_blank">NNLOJET</a></li>
+  </ul>
+  </li>
   <li><p><img src="icons/github.png">Code on GitHub</p>
   <ul>
     <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
@@ -56,7 +60,13 @@
       Full mass dependence [1608.01195]</a></li>
   </ul>
   </li>
-  <?php page_li('sherpa') ?>
+  <li><p>Other</p>
+  <ul>
+    <li><a href="?page=sherpa">Sherpa+MINLO</a></li>
+    <li><a href="?page=unweighted">Unweighted</a></li>
+    <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
+  </ul>
+  </li>
   <li><p>Notes</p>
   <ul>
     <li><a href="build.html">
