@@ -1,19 +1,19 @@
-// Give the points a 3D feel by adding a radial gradient
-Highcharts.setOptions({
-  colors: $.map(Highcharts.getOptions().colors, function(color) {
-    return {
-      radialGradient: { cx: 0.4, cy: 0.3, r: 0.5 },
-      stops: [
-        [0, color],
-        [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
-      ]
-    };
-  })
-});
+function arrayMin(arr) {
+  var len = arr.length, min = Infinity;
+  while (len--)
+    if (arr[len] < min) min = arr[len];
+  return min;
+};
 
-// var ren = [0.5,1.0,0.5,1.0,2.0,1.0,2.0];
-// var fac = [0.5,0.5,1.0,1.0,1.0,2.0,2.0];
-// var xsec = [10440.3, 10097.17, 10364.46, 9983.85, 10530.01, 10339.39, 10341.16];
+function arrayMax(arr) {
+  var len = arr.length, max = -Infinity;
+  while (len--)
+    if (arr[len] > max) max = arr[len];
+  return max;
+};
+
+var xsec_min  = arrayMin(xsec);
+var xsec_span = arrayMax(xsec) - xsec_min;
 
 // Set up the chart
 var chart = new Highcharts.Chart({
@@ -36,27 +36,33 @@ var chart = new Highcharts.Chart({
     }
   },
   title: { text: 'Draggable box' },
-  subtitle: { text: 'Click and drag the plot area to rotate in space' },
+  subtitle: { text: 'Click and drag the plot area to rotate' },
   plotOptions: { scatter: { width: 10, height: 10, depth: 10 } },
-  xAxis: { min: 0.5, max: 2, gridLineWidth: 1,
-           title: { text: 'μ<sub>R</sub>', useHTML: true } },
-  zAxis: { min: 0.5, max: 2, showFirstLabel: false,
-           title: { text: 'μ<sub>F</sub>', useHTML: true } },
-  yAxis: { title: { text: 'xsec' } },
+  xAxis: { min: -1, max: 1, gridLineWidth: 1,
+           title: { text: 'log<sub>2</sub> μ<sub>R</sub>', useHTML: true } },
+  zAxis: { min: -1, max: 1, showFirstLabel: false,
+           title: { text: 'log<sub>2</sub> μ<sub>F</sub>', useHTML: true } },
+  yAxis: { title: { text: 'σ' } },
   legend: { enabled: false },
   series: [{
-    data: xsec.map(function(x,i) { return [ren[i],x,fac[i]]; })
+    data: xsec.map(function(x,i) {
+      return {
+        x: Math.log2(ren[i]), y: x, z: Math.log2(fac[i]),
+        color: d3.interpolateViridis((x-xsec_min)/xsec_span),
+        name:
+          'ren: <b>' + ren[i] + '</b><br>' +
+          'fac: <b>' + fac[i] + '</b><br>' +
+          'σ: <b>' + xsec[i] + '</b>'
+      }; }
+    ),
+    marker: { radius: 6 }
   }],
   tooltip: {
     animation: false,
     headerFormat: '',
-    pointFormat:
-      'ren: <b>{point.x}</b><br>' +
-      'fac: <b>{point.z}</b><br>' +
-      'xsec: <b>{point.y}</b>'
+    pointFormat: '{point.name}'
   }
 });
-
 
 // Add mouse events for rotation
 $(chart.container).on('mousedown.hc touchstart.hc', function(eStart) {

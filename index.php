@@ -41,8 +41,8 @@
   <?php page_li('hist') ?>
   <li><p>Scale dependence</p>
   <ul>
-    <li><a href="?page=scale">GoSam</a></li>
-    <li><a href="http://hep.pa.msu.edu/people/ivanp/scale_dep/index.html" target="_blank">NNLOJET</a></li>
+    <?php page_li('scale') ?>
+    <li><a href="http://hep.pa.msu.edu/people/ivanp/scale_dep.html" target="_blank">NNLOJET</a></li>
   </ul>
   </li>
   <li><p><img src="icons/github.png">Code on GitHub</p>
@@ -62,8 +62,8 @@
   </li>
   <li><p>Other</p>
   <ul>
-    <li><a href="?page=sherpa">Sherpa+MINLO</a></li>
-    <li><a href="?page=unweighted">Unweighted</a></li>
+    <?php page_li('sherpa') ?>
+    <?php page_li('unweighted') ?>
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
   </ul>
   </li>
