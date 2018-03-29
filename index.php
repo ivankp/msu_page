@@ -5,23 +5,14 @@
   $page = isset($_GET['page']) ? $_GET['page'] : '';
   $title = array(
     "hist" => "Histograms",
-    "scale" => "Scale dependence",
+    "scale" => "GoSam",
+    "scale_nnlojet" => "NNLOJET",
     "unweighted" => "Unweighted",
     "sherpa" => "Sherpa+MINLO",
   );
   echo $title[$page]
 ?></title>
 <link rel="stylesheet" href="styles.css" type="text/css">
-
-<?php
-  if ($page === 'hist') {
-    echo "<script src=\"hist.js\"></script>\n";
-  } elseif ($page === 'scale') {
-    echo "<script src=\"scale.js\"></script>\n";
-  } elseif ($page === 'unweighted') {
-    echo "<script src=\"unweighted.js\"></script>\n";
-  }
-?>
 </head>
 
 <body>
@@ -42,7 +33,7 @@
   <li><p>Scale dependence</p>
   <ul>
     <?php page_li('scale') ?>
-    <li><a href="http://hep.pa.msu.edu/people/ivanp/scale_dep.html" target="_blank">NNLOJET</a></li>
+    <?php page_li('scale_nnlojet') ?>
   </ul>
   </li>
   <li><p><img src="icons/github.png">Code on GitHub</p>
@@ -79,7 +70,8 @@
 </div>
 
 <div id="date">
-  Last updated: Apr 20, 2017
+  <!-- Last updated: Apr 20, 2017 -->
+  Last updated: Mar 23, 2018
 </div>
 
 <?php
