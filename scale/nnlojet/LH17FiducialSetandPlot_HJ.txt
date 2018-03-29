@@ -1,0 +1,44 @@
+Fiducial setup:
+only ggF to Higgs production channel using large Top mass effective vertex
+Wilson Coefficient from the ggH EFT coupling expanded to the matching fixed order
+mH=125 GeV
+PDF=PDF4LHC15_30
+central scale: [sqrt(mH^2+pTH^2)+sum pTj]/2 with 7-point scale variation choices 
+pTjet>30 GeV/c; upper limit 500 GeV/c for Higgs
+Anti-Kt jet cluster algorithm
+Rjet=0.3,0.4,0.5,0.6,0.7,1.0
+|yjet|<4.5
+|yH|<2.4 (Higgs stable, on-shell)
+
+
+Histograms read for use:
+        njets                                                     min = 1        max = 3  
+        ptj1                                     #ofbins = 50     min = 0        max = 500
+        ptj2                                     #ofbins = 50     min = 0        max = 500
+        ptj3                                     #ofbins = 50     min = 0        max = 500
+        abs_yj1                                  #ofbins = 9      min = 0        max = 4.5
+        abs_yj2                                  #ofbins = 9      min = 0        max = 4.5
+        abs_yj3                                  #ofbins = 9      min = 0        max = 4.5
+        pth                                      #ofbins = 50     min = 0        max = 500
+        abs_yh                                   #ofbins = 12     min = 0        max = 2.4
+        abs_yj1_finebin                          #ofbins = 45     min = 0        max = 4.5
+        abs_yj2_finebin                          #ofbins = 45     min = 0        max = 4.5
+        abs_yj3_finebin                          #ofbins = 45     min = 0        max = 4.5
+        abs_yh_finebin                           #ofbins = 24     min = 0        max = 2.4
+        pth_yh_0_1 (with 0<abs_yh<1 )            #ofbins = 50     min = 0        max = 500
+        pth_yh_1_2 (with 1<abs_yh<2 )            #ofbins = 50     min = 0        max = 500
+        pth_yh_2_2dot4 (with 2<abs_yh<2.4 )      #ofbins = 50     min = 0        max = 500
+        ptj1_yj1_0_1 (with 0<abs_yj1<1 )         #ofbins = 50     min = 0        max = 500
+        ptj1_yj1_1_2 (with 1<abs_yj1<2 )         #ofbins = 50     min = 0        max = 500
+        ptj1_yj1_2_3 (with 2<abs_yj1<3 )         #ofbins = 50     min = 0        max = 500
+        ptj1_yj1_3_4 (with 3<abs_yj1<4 )         #ofbins = 50     min = 0        max = 500
+        ptj1_yj1_4_4dot5 (with 4<abs_yj1<4.5 )   #ofbins = 50     min = 0        max = 500
+
+Histogram data structure:
+1) The first row contains the overflow value (events outside the histogram region). The value is not normalised to any bin size. 
+2) Starting from the second row, the first three columns are the corresponding values of left edge, mean, and right edge of each histogram bin
+3) The bulk of the data contains 14 columns, corresponding to the histogram values of 7 scale choices and with the MC integration error next to its main value. 
+4) Except for the overflow row, all other histogram values and MC errors are normalised to the corresponding bin size as indicated in the fist three columns. 
+5) The total cross section can be read from the njets histograms where the zero jet bin is always zero and there is no overflow data.
+6) The data files are separated by different fixed orders: LO, NLO, NNLO, NLO_only (NLO-LO), NNLO_only (NNLO-NLO).
+7) Some histograms are all zero that is just included for consistent checks. For example any 2nd and 3rd jet related observables for LO (pp-->H+1jet) are all zero.

@@ -32,7 +32,8 @@
 <div id="float-none">
 <div id="note">
 <p>
-  Predictions from Xuan.
+  NNLOJET predictions from Xuan.
+  <a href="scale/nnlojet/LH17FiducialSetandPlot_HJ.txt">Info</a>
 </p>
 </div>
 

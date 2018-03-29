@@ -14,9 +14,9 @@ for f in os.listdir(path):
     row = [ repl_none(m.group(i)) for i in range(1,5) ] + [f,[]]
 
     with open(path+f,'r') as f2:
-        for line in [ l for l in f2 ][2:]:
+        for line in [ l for l in f2 ][1:]:
             line = line.split()
-            if (line[3][0]=='0'): break
+            if (line[3][0]=='0'): continue
             nj = int(float(line[1]))
             row[-1].append([nj,line[3::2]])
 
