@@ -12,12 +12,9 @@ for f in os.listdir(path):
     m = re.match(r'(N*LO)(?:_(only))?(\d+)\.njets(?:\.([gq]{2}))?\.LH17\.txt',f)
     if (m==None): continue
     row = [ repl_none(m.group(i)) for i in range(1,5) ] + [f,[]]
-    # row.append(f)
-    # row.append(sys.executable)
-    # row.append(sys.version_info)
 
     with open(path+f,'r') as f2:
-        for line in [ l for l in f2 ][-3:]:
+        for line in [ l for l in f2 ][2:]:
             line = line.split()
             if (line[3][0]=='0'): break
             nj = int(float(line[1]))

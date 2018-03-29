@@ -51,7 +51,7 @@ function updateTable() {
         cell = document.createElement('td');
         a = document.createElement('button');
         a.setAttribute("type",'button');
-        a.setAttribute("onclick",'showPlot('+i+')');
+        a.setAttribute("onclick",'showPlot('+i+','+k+')');
         a.innerHTML = data[k][0] + " jet";
         cell.appendChild(a);
         row.appendChild(cell);
@@ -111,14 +111,11 @@ window.onload = function() {
   updateTable();
 };
 
-function showPlot(id) {
+function showPlot(i,k) {
   var ren = [0.5,1.0,0.5,1.0,2.0,1.0,2.0];
   var fac = [0.5,0.5,1.0,1.0,1.0,2.0,2.0];
-  var xsec = [10440.3, 10097.17, 10364.46, 9983.85, 10530.01, 10339.39, 10341.16];
-  // var xsec = table_data[id][5];
-  // for (var i=0; i<xsec.length; ++i) {
-  //   xsec[i] = parseFloat(xsec[i]);
-  // }
-  drawScalePlot(ren,fac,xsec,table_data[id][4]);
+  var xsec_data = table_data[i][5][k];
+  var xsec = [for (x of xsec_data[1]) parseFloat(x)];
+  drawScalePlot(ren,fac,xsec,table_data[i][4]+' : '+xsec_data[0]+' jet');
 }
 

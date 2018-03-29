@@ -51,9 +51,7 @@
   foreach ($arr as &$str) {
     echo '<td><select id="' . $str . '"></select></td>';
   }
-  for ($x = 0; $x < 4; $x++) {
-    echo '<td></td>';
-  }
+  for ($x = 0; $x < 4; $x++) { echo '<td></td>'; }
 ?>
   </tr>
 </table>
