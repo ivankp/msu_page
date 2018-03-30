@@ -9,6 +9,7 @@
     "scale_nnlojet" => "NNLOJET",
     "unweighted" => "Unweighted",
     "sherpa" => "Sherpa+MINLO",
+    "browser" => "Hist browser",
   );
   echo $title[$page]
 ?></title>
@@ -56,6 +57,7 @@
     <?php page_li('sherpa') ?>
     <?php page_li('unweighted') ?>
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
+    <?php page_li('browser') ?>
   </ul>
   </li>
   <li><p>Notes</p>
