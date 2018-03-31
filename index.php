@@ -11,6 +11,9 @@
     "sherpa" => "Sherpa+MINLO",
     "browser" => "Hist browser",
   );
+  $dir = array(
+    "browser" => "browser/",
+  );
   echo $title[$page]
 ?></title>
 <link rel="stylesheet" href="styles.css" type="text/css">
@@ -77,8 +80,9 @@
 </div>
 
 <?php
-  if (file_exists($page . '.html')) include $page . '.html';
-  else if (file_exists($page . '.php')) include $page . '.php';
+  $dir_page = $dir[$page] . $page;
+  if (file_exists($dir_page . '.html')) include $dir_page . '.html';
+  else if (file_exists($dir_page . '.php')) include $dir_page . '.php';
 ?>
 
 </body>

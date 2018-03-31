@@ -11,5 +11,8 @@
 !/eq
 !/scripts
 
+!/browser/
+/browser/files
+
 **.swp
 
