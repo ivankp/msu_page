@@ -17,29 +17,7 @@
 <!-- https://www.jstree.com/ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-<?php
-function dirtree($dir, $regex='') {
-  if (!$dir instanceof DirectoryIterator) {
-    $dir = new DirectoryIterator((string)$dir);
-  }
-  foreach ($dir as $node) {
-    if ($node->isDir() && !$node->isDot()) {
-      echo '{text:"' . $node->getFilename() . '",type:"dir",children:[';
-      dirtree($node->getPathname(), $regex);
-      echo ']},';
-    } elseif ($node->isFile()) {
-      if ('' == $regex || preg_match($regex, $node->getFilename())) {
-        echo '{text:"' . $node->getBasename('.json.zip')
-          . '",type:"file",data:{loaded:false}},';
-      }
-    }
-  }
-}
-?>
-
-<script>
-var dirtree = [ <?php dirtree('browser/files','/\\.json\\.zip$/'); ?> ];
-</script>
-
 <script src="browser/browser.js"></script>
+
+<?php echo exec('browser/bin/test'); ?>
 
