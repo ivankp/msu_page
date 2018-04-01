@@ -18,6 +18,10 @@ browser_tree.jstree({
               break;
             case 'f':
               node['type'] = 'file';
+              node['children'] = true;
+              break;
+            case 'h1':
+              node['type'] = 'h1';
               break;
             default: ;
           }

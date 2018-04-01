@@ -13,6 +13,7 @@
 
 !/browser/
 /browser/files
+/browser/bin
 
 **.swp
 

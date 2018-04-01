@@ -1,7 +1,10 @@
-EXE := ../bin/browser
+EXE := ../bin/req_root ../bin/test
+
+ROOT_CFLAGS := $(shell root-config --cflags)
+ROOT_LIBS   := $(shell root-config --libs)
 
 all: $(EXE)
 
-../bin/browser: ../bin/%: %.cc
-	g++ -std=c++14 -Wall -O3 $< -o $@
+$(EXE): ../bin/%: %.cc
+	g++ -Wall -O3 $(ROOT_CFLAGS) $< -o $@ $(ROOT_LIBS)
 

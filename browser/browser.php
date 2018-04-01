@@ -19,5 +19,8 @@
 
 <script src="browser/browser.js"></script>
 
-<?php echo exec('browser/bin/test'); ?>
-
+<p><pre>
+<?php
+  echo exec('browser/test.sh') . "\n";
+?>
+</pre></p>
