@@ -10,9 +10,12 @@
     "unweighted" => "Unweighted",
     "sherpa" => "Sherpa+MINLO",
     "browser" => "Hist browser",
+    "jsroot" => "JSROOT",
   );
-  $dir = array(
-    "browser" => "browser/",
+  $page2file = array(
+    "browser" => "browser/browser",
+    "scale_nnlojet" => "scale/nnlojet2/page.php",
+    // "scale_nnlojet" => "scale_nnlojet.php",
   );
   echo $title[$page]
 ?></title>
@@ -61,6 +64,7 @@
     <?php page_li('unweighted') ?>
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
     <?php page_li('browser') ?>
+    <?php page_li('jsroot') ?>
   </ul>
   </li>
   <li><p>Notes</p>
@@ -74,15 +78,45 @@
 </ul>
 </div>
 
+<?php
+  function p($str) {
+    if (is_null($str)) p('null');
+    else echo "<p>$str</p>";
+  }
+
+  function endsWith($str, $end) {
+    $len = strlen($end);
+    return $len === 0 || (substr($str,-$len) === $end);
+  }
+
+  function find_without_ext($name) {
+    $exts = array('.php','.html');
+    foreach ($exts as &$ext) {
+      if (endsWith($name,$ext)) return file_exists($name) ? $name : null;
+    }
+    foreach ($exts as &$ext) {
+      $full = $name . $ext;
+      if (file_exists($full)) return $full;
+    }
+    return 'page_not_found.html';
+  }
+
+  $page_file = $page2file[$page];
+  $page_file = find_without_ext(is_null($page_file) ? $page : $page_file);
+?>
+
 <div id="date">
-  <!-- Last updated: Apr 20, 2017 -->
-  Last updated: Mar 23, 2018
+  Last updated:
+<?php
+  if (!is_null($page_file))
+    echo date("F d Y H:i:s",filemtime($page_file));
+  else echo '?';
+?>
 </div>
 
 <?php
-  $dir_page = $dir[$page] . $page;
-  if (file_exists($dir_page . '.html')) include $dir_page . '.html';
-  else if (file_exists($dir_page . '.php')) include $dir_page . '.php';
+  if (!is_null($page_file)) include $page_file;
+  else p('null');
 ?>
 
 </body>

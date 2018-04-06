@@ -43,5 +43,7 @@ browser_tree.jstree({
 }).on('close_node.jstree', function (e, data) {
   if (data.node.type == "dir")
     data.instance.set_icon(data.node, "icons/folder_closed.png");
+}).on('select_node.jstree', function (e, data) {
+  if (data.node.type == "h1") drawHist(data.node.text);
 });
 

@@ -112,8 +112,8 @@ window.onload = function() {
 };
 
 function showPlot(i,k) {
-  var ren = [0.5,1.0,0.5,1.0,2.0,1.0,2.0];
-  var fac = [0.5,0.5,1.0,1.0,1.0,2.0,2.0];
+  var fac = [0.5,1.0,0.25,0.5,1.0,0.5,0.25];
+  var ren = [0.5,1.0,0.25,1.0,0.5,0.25,0.5];
   var xsec_data = table_data[i][5][k];
   var xsec = xsec_data[1].map(parseFloat);
   drawScalePlot(ren,fac,xsec,table_data[i][4]+' : '+xsec_data[0]+' jet');
