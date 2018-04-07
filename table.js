@@ -9,10 +9,10 @@ function addOption(select,val) {
   select.appendChild(opt);
 }
 
-function makeTable(id,fields,names=null,values=null) {
-  let table = document.getElementById(id);
+function makeTable(id,fields,listener,names=null,values=null) {
+  var table = document.getElementById(id);
 
-  let tr = document.createElement('tr');
+  var tr = document.createElement('tr');
   for (let col of fields) {
     let td = document.createElement('td');
     td.innerHTML = names ? names(col[0]) : col[0];
@@ -31,9 +31,10 @@ function makeTable(id,fields,names=null,values=null) {
       addOption(select,[val, values ? values(col[0],val) : val]);
     }
 
-    select.setAttribute('onchange',"makeSelection()");
+    listener(select);
     td.appendChild(select);
     tr.appendChild(td);
   }
   table.appendChild(tr);
+  return table;
 }

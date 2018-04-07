@@ -1,0 +1,3 @@
+jQuery requests (e.g. post) are asynchronous
+request returns a `deferred`, which is a `promise`
+https://gosukiwi.svbtle.com/the-right-way-of-caching-ajax-requests-with-jquery
