@@ -20,5 +20,8 @@ def fix_out(x):
     return x
 
 # print sql_req
-print [[fix_out(y) for y in x] for x in cur.execute(sql_req)]
+print json.dumps(
+    [[fix_out(y) for y in x] for x in cur.execute(sql_req)],
+    separators=(',',':')
+)
 

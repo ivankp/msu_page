@@ -19,7 +19,7 @@ a:hover {
 /* Table of histograms ============================================ */
 
 #plots_table {
-  margin: 10px 0 0 2px;
+  margin: 10px 0 12px 2px;
   border-spacing: 0;
   border-collapse: collapse;
 }

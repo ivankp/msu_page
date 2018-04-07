@@ -7,27 +7,22 @@
 </p>
 </div>
 
-<div style="margin-bottom: 12px;">
-<table id="plots_table">
-<tr>
-
+<table id="plots_table"></table>
+<script> const fields =
 <?php
   $out = array();
   exec('scale/nnlojet2/page.py scale/nnlojet2/nnlojet.db',$out);
-  foreach ($out as $line) {
-    echo "$line\n";
-  }
+  foreach ($out as $line) { echo "$line\n"; }
 ?>
-
-</tr>
-</table>
-</div>
+</script>
 
 <div id="note">
 <p>
 &dagger; "Only" means including only contributions from the corresponding order;<br>
 e.g. "NLO only" includes only NLO Real and Virtual contributions, but no Born,
 i.e. LO.
+</p><p>
+&#9999; njets distributions are exclusive.
 </p>
 </div>
 </div>
