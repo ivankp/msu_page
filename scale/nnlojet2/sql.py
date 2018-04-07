@@ -29,7 +29,7 @@ def entries(glob_str):
                 if line[0]=='#': continue
                 line = line.split()
                 b = int(float(line[1])) if vals[-1]=='njets' \
-                    else str([line[0],line[2]])
+                    else str([float(line[0]),float(line[2])])
                 xsec = line[3::2]
 
                 if all(float(x)==0 for x in xsec): continue
