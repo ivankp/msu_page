@@ -108,8 +108,9 @@ window.onload = function() {
 
 $(document).on("click","table#plots_table tr.plots", function() {
   var box = $(this).find('input.draw');
-  box.prop('checked',!box.prop('checked'));
+  var checked = !box.prop('checked');
+  box.prop('checked',checked);
   var data = table_data[box.attr('value')];
-  console.log(data[data.length-1]);
+  if (checked) drawScalePlot(ren,fac,data[data.length-1],"Plot");
 });
 
