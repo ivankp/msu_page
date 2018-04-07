@@ -18,16 +18,24 @@ function addRow(table,row) {
   tr.setAttribute('class','plots');
   for (let i=0; i<fields.length; ++i) {
     const td = document.createElement('td');
-    td.innerHTML = i<fields.length ? fixValue(fields[i][0],row[i]) : row[i];
+    td.innerHTML = i<fields.length
+      ? fixValue(fields[i][0],table_data[row][i])
+      : table_data[row][i];
     tr.appendChild(td);
   }
   const td = document.createElement('td');
   const check = document.createElement("INPUT");
   check.setAttribute("type","checkbox");
   check.setAttribute("class","draw");
+  check.setAttribute("value",row);
   td.appendChild(check);
   tr.appendChild(td);
   table.appendChild(tr);
+}
+
+function parseLast(data) {
+  let i = data.length - 1;
+  data[i] = JSON.parse(data[i].replace(/'/g,''));
 }
 
 function makeSelection(arg=null) {
@@ -36,8 +44,8 @@ function makeSelection(arg=null) {
 
   if (table_data && arg && isStarred(arg.id)) {
     // use cached data when moving through * column
-    for (let row of table_data)
-      if (arg.value=='*' || arg.value==row[idIndex(arg.id)])
+    for (let row=0; row<table_data.length; ++row)
+      if (arg.value=='*' || arg.value==table_data[row][idIndex(arg.id)])
         addRow(table,row);
   } else {
     // request new data
@@ -51,7 +59,10 @@ function makeSelection(arg=null) {
 
     $.post('scale/nnlojet2/req.php', req, function (data) {
       table_data = JSON.parse(data);
-      for (let row of table_data) addRow(table,row);
+      for (let r=0; r<table_data.length; ++r) {
+        addRow(table,r);
+        parseLast(table_data[r]);
+      }
 
       if (!('bin' in req)) {
         const bin_set = new Set();
@@ -98,5 +109,7 @@ window.onload = function() {
 $(document).on("click","table#plots_table tr.plots", function() {
   var box = $(this).find('input.draw');
   box.prop('checked',!box.prop('checked'));
+  var data = table_data[box.attr('value')];
+  console.log(data[data.length-1]);
 });
 
