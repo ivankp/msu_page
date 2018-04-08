@@ -109,7 +109,7 @@
   Last updated:
 <?php
   if (!is_null($page_file))
-    echo date("F d Y H:i:s",filemtime($page_file));
+    echo date("F d Y H:i",filemtime($page_file));
   else echo '?';
 ?>
 </div>
