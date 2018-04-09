@@ -42,10 +42,21 @@ Table.prototype.select = function(sel) {
     // use cached data when moving through * column
     let sval = sel.value;
     let col_i = idIndex(sel.id);
-    // TODO: display only selected after multiple *s
-    for (let r=0; r<table.data.length; ++r)
-      if (sval=='*' || sval==table.data[r][col_i])
+
+    let non_stars = [ ];
+    for (let x of table.stars) {
+      let val = table.$.find('select#'+x).prop('value');
+      if (val!='*') non_stars.push([idIndex(x), val]);
+    }
+
+    rloop: for (let r=0; r<table.data.length; ++r) {
+      let data = table.data[r];
+      if (sval=='*' || sval==data[col_i]) {
+        for (let x of non_stars)
+          if (data[x[0]]!=x[1]) continue rloop;
         table.addRow(r);
+      }
+    }
 
     // TODO: draw for all selected rows
     let val = table.$.find("input[name='draw']").prop('value');
