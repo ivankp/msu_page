@@ -1,7 +1,3 @@
-function changeTo(id,val) {
-  document.getElementById(id).value = val;
-}
-
 function addOption(select,val) {
   let opt = document.createElement('option');
   opt.setAttribute('value',val[0]);
@@ -9,16 +5,16 @@ function addOption(select,val) {
   select.appendChild(opt);
 }
 
-function makeTable(id,fields,listener,names=null,values=null) {
-  var table = document.getElementById(id);
+function Table(id,fields,names=null,values=null) {
+  this.table = document.getElementById(id);
 
-  var tr = document.createElement('tr');
+  let tr = document.createElement('tr');
   for (let col of fields) {
     let td = document.createElement('td');
     td.innerHTML = names ? names(col[0]) : col[0];
     tr.appendChild(td);
   }
-  table.appendChild(tr);
+  this.table.appendChild(tr);
 
   tr = document.createElement('tr');
   for (let col of fields) {
@@ -31,10 +27,22 @@ function makeTable(id,fields,listener,names=null,values=null) {
       addOption(select,[val, values ? values(col[0],val) : val]);
     }
 
-    listener(select);
+    // select.onchange = function(s){ this.select(s); }.bind(this);
     td.appendChild(select);
     tr.appendChild(td);
   }
-  table.appendChild(tr);
-  return table;
-}
+  this.table.appendChild(tr);
+};
+
+Table.prototype.row = function(i) { return this.table.rows[i]; };
+
+Table.prototype.clear = function() {
+  while (this.table.rows.length>2) this.table.deleteRow(-1);
+};
+
+Table.prototype.stars = [ ];
+
+Table.prototype.isStarred = function(id) {
+  return this.stars.indexOf(id)!=-1;
+};
+
