@@ -138,22 +138,26 @@ window.onload = function() {
     table.$.on('change','#'+f[0],function(){ table.select(this); });
   }
 
-  table.$.on("click","tr.plots", function(e) {
-    var input = $(this).find("input[name='draw']");
-    var checked = input.prop('checked');
-    if (!checked || input.prop('type')!='radio') {
-      if ($(e.target)[0].nodeName!='INPUT') {
-        input.prop('checked',!checked);
-        input.change();
+  table.draw_input = function(x) {
+    if (x.checked) { // x is DOM input[name='draw']
+      let data = this.data[x.value];
+      this.plot.set(ren,fac,data[data.length-1],"Plot "+x.value);
+    }
+  };
+
+  table.$.on("click","tr.plots", function() {
+    var x = $(this).find("input[name='draw']")[0];
+    var checked = x.checked;
+    if (!checked || x.type!='radio') {
+      if (this.nodeName!='INPUT') {
+        x.checked = !checked;
+        table.draw_input(x);
       }
     }
   });
 
   table.$.on("change","input[name='draw']", function() {
-    if (this.checked) {
-      let data = table.data[this.value];
-      table.plot.set(ren,fac,data[data.length-1],"Plot "+this.value);
-    }
+    table.draw_input(this);
   });
 
   table.$.on("click","button#single_toggle", function() {
@@ -168,6 +172,21 @@ window.onload = function() {
     table.$.find("input[name='draw']").each(function() {
       $(this).prop('type',draw_type);
     });
+  });
+
+  $('html').keypress(function(e) {
+    var xs = table.$.find("input[name='draw']");
+    var i = 0, n = xs.length;
+    for (;; ++i) if (i==n || xs[i].checked) break;
+    if (e.key=='j' && i<n-1) {
+      xs[i].checked = false;
+      xs[i+1].checked = true;
+      table.draw_input(xs[i+1]);
+    } else if (e.key=='k' && i>0) {
+      xs[i].checked = false;
+      xs[i-1].checked = true;
+      table.draw_input(xs[i-1]);
+    }
   });
 }
 
