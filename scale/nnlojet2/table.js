@@ -34,16 +34,17 @@ Table.prototype.addRow = function(row) {
   this.table.appendChild(tr);
 };
 
-Table.prototype.select = function(arg) {
-  // const table = this.clear();
+Table.prototype.select = function(sel) {
   const table = this;
   table.clear();
 
-  if (table.data && arg && table.isStarred(arg.id)) {
+  if (table.data && sel && table.isStarred(sel.id)) {
     // use cached data when moving through * column
-    let sval = $(arg).val();
+    let sval = sel.value;
+    let col_i = idIndex(sel.id);
+    // TODO: display only selected after multiple *s
     for (let r=0; r<table.data.length; ++r)
-      if (sval=='*' || sval==table.data[r][idIndex(arg.id)])
+      if (sval=='*' || sval==table.data[r][col_i])
         table.addRow(r);
 
     // TODO: draw for all selected rows
@@ -119,9 +120,10 @@ window.onload = function() {
 
   table.draw_type = 'radio';
   table.select();
-  table.$ = $("table#plots_table");
+  table.$ = $(table.table);
 
   for (let f of fields) {
+    // $('#'+f[0]).change(function(){ table.select(this); });
     table.$.on('change','#'+f[0],function(){ table.select(this); });
   }
 
