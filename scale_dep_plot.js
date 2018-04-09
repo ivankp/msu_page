@@ -1,7 +1,7 @@
-function ScalePlot() {
+function ScalePlot(id) {
   this.chart = new Highcharts.Chart({
     chart: {
-      renderTo: 'container',
+      renderTo: id,
       margin: 100,
       type: 'scatter3d',
       options3d: {

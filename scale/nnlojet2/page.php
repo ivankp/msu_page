@@ -5,6 +5,16 @@
   NNLOJET predictions from Xuan Chen.
   <a href="scale/nnlojet/LH17FiducialSetandPlot_HJ.txt">Info</a>
 </p>
+<ul><li>
+"Only" means including only contributions from the corresponding order;<br>
+e.g. "NLO only" includes only NLO Real and Virtual contributions, but no Born,
+i.e. LO.
+</li><li>
+You can use <kbd>j</kbd> and <kbd>k</kbd> keys to move down and up in
+the list of plots.
+</li><li>
+njets distributions are exclusive.
+</li><ul>
 </div>
 
 <table id="plots_table"></table>
@@ -18,15 +28,6 @@
   const ren = [0.5,1.0,0.25,1.0,0.5,0.25,0.5];
 </script>
 
-<div id="note">
-<p>
-&dagger; "Only" means including only contributions from the corresponding order;<br>
-e.g. "NLO only" includes only NLO Real and Virtual contributions, but no Born,
-i.e. LO.
-</p><p>
-&#9999; njets distributions are exclusive.
-</p>
-</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -44,5 +45,5 @@ i.e. LO.
 <script src="table.js"></script>
 <script src="scale/nnlojet2/table.js"></script>
 
-<div id="container"></div>
+<div id="scale-plot"></div>
 </div>

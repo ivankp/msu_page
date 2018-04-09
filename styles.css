@@ -116,6 +116,7 @@ a:hover {
 }
 
 #nav ul li {
+  z-index: 5;
   position: relative;
   float: left;
   margin: 0;
@@ -164,4 +165,10 @@ a:hover {
 }
 #float-none div {
   float: none;
+}
+
+kbd {
+  border-radius: 3px;
+  padding: 1px 2px 0;
+  border: 1px solid black;
 }

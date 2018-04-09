@@ -103,7 +103,7 @@ window.onload = function() {
   var table = new Table('plots_table',fields,
     val => ({
       'qcd_order': 'Order',
-      'only': 'Only<sup>&dagger;</sup>',
+      'only': 'Only',
       'jetR': 'Jet R',
       'isp': 'ISP',
       'var': 'Variable',
@@ -127,7 +127,7 @@ window.onload = function() {
   td.appendChild(button);
   table.row(1).appendChild(td);
 
-  table.plot = new ScalePlot();
+  table.plot = new ScalePlot('scale-plot');
 
   table.draw_type = 'radio';
   table.select();
