@@ -14,8 +14,7 @@
   );
   $page2file = array(
     "browser" => "browser/browser",
-    "scale_nnlojet" => "scale/nnlojet2/page.php",
-    // "scale_nnlojet" => "scale_nnlojet.php",
+    "scale_nnlojet" => "scale/nnlojet/page.php",
   );
   echo $title[$page]
 ?></title>

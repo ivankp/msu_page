@@ -79,7 +79,7 @@ function on_select(sel) {
       else table.stars.push(col[0]);
     }
 
-    $.post('scale/nnlojet2/req.php', req, function(data) {
+    $.post('scale/nnlojet/req.php', req, function(data) {
       table.data = JSON.parse(data);
       for (let r=0; r<table.data.length; ++r) {
         table.addRow(r);

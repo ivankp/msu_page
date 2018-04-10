@@ -3,7 +3,7 @@
 <div id="note">
 <p>
   NNLOJET predictions from Xuan Chen.
-  <a href="scale/nnlojet/LH17FiducialSetandPlot_HJ.txt">Info</a>
+  <a href="scale/nnlojet/info.txt">Info</a>
 </p>
 <ul><li>
 "Only" means including only contributions from the corresponding order;<br>
@@ -21,7 +21,7 @@ njets distributions are exclusive.
 <script> const fields =
 <?php
   $out = array();
-  exec('scale/nnlojet2/page.py scale/nnlojet2/nnlojet.db',$out);
+  exec('scale/nnlojet/page.py scale/nnlojet/nnlojet.db',$out);
   foreach ($out as $line) { echo "$line\n"; }
 ?>
   const fac = [0.5,1.0,0.25,0.5,1.0,0.5,0.25];
@@ -40,10 +40,10 @@ njets distributions are exclusive.
 <script src="http://code.highcharts.com/highcharts-3d.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
-<script src="scale_dep_plot.js"></script>
+<script src="scale/plot.js"></script>
 
 <script src="table.js"></script>
-<script src="scale/nnlojet2/table.js"></script>
+<script src="scale/nnlojet/table.js"></script>
 
 <div id="scale-plot"></div>
 </div>

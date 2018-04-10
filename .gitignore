@@ -15,8 +15,7 @@
 /browser/files
 /browser/bin
 
-!/scale/
-/scale/nnlojet
+!/scale
 
 **.swp
 **.db

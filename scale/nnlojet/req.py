@@ -4,7 +4,7 @@ import sys, json, sqlite3
 
 req = json.loads(sys.argv[1] if len(sys.argv)>1 else '[]')
 
-db = sqlite3.connect('/home/ivanp/public_html/scale/nnlojet2/nnlojet.db')
+db = sqlite3.connect('/home/ivanp/public_html/scale/nnlojet/nnlojet.db')
 cur = db.cursor()
 
 def fix_in(x):
