@@ -19,9 +19,9 @@ function ScalePlot(id) {
       },
       animation: false
     },
-    xAxis: { gridLineWidth: 1, showLastLabel: false,
+    xAxis: { labels: { z: 10, align: 'right' },
              title: { text: 'log<sub>2</sub> μ<sub>R</sub>', useHTML: true } },
-    zAxis: { showFirstLabel: false,
+    zAxis: { labels: { z: 10, align: 'left' },
              title: { text: 'log<sub>2</sub> μ<sub>F</sub>', useHTML: true } },
     yAxis: { title: { text: 'σ' } },
     legend: { enabled: false /* true */ },
@@ -76,7 +76,7 @@ function arrayMax(arr) {
   return max;
 };
 
-ScalePlot.prototype.set =
+ScalePlot.prototype.draw =
 function (ren,fac,xsec,title=null,subtitle=null) {
   var xsec_min  = arrayMin(xsec);
   var xsec_span = arrayMax(xsec) - xsec_min;

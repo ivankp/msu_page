@@ -1,6 +1,4 @@
-Array.prototype.back = function() {
-  return this[this.length - 1];
-};
+Array.prototype.back = function() { return this[this.length-1]; };
 
 function idIndex(id) {
   return fields.map(x => x[0]).indexOf(id);
@@ -13,7 +11,7 @@ function fixValue(col,val) {
   return val;
 }
 
-Table.prototype.addRow = function(row) {
+function addRow(row) {
   const tr = document.createElement('tr');
   tr.setAttribute('class','plots');
   for (let i=0; i<fields.length; ++i) {
@@ -34,7 +32,17 @@ Table.prototype.addRow = function(row) {
   this.table.appendChild(tr);
 };
 
-Table.prototype.select = function(sel) {
+function drawPlot(i) {
+  let d = this.data[i];
+  let s = 'N'.repeat(d[0]) + 'LO ';
+  if (d[1]) s += 'only ';
+  s += 'R=' + d[2] + ' ';
+  if (d[3]) s += d[3] + ' ';
+  s += d[4] + '=' + d[5];
+  this.plot.draw(ren,fac,d.back(),s);
+};
+
+function on_select(sel) {
   const table = this;
   table.clear();
 
@@ -60,9 +68,7 @@ Table.prototype.select = function(sel) {
 
     // TODO: draw for all selected rows
     let val = table.$.find("input[name='draw']").prop('value');
-    table.plot.set(ren,fac,table.data[val].back(),
-      table.$.find('select#bin').prop('value')
-    );
+    table.draw(val);
   } else {
     // request new data
     const req = { };
@@ -91,10 +97,7 @@ Table.prototype.select = function(sel) {
         for (let x of bin_set) addOption(bin_select,[x,x]);
       }
 
-      if (table.data.length)
-        table.plot.set(ren,fac,table.data[0].back(),
-          table.$.find('select#bin').prop('value')
-        );
+      if (table.data.length) table.draw(0);
     });
   }
 };
@@ -130,19 +133,16 @@ window.onload = function() {
   table.plot = new ScalePlot('scale-plot');
 
   table.draw_type = 'radio';
+  table.select = on_select;
   table.select();
+  table.addRow = addRow;
   table.$ = $(table.table);
 
-  for (let f of fields) {
-    // $('#'+f[0]).change(function(){ table.select(this); });
-    table.$.on('change','#'+f[0],function(){ table.select(this); });
-  }
+  table.$.find('select').change(function(){ table.select(this); });
 
-  table.draw_input = function(x) {
-    if (x.checked) { // x is DOM input[name='draw']
-      let data = this.data[x.value];
-      this.plot.set(ren,fac,data[data.length-1],"Plot "+x.value);
-    }
+  table.draw = drawPlot;
+  table.draw_from_input = function(x) { // x is DOM input[name='draw']
+    if (x.checked) this.draw(x.value);
   };
 
   table.$.on("click","tr.plots", function() {
@@ -151,41 +151,38 @@ window.onload = function() {
     if (!checked || x.type!='radio') {
       if (this.nodeName!='INPUT') {
         x.checked = !checked;
-        table.draw_input(x);
+        table.draw_from_input(x);
       }
     }
   });
 
   table.$.on("change","input[name='draw']", function() {
-    table.draw_input(this);
+    table.draw_from_input(this);
   });
 
   table.$.on("click","button#single_toggle", function() {
-    var val = $(this).html();
-    if (val=='single') {
-      $(this).html('multi');
+    if (this.innerHTML=='single') {
+      this.innerHTML = 'multi';
       draw_type = 'checkbox';
     } else {
-      $(this).html('single');
+      this.innerHTML = 'single';
       draw_type = 'radio';
     }
     table.$.find("input[name='draw']").each(function() {
-      $(this).prop('type',draw_type);
+      this.type = draw_type;
     });
   });
 
   $('html').keypress(function(e) {
     var xs = table.$.find("input[name='draw']");
-    var i = 0, n = xs.length;
+    var i = 0, n = xs.length, jk = 0;
     for (;; ++i) if (i==n || xs[i].checked) break;
-    if (e.key=='j' && i<n-1) {
+    if (e.key=='j' && i<n-1) jk = 1;
+    else if (e.key=='k' && i>0) jk = -1;
+    if (jk) {
       xs[i].checked = false;
-      xs[i+1].checked = true;
-      table.draw_input(xs[i+1]);
-    } else if (e.key=='k' && i>0) {
-      xs[i].checked = false;
-      xs[i-1].checked = true;
-      table.draw_input(xs[i-1]);
+      xs[i+jk].checked = true;
+      table.draw_from_input(xs[i+jk]);
     }
   });
 }
