@@ -138,6 +138,8 @@ window.onload = function() {
   table.addRow = addRow;
   table.$ = $(table.table);
 
+  $(".note").css({'width':(table.$.width()+'px')});
+
   table.$.find('select').change(function(){ table.select(this); });
 
   table.draw = drawPlot;

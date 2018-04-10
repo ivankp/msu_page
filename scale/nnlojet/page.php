@@ -1,12 +1,12 @@
 <div id="float-left">
 <div id="float-none">
-<div id="note">
+<div class="note">
 <p>
   NNLOJET predictions from Xuan Chen.
   <a href="scale/nnlojet/info.txt">Info</a>
 </p>
 <ul><li>
-"Only" means including only contributions from the corresponding order;<br>
+"Only" means including only contributions from the corresponding order;
 e.g. "NLO only" includes only NLO Real and Virtual contributions, but no Born,
 i.e. LO.
 </li><li>

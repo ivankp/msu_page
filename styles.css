@@ -63,14 +63,14 @@ a:hover {
   padding-left: 10px;
 }
 
-#note {
+.note {
   font-size: small;
   padding: 0px 5px 5px 7px;
 }
-#note ul {
+.note ul {
   margin: 0px 0px 0px 20px;
 }
-#note li {
+.note li {
   padding-left: 10px;
 }
 .eq {
