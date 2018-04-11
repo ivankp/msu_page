@@ -10,10 +10,10 @@
 e.g. "NLO only" includes only NLO Real and Virtual contributions, but no Born,
 i.e. LO.
 </li><li>
+<em>njets</em> distributions are exclusive.
+</li><li>
 You can use <kbd>j</kbd> and <kbd>k</kbd> keys to move down and up in
 the list of plots.
-</li><li>
-njets distributions are exclusive.
 </li><ul>
 </div>
 

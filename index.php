@@ -104,6 +104,13 @@
   $page_file = find_without_ext(is_null($page_file) ? $page : $page_file);
 ?>
 
+<?php
+  function isMobile() {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+  }
+
+  if (!isMobile()) {
+?>
 <div id="date">
   Last updated:
 <?php
@@ -112,6 +119,9 @@
   else echo '?';
 ?>
 </div>
+<?php
+  }
+?>
 
 <?php
   if (!is_null($page_file)) include $page_file;

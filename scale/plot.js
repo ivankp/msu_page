@@ -19,6 +19,8 @@ function ScalePlot(id) {
       },
       animation: false
     },
+    title: { text: '' },
+    subtitle: { text: '' },
     xAxis: { labels: { z: 10, align: 'right' },
              title: { text: 'log<sub>2</sub> μ<sub>R</sub>', useHTML: true } },
     zAxis: { labels: { z: 10, align: 'left' },
@@ -62,24 +64,17 @@ function ScalePlot(id) {
   });
 }
 
-function arrayMin(arr) {
-  var len = arr.length, min = Infinity;
-  while (len--)
-    if (arr[len] < min) min = arr[len];
-  return min;
+Array.prototype.min = function() {
+  return this.reduce((a,b) => a<b ? a : b);
 };
-
-function arrayMax(arr) {
-  var len = arr.length, max = -Infinity;
-  while (len--)
-    if (arr[len] > max) max = arr[len];
-  return max;
+Array.prototype.max = function() {
+  return this.reduce((a,b) => a>b ? a : b);
 };
 
 ScalePlot.prototype.draw =
 function (ren,fac,xsec,title=null,subtitle=null) {
-  var xsec_min  = arrayMin(xsec);
-  var xsec_span = arrayMax(xsec) - xsec_min;
+  var xsec_min  = xsec.min();
+  var xsec_span = xsec.max() - xsec_min;
 
   let series = this.chart.series;
   for (let ns=series.length, i=ns; i; --i)
@@ -98,6 +93,35 @@ function (ren,fac,xsec,title=null,subtitle=null) {
       };
     }), marker: { radius: 6 }, animation: false // , name: 'scales'
   });
+
+  if (title) this.chart.setTitle({ text: title });
+  if (subtitle) this.chart.setSubtitle({ text: subtitle });
+}
+
+ScalePlot.prototype.drawMultiple =
+function (ren,fac,xsecs,title=null,subtitle=null) {
+  var xsec_min  = xsecs.map(x => x.min()).min();
+  var xsec_span = xsecs.map(x => x.max()).max() - xsec_min;
+
+  let series = this.chart.series;
+  for (let ns=series.length, i=ns; i; --i)
+    series[i-1].remove(false);
+
+  for (let xsec of xsecs) {
+    this.chart.addSeries({
+      data: xsec[1].map(function(x,i) {
+        return {
+          x: Math.log2(ren[i]), y: x, z: Math.log2(fac[i]),
+          // https://github.com/d3/d3-scale-chromatic#interpolateViridis
+          color: d3.interpolateViridis((x-xsec_min)/xsec_span),
+          name:
+            'ren: <b>' + ren[i] + '</b><br>' +
+            'fac: <b>' + fac[i] + '</b><br>' +
+            'σ: <b>' + xsec[i] + '</b>'
+        };
+      }), marker: { radius: 6 }, animation: false, name: xsec[0]
+    });
+  }
 
   if (title) this.chart.setTitle({ text: title });
   if (subtitle) this.chart.setSubtitle({ text: subtitle });

@@ -85,7 +85,7 @@ a:hover {
 #nav {
   z-index: 5;
   height: 45px;
-  /* width: 100%; */
+  width: 100%;
 }
 
 #nav ul {

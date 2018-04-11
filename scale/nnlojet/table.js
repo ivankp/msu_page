@@ -7,6 +7,7 @@ function idIndex(id) {
 function fixValue(col,val) {
   if (col=='qcd_order') return 'N'.repeat(val) + 'LO';
   if (col=='only') return val ? 'yes' : 'no';
+  if (col=='jetR') return (val/10).toFixed(1);
   if (col=='isp') return val=='' ? 'any' : val;
   return val;
 }
@@ -36,7 +37,7 @@ function drawPlot(i) {
   let d = this.data[i];
   let s = 'N'.repeat(d[0]) + 'LO ';
   if (d[1]) s += 'only ';
-  s += 'R=' + d[2] + ' ';
+  s += 'R=' + (d[2]/10).toFixed(1) + ' ';
   if (d[3]) s += d[3] + ' ';
   s += d[4] + '=' + d[5];
   this.plot.draw(ren,fac,d.back(),s);
@@ -147,14 +148,12 @@ window.onload = function() {
     if (x.checked) this.draw(x.value);
   };
 
-  table.$.on("click","tr.plots", function() {
+  table.$.on("click","tr.plots", function(e) {
     var x = $(this).find("input[name='draw']")[0];
     var checked = x.checked;
-    if (!checked || x.type!='radio') {
-      if (this.nodeName!='INPUT') {
-        x.checked = !checked;
-        table.draw_from_input(x);
-      }
+    if (!(checked && x.type=='radio') && e.target.nodeName!='INPUT') {
+      x.checked = !checked;
+      table.draw_from_input(x);
     }
   });
 
