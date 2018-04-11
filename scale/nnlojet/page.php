@@ -14,8 +14,13 @@ i.e. LO.
 </li><li>
 You can use <kbd>j</kbd> and <kbd>k</kbd> keys to move down and up in
 the list of plots.
+</li><li>
+Press the "single" button to switch to "multi" mode, which allows to draw 
+multiple plots on the canvas.
 </li><ul>
 </div>
+
+<div><input id="unicolor" type='checkbox'>use uniform color</input></div>
 
 <table id="plots_table"></table>
 <script> const fields =

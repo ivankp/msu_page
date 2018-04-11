@@ -33,16 +33,6 @@ function addRow(row) {
   this.table.appendChild(tr);
 };
 
-function drawPlot(i) {
-  let d = this.data[i];
-  let s = 'N'.repeat(d[0]) + 'LO ';
-  if (d[1]) s += 'only ';
-  s += 'R=' + (d[2]/10).toFixed(1) + ' ';
-  if (d[3]) s += d[3] + ' ';
-  s += d[4] + '=' + d[5];
-  this.plot.draw(ren,fac,d.back(),s);
-};
-
 function on_select(sel) {
   const table = this;
   table.clear();
@@ -67,9 +57,7 @@ function on_select(sel) {
       }
     }
 
-    // TODO: draw for all selected rows
-    let val = table.$.find("input[name='draw']").prop('value');
-    table.draw(val);
+    table.draw();
   } else {
     // request new data
     const req = { };
@@ -124,11 +112,11 @@ window.onload = function() {
   td.innerHTML = 'Draw';
   table.row(0).appendChild(td);
   td = document.createElement('td');
-  let button = document.createElement('button');
-  button.setAttribute('type','button');
-  button.setAttribute('id','single_toggle');
-  button.innerHTML = 'single';
-  td.appendChild(button);
+  let single = document.createElement('button');
+  single.setAttribute('type','button');
+  single.setAttribute('id','single_toggle');
+  single.innerHTML = 'single';
+  td.appendChild(single);
   table.row(1).appendChild(td);
 
   table.plot = new ScalePlot('scale-plot');
@@ -143,48 +131,81 @@ window.onload = function() {
 
   table.$.find('select').change(function(){ table.select(this); });
 
-  table.draw = drawPlot;
-  table.draw_from_input = function(x) { // x is DOM input[name='draw']
-    if (x.checked) this.draw(x.value);
+  table.data_row = function(i) {
+    let d = this.data[i];
+    let s = 'N'.repeat(d[0]) + 'LO ';
+    if (d[1]) s += 'only ';
+    s += 'R=' + (d[2]/10).toFixed(1) + ' ';
+    if (d[3]) s += d[3] + ' ';
+    s += d[4] + '=' + d[5];
+    return [d.back(),s];
+  };
+
+  table.draw = function(row) {
+    this.plot.draw(ren,fac, row!=undefined
+      ? [this.data_row(row)]
+      : this.$.find("input[name='draw']").get()
+        .reduce((a,x) => { if (x.checked) a.push(x.value); return a; },[])
+        .map(x => table.data_row(x))
+    );
   };
 
   table.$.on("click","tr.plots", function(e) {
     var x = $(this).find("input[name='draw']")[0];
     var checked = x.checked;
-    if (!(checked && x.type=='radio') && e.target.nodeName!='INPUT') {
-      x.checked = !checked;
-      table.draw_from_input(x);
+    if (e.target.nodeName!='INPUT') {
+      if (x.type=='radio') {
+        if (!checked) {
+          x.checked = true;
+          table.draw(x.value);
+        }
+      } else {
+        x.checked = !checked;
+        table.draw();
+      }
     }
   });
 
-  table.$.on("change","input[name='draw']", function() {
-    table.draw_from_input(this);
-  });
+  table.$.on("change","input[name='draw']", function() { table.draw(); });
 
   table.$.on("click","button#single_toggle", function() {
     if (this.innerHTML=='single') {
       this.innerHTML = 'multi';
-      draw_type = 'checkbox';
+      table.draw_type = 'checkbox';
+      $('#unicolor').prop('checked', table.plot.unicolor = true);
     } else {
       this.innerHTML = 'single';
-      draw_type = 'radio';
+      table.draw_type = 'radio';
+      $('#unicolor').prop('checked', table.plot.unicolor = false);
     }
-    table.$.find("input[name='draw']").each(function() {
-      this.type = draw_type;
+    var xs = table.$.find("input[name='draw']");
+    xs.each(function() {
+      this.type = table.draw_type;
+      this.checked = false;
     });
+    xs[0].checked = true;
+    table.draw(xs[0].value);
   });
 
   $('html').keypress(function(e) {
     var xs = table.$.find("input[name='draw']");
-    var i = 0, n = xs.length, jk = 0;
-    for (;; ++i) if (i==n || xs[i].checked) break;
-    if (e.key=='j' && i<n-1) jk = 1;
-    else if (e.key=='k' && i>0) jk = -1;
-    if (jk) {
-      xs[i].checked = false;
-      xs[i+jk].checked = true;
-      table.draw_from_input(xs[i+jk]);
+    var nsel = 0;
+    for (let x of xs) if (x.checked) ++nsel;
+    if (nsel==1) {
+      var i = 0, n = xs.length, jk = 0;
+      for (;; ++i) if (i==n || xs[i].checked) break;
+      if (e.key=='j' && i<n-1) jk = 1;
+      else if (e.key=='k' && i>0) jk = -1;
+      if (jk) {
+        xs[i].checked = false;
+        xs[i+jk].checked = true;
+        table.draw(xs[i+jk].value);
+      }
     }
+  });
+
+  $('#unicolor').prop('checked',false).change(function() {
+    table.plot.unicolor = this.checked;
   });
 }
 

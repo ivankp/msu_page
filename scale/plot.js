@@ -26,7 +26,7 @@ function ScalePlot(id) {
     zAxis: { labels: { z: 10, align: 'left' },
              title: { text: 'log<sub>2</sub> μ<sub>F</sub>', useHTML: true } },
     yAxis: { title: { text: 'σ' } },
-    legend: { enabled: false /* true */ },
+    legend: { layout: 'vertical', verticalAlign: 'top', enabled: false },
     series: [ { } ],
     tooltip: {
       animation: false,
@@ -65,65 +65,48 @@ function ScalePlot(id) {
 }
 
 Array.prototype.min = function() {
-  return this.reduce((a,b) => a<b ? a : b);
+  return this.reduce((a,b) => a<b ? a : b, Infinity);
 };
 Array.prototype.max = function() {
-  return this.reduce((a,b) => a>b ? a : b);
+  return this.reduce((a,b) => a>b ? a : b, -Infinity);
 };
 
 ScalePlot.prototype.draw =
-function (ren,fac,xsec,title=null,subtitle=null) {
-  var xsec_min  = xsec.min();
-  var xsec_span = xsec.max() - xsec_min;
+function (ren,fac,xsecs) {
+  var plot = this;
+  var chart = plot.chart;
 
-  let series = this.chart.series;
-  for (let ns=series.length, i=ns; i; --i)
-    series[i-1].remove(false);
+  var xsec_min  = xsecs.map(x => x[0].min()).min();
+  var xsec_span = xsecs.map(x => x[0].max()).max() - xsec_min;
 
-  this.chart.addSeries({
-    data: xsec.map(function(x,i) {
-      return {
-        x: Math.log2(ren[i]), y: x, z: Math.log2(fac[i]),
-        // https://github.com/d3/d3-scale-chromatic#interpolateViridis
-        color: d3.interpolateViridis((x-xsec_min)/xsec_span),
-        name:
-          'ren: <b>' + ren[i] + '</b><br>' +
-          'fac: <b>' + fac[i] + '</b><br>' +
-          'σ: <b>' + xsec[i] + '</b>'
-      };
-    }), marker: { radius: 6 }, animation: false // , name: 'scales'
-  });
+  let n = xsecs.length;
+  chart.setTitle({ text: (
+      (n==1 && xsecs[0].length>1) ? xsecs[0][1] : ''
+    ) });
+  chart.options.legend.enabled = n > 1;
 
-  if (title) this.chart.setTitle({ text: title });
-  if (subtitle) this.chart.setSubtitle({ text: subtitle });
-}
-
-ScalePlot.prototype.drawMultiple =
-function (ren,fac,xsecs,title=null,subtitle=null) {
-  var xsec_min  = xsecs.map(x => x.min()).min();
-  var xsec_span = xsecs.map(x => x.max()).max() - xsec_min;
-
-  let series = this.chart.series;
+  let series = chart.series;
   for (let ns=series.length, i=ns; i; --i)
     series[i-1].remove(false);
 
   for (let xsec of xsecs) {
-    this.chart.addSeries({
-      data: xsec[1].map(function(x,i) {
+    chart.addSeries({
+      data: xsec[0].map(function(x,i) {
         return {
           x: Math.log2(ren[i]), y: x, z: Math.log2(fac[i]),
           // https://github.com/d3/d3-scale-chromatic#interpolateViridis
-          color: d3.interpolateViridis((x-xsec_min)/xsec_span),
+          color: plot.unicolor
+            ? undefined
+            : d3.interpolateViridis((x-xsec_min)/xsec_span),
           name:
             'ren: <b>' + ren[i] + '</b><br>' +
             'fac: <b>' + fac[i] + '</b><br>' +
-            'σ: <b>' + xsec[i] + '</b>'
+            'σ: <b>' + xsec[0][i] + '</b>'
         };
-      }), marker: { radius: 6 }, animation: false, name: xsec[0]
+      }), marker: { radius: 6 }, animation: false, name: xsec[1]
     });
   }
 
-  if (title) this.chart.setTitle({ text: title });
-  if (subtitle) this.chart.setSubtitle({ text: subtitle });
+  chart.redraw();
 }
 
