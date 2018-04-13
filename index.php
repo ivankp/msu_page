@@ -42,7 +42,7 @@
     <?php page_li('scale_nnlojet') ?>
   </ul>
   </li>
-  <li><p><img src="icons/github.png">Code on GitHub</p>
+  <li><p><img src="icons/github.png" alt="">Code on GitHub</p>
   <ul>
     <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
         bh_analysis</a></li>
@@ -123,10 +123,26 @@
   }
 ?>
 
+<div id="main">
 <?php
   if (!is_null($page_file)) include $page_file;
   else p('null');
 ?>
+</div>
+<div id="w3c">
+<a href="" target="_blank" id="valid_html">
+<img src="icons/valid_html_blue.png" alt="valid html"></a>
+<a href="" target="_blank" id="valid_css">
+<img src="icons/valid_css_blue.png" alt="valid css"></a>
+</div>
+
+<script>
+  document.getElementById("valid_html").setAttribute("href",
+    "https://validator.w3.org/nu/?doc=" + window.location.href);
+  document.getElementById("valid_css").setAttribute("href",
+    "http://jigsaw.w3.org/css-validator/validator?uri="
+    + document.styleSheets[0].href);
+</script>
 
 </body>
 </html>

@@ -1,7 +1,5 @@
 <script src="scale.js"></script>
 
-<div id="float-left">
-<div id="float-none">
 <div class="note">
 <p>
   3D plots showing NLO cross section dependence on factorization and
@@ -11,13 +9,13 @@
 </p>
 <ul>
   <!-- http://www.codecogs.com/latex/eqneditor.php -->
-  <!-- $$ \hat{H}_\mathrm{T}' = \sqrt{\left(p_\mathrm{T}^\mathrm{H}\right)^2 + m_\mathrm{H}^2} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j} $$ -->
-  <li><object data="eq/HT1.svg" type="image/svg+xml" class="eq" height="55px">
-    <img src="eq/HT1.png" height="50px">
+  <li><object data="eq/HT1.svg" type="image/svg+xml" class="eq" height="55">
+    <img src="eq/HT1.png" height="50"
+    alt="\hat{H}_\mathrm{T}' = \sqrt{\left(p_\mathrm{T}^\mathrm{H}\right)^2 + m_\mathrm{H}^2} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j}">
   </object></li>
-  <!-- $$ \hat{H}_\mathrm{T}'' = m_\mathrm{H} + \frac{1}{2}\Big( p_\mathrm{T}^\mathrm{H} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j} \Big) $$ -->
-  <li><object data="eq/HT2.svg" type="image/svg+xml" class="eq" height="57px">
-    <img src="eq/HT2.png" height="50px">
+  <li><object data="eq/HT2.svg" type="image/svg+xml" class="eq" height="57">
+    <img src="eq/HT2.png" height="50"
+    alt="\hat{H}_\mathrm{T}'' = m_\mathrm{H} + \frac{1}{2}\Big( p_\mathrm{T}^\mathrm{H} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j} \Big)">
   </object></li>
 </ul>
 </div>
@@ -32,6 +30,7 @@
     <td>p<sub>T</sub> cut</td>
     <td>Scale</td>
     <td></td>
+    <td></td>
   </tr>
   <tr>
     <td> <select id="particle"></select> </td>
@@ -41,7 +40,7 @@
     <td> <select id="jet-alg"></select> </td>
     <td> <select id="pt-cut"></select> </td>
     <td> <select id="scale"></select> </td>
-    <td align="center"><img src="icons/plotly.png" title="plot.ly"></td>
+    <td class="center"><img src="icons/plotly.png" title="plot.ly" alt=""></td>
     <td></td>
   </tr>
 </table>
@@ -59,7 +58,5 @@
     GoSam &amp; NNLOjet H→γγ + ≥1jet (inclusive)
   </a>
 </p>
-</div>
 
-<iframe id="plot_frame" width="0" height="0" frameborder="0" scrolling="no" src=""></iframe>
-</div>
+<iframe id="plot_frame" width="0" height="0"></iframe>

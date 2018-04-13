@@ -1,4 +1,4 @@
-<div id="text">
+<div class="text">
 <p>
 <?php
 echo exec('wget -O- -q \'https://sherpa.hepforge.org/trac/wiki/SherpaDownloads\' \
@@ -11,6 +11,7 @@ echo exec('wget -O- -q \'https://sherpa.hepforge.org/trac/wiki/SherpaDownloads\'
   <a href="doc/sherpa_msu_man.pdf" target="_blank">Manual</a>
 </p><p>
 <span style="font-variant: small-caps;">Sherpa</span> runcards
+</p>
   <ul style="font-family: monospace; font-size: 15px;">
 <?php
   function strip_dat($name) { return basename($name,'.dat'); }
@@ -30,5 +31,4 @@ echo exec('wget -O- -q \'https://sherpa.hepforge.org/trac/wiki/SherpaDownloads\'
   }
 ?>
   </ul>
-</p>
 </div>

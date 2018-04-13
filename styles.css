@@ -1,20 +1,16 @@
+html { background: #fff; }
 body, ul, li, caption, tr, div {
   margin: 0; padding: 0; border: 0;
-}
-html {
-  background: #fff;
 }
 p {
   margin: 0px 0px 7px 0px;
   padding: 0;
 }
 
-a {
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.float > div { float: left; }
 
 /* Table of histograms ============================================ */
 
@@ -53,13 +49,13 @@ a:hover {
 
 /* Text =========================================================== */
 
-#text {
+.text {
   padding: 0px 5px 5px 7px;
 }
-#text ul {
+.text ul {
   margin: 0px 0px 0px 20px;
 }
-#text li {
+.text li {
   padding-left: 10px;
 }
 
@@ -83,9 +79,12 @@ a:hover {
 /* Navigation panel =============================================== */
 
 #nav {
-  z-index: 5;
+  z-index: 1;
   height: 45px;
   width: 100%;
+}
+#nav * {
+  z-index: 1;
 }
 
 #nav ul {
@@ -116,7 +115,6 @@ a:hover {
 }
 
 #nav ul li {
-  z-index: 5;
   position: relative;
   float: left;
   margin: 0;
@@ -160,11 +158,9 @@ a:hover {
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-#float-left div {
-  float: left;
-}
-#float-none div {
-  float: none;
+#w3c {
+  clear: left;
+  padding: 0 0 0 5px;
 }
 
 kbd {
@@ -172,3 +168,16 @@ kbd {
   padding: 1px 2px 0;
   border: 1px solid black;
 }
+
+.center {
+  text-align: center;
+}
+.center * {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+iframe#plot_frame {
+  border: 0;
+}
+

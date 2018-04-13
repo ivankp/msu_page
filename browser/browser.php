@@ -1,4 +1,4 @@
-<style type="text/css">
+<style>
 @import url("https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css");
 </style>
 
@@ -21,8 +21,8 @@
 <script src="browser/browser.js"></script>
 <script src="browser/hist.js"></script>
 
-<p><pre>
+<pre>
 <?php
   echo exec('browser/test.sh') . "\n";
 ?>
-</pre></p>
+</pre>
