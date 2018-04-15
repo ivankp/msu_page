@@ -16,6 +16,7 @@
 /browser/bin
 
 !/scale
+/scale/gosam/data
 
 **.swp
 **.db

@@ -6,6 +6,7 @@
   $title = array(
     "hist" => "Histograms",
     "scale" => "GoSam",
+    "scale_gosam" => "GoSam",
     "scale_nnlojet" => "NNLOJET",
     "unweighted" => "Unweighted",
     "sherpa" => "Sherpa+MINLO",
@@ -14,6 +15,7 @@
   );
   $page2file = array(
     "browser" => "browser/browser",
+    "scale_gosam" => "scale/gosam/page.php",
     "scale_nnlojet" => "scale/nnlojet/page.php",
   );
   echo $title[$page]

@@ -1,14 +1,27 @@
 Array.prototype.back = function() { return this[this.length-1]; };
 
+function transpose(m) {
+  var m2 = [], n1 = m.length, n2 = m[0].length, i;
+  for (i = 0; i < n2; ++i) m2.push([]);
+  for (i = 0; i < n1; ++i)
+    for (var j = 0; j < n2; ++j)
+      m2[j].push(m[i][j]);
+  return m2;
+}
+
 function idIndex(id) {
   return fields.map(x => x[0]).indexOf(id);
 }
 
 function fixValue(col,val) {
-  if (col=='qcd_order') return 'N'.repeat(val) + 'LO';
-  if (col=='only') return val ? 'yes' : 'no';
-  if (col=='jetR') return (val/10).toFixed(1);
-  if (col=='isp') return val=='' ? 'any' : val;
+  if (col=='nj') return val + ' j';
+  if (col=='ene') return val + ' TeV';
+  if (col=='ptcut') return val + ' GeV';
+  if (col=='scale') {
+    if (val=='HThp') return '&Hcirc;\'<sub>T</sub>/2';
+    if (val=='HThpp') return '&Hcirc;\'\'<sub>T</sub>';
+    return val;
+  }
   return val;
 }
 
@@ -24,7 +37,7 @@ function addRow(row) {
   }
   const td = document.createElement('td');
   const check = document.createElement("input");
-  check.setAttribute("type",this.draw_type);
+  check.setAttribute("type","radio");
   check.setAttribute("name","draw");
   check.setAttribute("value",row);
   if (this.table.rows.length==2) check.checked = true;
@@ -68,87 +81,85 @@ function on_select(sel) {
       else table.stars.push(col[0]);
     }
 
-    $.post('scale/nnlojet/req.php', req, function(data) {
+    $.post('scale/gosam/req.php', req, function(data) {
       table.data = JSON.parse(data);
-      for (let r=0; r<table.data.length; ++r) {
-        table.addRow(r);
-        let data = table.data[r];
-        let end = data.length - 1;
-        data[end] = JSON.parse(data[end]);
-      }
-
-      if (!('bin' in req)) {
-        const bin_set = new Set();
-        const bin_i = idIndex('bin');
-        for (let r of table.data) bin_set.add(r[bin_i]);
-        const bin_select = document.getElementById('bin');
-        while (bin_select.length>1) bin_select.remove(bin_select.length-1);
-        for (let x of bin_set) addOption(bin_select,[x,x]);
-      }
-
-      if (table.data.length) table.draw(0);
+      let n = table.data.length;
+      for (let r=0; r<n; ++r) table.addRow(r);
+      if (n) table.draw(0);
     });
   }
 };
 
+function fname(d) {
+  return 'H'+d[0]+'j_'+d[1]+'TeV_'+d[2]+'_'+d[3]+'_jetpt'+d[4]+'_'+d[5]
+       + '_'+d[6]+'.dat';
+}
+function title(d) {
+  let scale = d[5];
+  if (scale=='HThp') scale = '&Hcirc;\'<sub>T</sub>/2';
+  else if (scale=='HThpp') scale = '&Hcirc;\'\'<sub>T</sub>';
+  return 'H'+d[0]+'j '+d[1]+'TeV '+d[2]+' '+d[3]+' jetp<sub>T</sub>&gt;'
+       + d[4]+'GeV '+scale+' '
+       + { 'B':'Born', 'RS':'Real', 'I':'Int', 'V':'Virtual' }[d[6]];
+}
+
 window.onload = function() {
   var table = new Table('plots_table',fields,
-    val => ({
-      'qcd_order': 'Order',
-      'only': 'Only',
-      'jetR': 'Jet R',
-      'isp': 'ISP',
-      'var': 'Variable',
-      'bin': 'Bin'
-    }[val]), fixValue
+    x => ({
+      'nj': 'N jets',
+      'ene': '√s',
+      'pdf': 'PDF',
+      'jetalg': 'Jet Alg',
+      'ptcut': 'p<sub>T</sub> cut',
+      'scale': 'Scale',
+      'part': 'Part'
+    }[x]), fixValue
   );
-  $('#qcd_order').val(2);
-  $('#only').val(0);
-  $('#jetR').val(4);
-  $('#isp').val('');
-  $('#var').val('njets');
+  $('#ene').val(13);
+  $('#pdf').val('CT10nlo');
+  $('#jetalg').val('antikt4');
+  $('#ptcut').val(30);
+  $('#part').val('B');
 
   let td = document.createElement('td');
   td.innerHTML = 'Draw';
   table.row(0).appendChild(td);
   td = document.createElement('td');
-  let single = document.createElement('button');
-  single.setAttribute('type','button');
-  single.setAttribute('id','single_toggle');
-  single.innerHTML = 'single';
-  td.appendChild(single);
   table.row(1).appendChild(td);
 
   table.plot = new ScalePlot('scale-plot');
 
-  table.draw_type = 'radio';
   table.select = on_select;
-  table.select();
   table.addRow = addRow;
   table.$ = $(table.table);
+  table.select();
 
   $(".note").css({'width':(table.$.width()+'px')});
 
   table.$.find('select').change(function(){ table.select(this); });
 
-  table.data_row = function(i) {
-    let d = this.data[i];
-    let s = 'N'.repeat(d[0]) + 'LO ';
-    if (d[1]) s += 'only ';
-    s += 'R=' + (d[2]/10).toFixed(1) + ' ';
-    if (d[3]) s += d[3] + ' ';
-    s += d[4] + '=' + d[5];
-    return [d.back(),s];
+  table.draw = function(row) {
+    const table = this;
+    row = row || table.$.find("input[name='draw']:checked").val();
+    row = table.data[row];
+
+    $.ajax({
+      url: 'scale/gosam/data/' + fname(row),
+      dataType: "text",
+      success: function(data) {
+        let d = transpose(data.split('\n').filter(x => x).map(x =>
+          x.split(' ').filter(x => x).map(x => parseFloat(x))
+        ).slice(1));
+
+        table.plot.draw(d[0],d[1],[[d[2],title(row)]]);
+      }
+    });
   };
 
-  table.draw = function(row) {
-    this.plot.draw(ren,fac, row!=undefined
-      ? [this.data_row(row)]
-      : this.$.find("input[name='draw']").get()
-        .reduce((a,x) => { if (x.checked) a.push(x.value); return a; },[])
-        .map(x => this.data_row(x))
-    );
-  };
+  // TODO: make NLO files (merge)
+  // TODO: tooltip with simple fractions
+  // TODO: special cases
+  // TODO: compare with old plots
 
   table.$.on("click","tr.plots", function(e) {
     var x = $(this).find("input[name='draw']")[0];
@@ -167,25 +178,6 @@ window.onload = function() {
   });
 
   table.$.on("change","input[name='draw']", function() { table.draw(); });
-
-  table.$.on("click","button#single_toggle", function() {
-    if (this.innerHTML=='single') {
-      this.innerHTML = 'multi';
-      table.draw_type = 'checkbox';
-      $('#unicolor').prop('checked', table.plot.unicolor = true);
-    } else {
-      this.innerHTML = 'single';
-      table.draw_type = 'radio';
-      $('#unicolor').prop('checked', table.plot.unicolor = false);
-    }
-    var xs = table.$.find("input[name='draw']");
-    xs.each(function() {
-      this.type = table.draw_type;
-      this.checked = false;
-    });
-    xs[0].checked = true;
-    table.draw(xs[0].value);
-  });
 
   $('html').keypress(function(e) {
     var xs = table.$.find("input[name='draw']");

@@ -19,7 +19,7 @@ function ScalePlot(id) {
       },
       animation: false
     },
-    title: { text: '' },
+      title: { text: '', useHTML: true },
     subtitle: { text: '' },
     xAxis: { labels: { z: 10, align: 'right' },
              title: { text: 'log<sub>2</sub> μ<sub>R</sub>', useHTML: true } },
@@ -99,6 +99,8 @@ function (ren,fac,xsecs) {
             ? undefined
             : d3.interpolateViridis((x-xsec_min)/xsec_span),
           name:
+            // 'ren: <b>' + new Fraction(ren[i]).toFraction() + '</b><br>' +
+            // 'fac: <b>' + new Fraction(fac[i]).toFraction() + '</b><br>' +
             'ren: <b>' + ren[i] + '</b><br>' +
             'fac: <b>' + fac[i] + '</b><br>' +
             'σ: <b>' + xsec[0][i] + '</b>'
