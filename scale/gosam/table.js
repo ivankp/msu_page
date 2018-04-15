@@ -128,6 +128,7 @@ window.onload = function() {
   table.row(1).appendChild(td);
 
   table.plot = new ScalePlot('scale-plot');
+  table.plot.chart.axes[1].reversed = true;
 
   table.select = on_select;
   table.addRow = addRow;
@@ -157,7 +158,6 @@ window.onload = function() {
   };
 
   // TODO: make NLO files (merge)
-  // TODO: tooltip with simple fractions
   // TODO: special cases
   // TODO: compare with old plots
 

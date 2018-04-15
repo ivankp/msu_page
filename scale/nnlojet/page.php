@@ -34,19 +34,14 @@ multiple plots on the canvas.
 </script>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://d3js.org/d3-contour.v1.min.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/highcharts-3d.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-
-<script src="scale/plot.js"></script>
-
-<script src="table.js"></script>
+<?php
+  $lst = file('scale/js.lst');
+  foreach($lst as $url) {
+    $url = rtrim($url);
+    if (!empty($url) && $url[0]!='#')
+      echo '<script src="'.$url.'"></script>';
+  }
+?>
 <script src="scale/nnlojet/table.js"></script>
 
 <div id="scale-plot"></div>

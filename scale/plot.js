@@ -19,7 +19,7 @@ function ScalePlot(id) {
       },
       animation: false
     },
-      title: { text: '', useHTML: true },
+    title: { text: '', useHTML: true },
     subtitle: { text: '' },
     xAxis: { labels: { z: 10, align: 'right' },
              title: { text: 'log<sub>2</sub> μ<sub>R</sub>', useHTML: true } },
@@ -31,7 +31,13 @@ function ScalePlot(id) {
     tooltip: {
       animation: false,
       headerFormat: '',
-      pointFormat: '{point.name}'
+      formatter: function() {
+        let p = this.point;
+        let f = x => '<b>' + new Fraction(x).toFraction() + '</b><br>';
+        return 'ren: ' + f(p.ren) +
+               'fac: ' + f(p.fac) +
+               'σ: <b>' + p.y + '</b>';
+      }
     }
   });
 
@@ -94,16 +100,11 @@ function (ren,fac,xsecs) {
       data: xsec[0].map(function(x,i) {
         return {
           x: Math.log2(ren[i]), y: x, z: Math.log2(fac[i]),
+          ren: ren[i], fac: fac[i],
           // https://github.com/d3/d3-scale-chromatic#interpolateViridis
           color: plot.unicolor
             ? undefined
             : d3.interpolateViridis((x-xsec_min)/xsec_span),
-          name:
-            // 'ren: <b>' + new Fraction(ren[i]).toFraction() + '</b><br>' +
-            // 'fac: <b>' + new Fraction(fac[i]).toFraction() + '</b><br>' +
-            'ren: <b>' + ren[i] + '</b><br>' +
-            'fac: <b>' + fac[i] + '</b><br>' +
-            'σ: <b>' + xsec[0][i] + '</b>'
         };
       }), marker: { radius: 6 }, animation: false, name: xsec[1]
     });
