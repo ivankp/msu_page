@@ -2,8 +2,12 @@
 <html lang="en-US">
 <head>
 <title><?php
-  $page = isset($_GET['page']) ? $_GET['page'] : '';
+  function get(&$var, $default=null) { return isset($var) ? $var : $default; }
+  function arrget(&$arr, $x) { return get($arr[$x],$x); }
+
+  $page = get($_GET['page'],'');
   $title = array(
+    "" => "Index",
     "hist" => "Histograms",
     "scale" => "GoSam",
     "scale_gosam" => "GoSam",
@@ -12,13 +16,15 @@
     "sherpa" => "Sherpa+MINLO",
     "browser" => "Hist browser",
     "jsroot" => "JSROOT",
+    "ralston" => "Fits",
   );
   $page2file = array(
     "browser" => "browser/browser",
     "scale_gosam" => "scale/gosam/page.php",
     "scale_nnlojet" => "scale/nnlojet/page.php",
+    "ralston" => "ralston/main.php",
   );
-  echo $title[$page]
+  echo arrget($title,$page);
 ?></title>
 <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
@@ -28,10 +34,8 @@
 <?php
   function page_li($p) {
     echo '<li';
-    if ($GLOBALS['page'] === $p) {
-      echo ' class="current-menu-item"';
-    }
-    echo '><a href="?page=' . $p . '">' . $GLOBALS['title'][$p] . "</a></li>\n";
+    if ($GLOBALS['page'] === $p) echo ' class="current-menu-item"';
+    echo '><a href="?page='.$p.'">'.$GLOBALS['title'][$p]."</a></li>\n";
   }
 ?>
 
@@ -80,11 +84,6 @@
 </div>
 
 <?php
-  function p($str) {
-    if (is_null($str)) p('null');
-    else echo "<p>$str</p>";
-  }
-
   function endsWith($str, $end) {
     $len = strlen($end);
     return $len === 0 || (substr($str,-$len) === $end);
@@ -99,11 +98,10 @@
       $full = $name . $ext;
       if (file_exists($full)) return $full;
     }
-    return 'page_not_found.html';
+    return null;
   }
 
-  $page_file = $page2file[$page];
-  $page_file = find_without_ext(is_null($page_file) ? $page : $page_file);
+  $page_file = find_without_ext(arrget($page2file,$page));
 ?>
 
 <?php
@@ -113,12 +111,9 @@
 
   if (!isMobile()) {
 ?>
-<div id="date">
-  Last updated:
+<div id="date"> Last updated:
 <?php
-  if (!is_null($page_file))
-    echo date("F d Y H:i",filemtime($page_file));
-  else echo '?';
+  echo $page_file ? date("F d Y H:i",filemtime($page_file)) : '?';
 ?>
 </div>
 <?php
@@ -127,8 +122,7 @@
 
 <div id="main">
 <?php
-  if (!is_null($page_file)) include $page_file;
-  else p('null');
+  include $page_file ? $page_file : 'page_not_found.html';
 ?>
 </div>
 <div id="w3c">
