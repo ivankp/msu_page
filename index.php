@@ -15,14 +15,13 @@
     "unweighted" => "Unweighted",
     "sherpa" => "Sherpa+MINLO",
     "browser" => "Hist browser",
-    "jsroot" => "JSROOT",
-    "ralston" => "Fits",
+    "angular" => "Angular fits",
   );
   $page2file = array(
     "browser" => "browser/browser",
     "scale_gosam" => "scale/gosam/page.php",
     "scale_nnlojet" => "scale/nnlojet/page.php",
-    "ralston" => "ralston/main.php",
+    "angular" => "angular/main.php",
   );
   echo arrget($title,$page);
 ?></title>
@@ -68,8 +67,7 @@
     <?php page_li('sherpa') ?>
     <?php page_li('unweighted') ?>
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
-    <?php page_li('browser') ?>
-    <?php page_li('jsroot') ?>
+    <?php page_li('angular') ?>
   </ul>
   </li>
   <li><p>Notes</p>

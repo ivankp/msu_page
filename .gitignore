@@ -11,12 +11,14 @@
 !/eq
 !/scripts
 
-!/browser/
+!/browser
 /browser/files
 /browser/bin
 
 !/scale
 /scale/gosam/data
+
+!/angular
 
 **.swp
 **.db

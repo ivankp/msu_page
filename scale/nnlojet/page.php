@@ -23,12 +23,15 @@ multiple plots on the canvas.
 <label><input id="unicolor" type='checkbox'>use uniform color</label>
 
 <table id="plots_table"></table>
-<script> const fields =
 <?php
   $out = array();
-  exec('scale/nnlojet/page.py scale/nnlojet/nnlojet.db',$out);
-  foreach ($out as $line) { echo "$line\n"; }
+  exec('scale/nnlojet/page.py scale/nnlojet/nnlojet.db 2>&1',$out,$return);
+  if (!$return) {
 ?>
+<script> const fields =
+<?php
+    foreach ($out as $line) { echo "$line\n"; }
+?>;
   const fac = [0.5,1.0,0.25,0.5,1.0,0.5,0.25];
   const ren = [0.5,1.0,0.25,1.0,0.5,0.25,0.5];
 </script>
@@ -43,6 +46,11 @@ multiple plots on the canvas.
   }
 ?>
 <script src="scale/nnlojet/table.js"></script>
+<?php
+  } else {
+    echo "<script>alert(`".implode('',$out)."`);</script></div>";
+  }
+?>
 
 <div id="scale-plot"></div>
 </div>
