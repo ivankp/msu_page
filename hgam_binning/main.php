@@ -14,14 +14,30 @@ const vars = [
 ?> ];
 </script>
 
+<style>
+#table table {
+  margin: 5px 0;
+  border-collapse: collapse;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+#table table td { padding: 1px 6px; }
+#table table tr:hover { background-color: #f2f2f2 }
+#true_lumi {
+  font-size: small;
+  padding-left: 10px;
+}
+</style>
+
 <div class="note">
-<p>Note</p>
+<p>H→γγ binning estimator</p>
 </div>
 
 <div>
 <form id="form">
   Luminosity:
-  <input type="text" name="lumi" size="6" style="text-align:right;"> ipb<br>
+  <input type="text" name="lumi" size="6" style="text-align:right;"> ipb
+  <span id="true_lumi"></span><br>
   <select name="var"></select>
   <input type="text" name="edges" size="30">
   <input type="submit" value="Rebin">
