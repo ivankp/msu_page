@@ -95,10 +95,10 @@ function do_binning() {
       const signif = s/Math.sqrt(s+b);
       let style = td(tr, signif.toFixed(2) ).style;
       style['font-weight'] = 'bold';
-      if (signif<1)   style['color'] = '#CC0000'; else
-      if (signif<2)   style['color'] = '#FF6600'; else
-      if (signif<2.3) style['color'] = '#000099'; else
-                      style['color'] = '#006600';
+      if (isNaN(signif) || signif<1) style['color'] = '#CC0000';
+      else if (signif<2)   style['color'] = '#FF6600';
+      else if (signif<2.3) style['color'] = '#000099';
+      else                 style['color'] = '#006600';
       td(tr, (100*s/(s+b)).toFixed(2)+'%' );
 
       let tds = tr.childNodes;
@@ -131,7 +131,7 @@ $(function(){
     do_binning();
   });
 
-  $('form [name="var"]').click(function() {
+  $('form [name="var"]').change(function() {
     change_var($(this).val());
   });
 
