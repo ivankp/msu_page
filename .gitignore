@@ -20,6 +20,11 @@
 
 !/angular
 
+!/hgam_binning
+/hgam_binning/bin
+/hgam_binning/lib
+/hgam_binning/vars/*.dat
+
 **.swp
 **.db
 

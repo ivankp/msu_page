@@ -16,12 +16,14 @@
     "sherpa" => "Sherpa+MINLO",
     "browser" => "Hist browser",
     "angular" => "Angular fits",
+    "hgam_binning" => "HGam binning",
   );
   $page2file = array(
     "browser" => "browser/browser",
     "scale_gosam" => "scale/gosam/page.php",
     "scale_nnlojet" => "scale/nnlojet/page.php",
     "angular" => "angular/main.php",
+    "hgam_binning" => "hgam_binning/main.php",
   );
   echo arrget($title,$page);
 ?></title>
@@ -68,6 +70,7 @@
     <?php page_li('unweighted') ?>
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
     <?php page_li('angular') ?>
+    <?php page_li('hgam_binning') ?>
   </ul>
   </li>
   <li><p>Notes</p>
