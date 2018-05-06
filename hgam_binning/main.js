@@ -1,5 +1,5 @@
 var doc = document;
-var edges_str, lumi;
+var edges_str, lumi, table_data;
 
 function set_edges_field(str) { $('#form [name="edges"]').val(str); }
 function set_lumi_field(str)  { $('#form [name="lumi"]').val(str); }
@@ -13,12 +13,54 @@ function td(tr,str) {
 
 function scale_int(x,c) { return (c==1) ? x : (c*x).toFixed(2); }
 
-function do_binning() {
-  let data = { };
-  $('#form').serializeArray().forEach(x => { data[x.name] = x.value; });
-  // console.log(data);
+function update_table(tab) {
+  if (!lumi) {
+    lumi = table_data.lumi;
+    set_lumi_field(lumi);
+  }
+  $('#true_lumi').html(
+    lumi==table_data.lumi ? '' : 'scaled from '+table_data.lumi+' ipb');
 
-  let edges = data.edges.split(' ').filter(x => x.length);
+  let bins = table_data.data.bins;
+  let edges = table_data.data.axes[0].edges;
+  let nedges = edges.length;
+  for (let i=0; i<nedges; ++i) {
+    let tr = doc.createElement('tr');
+    const bin = bins[i];
+    td(tr, '['+edges[i]+','+(i+1==nedges ? '\u221e' : edges[i+1])+')' );
+    const s = bin.s[0] * lumi;
+    td(tr, s.toFixed(2) );
+    td(tr, (Math.sqrt(bin.s[1]) * lumi).toFixed(2) );
+    const f_lumi = lumi / table_data.lumi;
+    td(tr, scale_int(bin.b[0],f_lumi) );
+    td(tr, scale_int(bin.b[1],f_lumi) );
+    const b = (bin.b[0]+bin.b[1])*f_lumi*0.17021;
+    td(tr, b.toFixed(2) );
+    td(tr, (Math.sqrt(bin.b[0]+bin.b[1])*f_lumi*0.17021).toFixed(2) );
+    const signif = s/Math.sqrt(s+b);
+    let style = td(tr, signif.toFixed(2) ).style;
+    style['font-weight'] = 'bold';
+    if (isNaN(signif) || signif<1) style['color'] = '#CC0000';
+    else if (signif<2)   style['color'] = '#FF6600';
+    else if (signif<2.3) style['color'] = '#000099';
+    else                 style['color'] = '#006600';
+    td(tr, (100*s/(s+b)).toFixed(2)+'%' );
+
+    let tds = tr.childNodes;
+    for (let i=1; i<tds.length; ++i)
+      tds[i].style['text-align'] = 'right';
+    tr.classList.add('bin');
+
+    tab.appendChild(tr);
+  }
+}
+
+function do_binning() {
+  let form_data = { };
+  let $form = $('#form');
+  $form.serializeArray().forEach(x => { form_data[x.name] = x.value; });
+
+  let edges = form_data.edges.split(' ').filter(x => x.length);
   for (let i=0; i<edges.length; ++i) {
     if (isNaN(edges[i])) {
       set_edges_field(edges_str);
@@ -31,7 +73,7 @@ function do_binning() {
   let new_edges_str = edges.join(' ');
   let new_edges = true;
   if (new_edges_str==edges_str) {
-    if (data.edges!=edges_str) set_edges_field(edges_str);
+    if (form_data.edges!=edges_str) set_edges_field(edges_str);
     new_edges = false;
   } else {
     edges_str = new_edges_str;
@@ -39,19 +81,22 @@ function do_binning() {
   }
 
   let new_lumi = true;
-  if (data.lumi) {
-    if (isNaN(data.lumi)) {
+  if (form_data.lumi) {
+    if (isNaN(form_data.lumi)) {
       set_lumi_field(lumi);
-      alert("Bad lumi value: \""+data.lumi+"\"");
+      alert("Bad lumi value: \""+form_data.lumi+"\"");
       return;
     }
-    new_lumi = parseFloat(data.lumi);
+    new_lumi = parseFloat(form_data.lumi);
     if (new_lumi!=lumi) {
       lumi = new_lumi;
     } else {
       new_lumi = false;
     }
     set_lumi_field(lumi);
+  } else if (table_data) {
+    new_lumi = (lumi!=table_data.lumi);
+    set_lumi_field(lumi = table_data.lumi);
   }
 
   if (!new_edges && !new_lumi) return;
@@ -62,53 +107,23 @@ function do_binning() {
     rows[i].parentNode.removeChild(rows[i]);
   }
 
-  // TODO: don't send request if only lumi changed
-
-  $.post('hgam_binning/rebin.php',
-    {'var':data['var'], 'edges':edges_str},
-  function(json) {
-    let data = JSON.parse(json);
-    // console.log(data);
-
-    if (!lumi) {
-      lumi = data.lumi;
-      set_lumi_field(lumi);
-    }
-    if (lumi!=data.lumi)
-      $('#true_lumi').html('scaled from '+data.lumi+' ipb');
-
-    let nedges = edges.length;
-    let bins = data.data.bins;
-    for (let i=0; i<nedges; ++i) {
-      let tr = doc.createElement('tr');
-      const bin = bins[i];
-      td(tr, '['+edges[i]+','+(i+1==nedges ? '\u221e' : edges[i+1])+')' );
-      const s = bin.s[0] * lumi;
-      td(tr, s.toFixed(2) );
-      td(tr, (Math.sqrt(bin.s[1]) * lumi).toFixed(2) );
-      const f_lumi = lumi / data.lumi;
-      td(tr, scale_int(bin.b[0],f_lumi) );
-      td(tr, scale_int(bin.b[1],f_lumi) );
-      const b = (bin.b[0]+bin.b[1])*f_lumi*0.17021;
-      td(tr, b.toFixed(2) );
-      td(tr, (Math.sqrt(bin.b[0]+bin.b[1])*f_lumi*0.17021).toFixed(2) );
-      const signif = s/Math.sqrt(s+b);
-      let style = td(tr, signif.toFixed(2) ).style;
-      style['font-weight'] = 'bold';
-      if (isNaN(signif) || signif<1) style['color'] = '#CC0000';
-      else if (signif<2)   style['color'] = '#FF6600';
-      else if (signif<2.3) style['color'] = '#000099';
-      else                 style['color'] = '#006600';
-      td(tr, (100*s/(s+b)).toFixed(2)+'%' );
-
-      let tds = tr.childNodes;
-      for (let i=1; i<tds.length; ++i)
-        tds[i].style['text-align'] = 'right';
-      tr.classList.add('bin');
-
-      tab.appendChild(tr);
-    }
-  });
+  if (new_edges) {
+    $.ajax({
+      type: 'POST',
+      url: 'hgam_binning/rebin.php',
+      data: { 'var': form_data['var'], 'edges': edges_str },
+      beforeSend: function() {
+        $form.find('input,select').prop("disabled", true);
+        $('#loading').show();
+      },
+      success: function(json) {
+        $form.find('input,select').prop("disabled", false);
+        $('#loading').hide();
+        table_data = JSON.parse(json);
+        update_table(tab);
+      }
+    });
+  } else update_table(tab);
 }
 
 function change_var(v) {

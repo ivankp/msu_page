@@ -24,10 +24,13 @@ const vars = [
 <form id="form">
   Luminosity:
   <input type="text" name="lumi" size="6" style="text-align:right;"> ipb
-  <span id="true_lumi"></span><br>
+  <span id="true_lumi"></span>
+  <br>
   <select name="var"></select>
   <input type="text" name="edges" size="30">
   <input type="submit" value="Rebin">
+  <img id="loading" src="icons/loading.gif"
+    style="vertical-align:top;display:none;" alt="loading">
 </form>
 </div>
 
