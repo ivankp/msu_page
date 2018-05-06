@@ -162,7 +162,7 @@ $(function(){
 
   tr = doc.createElement('tr');
   ['bin','sig','\u221a(\u2211s\u00B2)',
-   'L bkg','R bkg','~ bkg*','\u221a(\u2211b\u00B2)',
+   'L bkg','R bkg','~ bkg','\u221a(\u2211b\u00B2)',
    's/\u221a(s+b)','s/(s+b)'
   ].forEach(x => td(tr,x).style['text-align'] = 'center');
   tr.style['border-bottom'] = '1px solid #000';

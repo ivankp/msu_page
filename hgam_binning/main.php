@@ -38,8 +38,11 @@ const vars = [
 <script src="hgam_binning/main.js"></script>
 
 <div class="note">
-* Background in the signal region is crudely estimated assuming flat background
-distribution.
+<p>sig: number of signal events, taken from Monte Carlo.</p>
+<p>bkg: number of background events in the signal region, estimated from data
+sidebands.</p>
+<p>Background in the signal region is crudely estimated assuming flat
+background distribution.</p>
 </div>
 </div>
 
