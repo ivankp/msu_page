@@ -28,6 +28,9 @@
   echo arrget($title,$page);
 ?></title>
 <link rel="stylesheet" href="styles.css" type="text/css">
+<?php if ($page==='hgam_binning') { ?>
+<link rel="stylesheet" href="hgam_binning/styles.css" type="text/css">
+<?php } ?>
 </head>
 
 <body>
@@ -126,6 +129,7 @@
   include $page_file ? $page_file : 'page_not_found.html';
 ?>
 </div>
+
 <div id="w3c">
 <a href="" target="_blank" id="valid_html">
 <img src="icons/valid_html_blue.png" alt="valid html"></a>

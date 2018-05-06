@@ -104,6 +104,7 @@ function do_binning() {
       let tds = tr.childNodes;
       for (let i=1; i<tds.length; ++i)
         tds[i].style['text-align'] = 'right';
+      tr.classList.add('bin');
 
       tab.appendChild(tr);
     }

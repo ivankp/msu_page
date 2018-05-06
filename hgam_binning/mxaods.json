@@ -1,0 +1,28 @@
+[
+["/eos/atlas/atlascerngroupdisk/phys-higgs/HSG1/MxAOD/h021/",[
+ ["data15/",[
+   "data15_13TeV.periodAllYear_3213ipb.physics_Main.MxAOD.p3402.h021.root"]],
+ ["data16/",[
+   "data16_13TeV.DS1_2500ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data16_13TeV.DS2_7501ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data16_13TeV.DS3_8725ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data16_13TeV.DS4_5804ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data16_13TeV.DS5_2209ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data16_13TeV.DS6_6145ipb.physics_Main.MxAOD.p3402.h021.root"]],
+ ["data17/",[
+   "data17_13TeV.DS1_7773ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data17_13TeV.DS2_9607ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data17_13TeV.DS3_11277ipb.physics_Main.MxAOD.p3402.h021.root",
+   "data17_13TeV.DS4_15156ipb.physics_Main.MxAOD.p3402.h021.root"]],
+ ["mc16a/Nominal/",[
+   "mc16a.PowhegPy8_NNLOPS_ggH125.MxAODDetailed.p3472.h021.root",
+   "mc16a.PowhegPy8_NNPDF30_VBFH125.MxAODDetailed.p3472.h021.root",
+   "mc16a.PowhegPy8_WmH125J.MxAODDetailed.p3472.h021.root",
+   "mc16a.PowhegPy8_WpH125J.MxAODDetailed.p3472.h021.root",
+   "mc16a.PowhegPy8_ZH125J.MxAODDetailed.p3472.h021.root",
+   "mc16a.PowhegPy8_ggZH125.MxAODDetailed.p3472.h021.root",
+   "mc16a.aMCnloPy8_ttH125.MxAODDetailed.p3472.h021.root",
+   "mc16a.aMCnloPy8_bbH125_yb2.MxAODDetailed.p3472.h021.root",
+   "mc16a.aMCnloPy8_bbH125_ybyt.MxAODDetailed.p3472.h021.root",
+   "mc16a.aMCnloHwpp_tWH125_yt_plus1.MxAODDetailed.p3472.h021.root"]] ]]
+]

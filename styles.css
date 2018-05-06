@@ -159,8 +159,10 @@ a:hover { text-decoration: underline; }
 }
 
 #w3c {
-  clear: left;
-  padding: 0 0 0 5px;
+  position: absolute;
+  float: right;
+  right: 17px;
+  top: 35px;
 }
 
 kbd {
