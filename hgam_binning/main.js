@@ -171,4 +171,31 @@ $(function(){
   div.appendChild(tab);
 
   change_var(vars[0]);
+
+  var ctrl = false;
+  $(document).keydown(function(event) {
+    if (event.ctrlKey) {
+      $('#table tr.bin').css('cursor', 'pointer');
+      ctrl = true;
+    }
+  }).keyup(function(event) {
+    if (!event.ctrlKey) {
+      $('#table tr.bin').css('cursor', '');
+      ctrl = false;
+    }
+  });
+  $('#table').on('click',function(event) {
+    if (ctrl) {
+      if (event.target.nodeName!='TD') return;
+      let i = event.target.parentElement.rowIndex - 2;
+      if (i<0) return;
+      let c = table_data.data.bins[i].fit.c;
+      window.open('http://www.wolframalpha.com/input/?i='
+        + encodeURIComponent('Plot[Exp['
+          + c[2] + ' x^2 +('
+          + c[1] + ')x +('
+          + c[0] + ')],{x,105,160}]')
+      );
+    }
+  });
 });
