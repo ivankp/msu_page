@@ -34,7 +34,8 @@ function update_table(tab) {
     const f_lumi = lumi / table_data.lumi;
     td(tr, scale_int(bin.b[0],f_lumi) );
     td(tr, scale_int(bin.b[1],f_lumi) );
-    const b = (bin.b[0]+bin.b[1])*f_lumi*0.17021;
+    // const b = (bin.b[0]+bin.b[1])*f_lumi*0.17021;
+    const b = bin.b[2];
     td(tr, b.toFixed(2) );
     td(tr, (Math.sqrt(bin.b[0]+bin.b[1])*f_lumi*0.17021).toFixed(2) );
     const signif = s/Math.sqrt(s+b);
@@ -162,7 +163,7 @@ $(function(){
 
   tr = doc.createElement('tr');
   ['bin','sig','\u221a(\u2211s\u00B2)',
-   'L bkg','R bkg','~ bkg','\u221a(\u2211b\u00B2)',
+   'L bkg','R bkg','bkg','\u221a(\u2211b\u00B2)',
    's/\u221a(s+b)','s/(s+b)'
   ].forEach(x => td(tr,x).style['text-align'] = 'center');
   tr.style['border-bottom'] = '1px solid #000';
@@ -172,24 +173,19 @@ $(function(){
 
   change_var(vars[0]);
 
-  var ctrl = false;
-  $(document).keydown(function(event) {
-    if (event.ctrlKey) {
-      $('#table tr.bin').css('cursor', 'pointer');
-      ctrl = true;
-    }
-  }).keyup(function(event) {
-    if (!event.ctrlKey) {
-      $('#table tr.bin').css('cursor', '');
-      ctrl = false;
-    }
+  var enable_row_click = false;
+  $('#rowclick').change(function() {
+    $('#table tr.bin').css('cursor',
+      (enable_row_click = this.checked) ? 'pointer' : '');
   });
+
   $('#table').on('click',function(event) {
-    if (ctrl) {
+    if (enable_row_click) {
       if (event.target.nodeName!='TD') return;
       let i = event.target.parentElement.rowIndex - 2;
       if (i<0) return;
       let c = table_data.data.bins[i].fit.c;
+      // console.log(table_data.data.bins[i]);
       window.open('http://www.wolframalpha.com/input/?i='
         + encodeURIComponent('Plot[Exp['
           + c[2] + ' x^2 +('

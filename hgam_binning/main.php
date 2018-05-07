@@ -32,6 +32,8 @@ const vars = [
   <img id="loading" src="icons/loading.gif"
     style="vertical-align:top;display:none;" alt="loading">
 </form>
+<label style="font-size:small;"><input id="rowclick" type="checkbox">
+click row to show backround fit</label>
 </div>
 
 <div id="table"></div>
@@ -41,8 +43,8 @@ const vars = [
 <p>sig: number of signal events, taken from Monte Carlo.</p>
 <p>bkg: number of background events in the signal region, estimated from data
 sidebands.</p>
-<p>Background in the signal region is crudely estimated assuming flat
-background distribution.</p>
+<p>Background in the signal region is estimated by fitting ExpPoly2 to the data
+sidebands.</p>
 </div>
 </div>
 
