@@ -9,6 +9,7 @@
 #table table tr.bin:hover { background-color: #eee; }
 #true_lumi { font-size: small; padding-left: 10px; }
 
+div#stuff { margin-left: 2px; }
 div#mxaods { margin-left: 20px; }
 #mxaods p { padding: 0; margin: 0; }
 #mxaods ul {
@@ -28,3 +29,8 @@ div#mxaods { margin-left: 20px; }
 }
 #mxaods .show:hover{ cursor: pointer; }
 
+#run_time {
+  margin-left: 4px;
+  font-size: small;
+  color: #999;
+}

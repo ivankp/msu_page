@@ -54,6 +54,8 @@ function update_table(tab) {
 
     tab.appendChild(tr);
   }
+
+  fit_plot = new FitPlot('#fit_plot',table_data.data.bins[0].hist);
 }
 
 function do_binning() {
@@ -115,6 +117,7 @@ function do_binning() {
       data: { 'var': form_data['var'], 'edges': edges_str },
       beforeSend: function() {
         $form.find('input,select').prop("disabled", true);
+        $('#run_time').html('');
         $('#loading').show();
       },
       success: function(json) {
@@ -122,6 +125,7 @@ function do_binning() {
         $('#loading').hide();
         table_data = JSON.parse(json);
         update_table(tab);
+        $('#run_time').html('('+table_data.time+' sec)');
       }
     });
   } else update_table(tab);
@@ -179,19 +183,21 @@ $(function(){
       (enable_row_click = this.checked) ? 'pointer' : '');
   });
 
+  // var fit_plot;
   $('#table').on('click',function(event) {
     if (enable_row_click) {
       if (event.target.nodeName!='TD') return;
       let i = event.target.parentElement.rowIndex - 2;
       if (i<0) return;
+
       let c = table_data.data.bins[i].fit.c;
-      // console.log(table_data.data.bins[i]);
       window.open('http://www.wolframalpha.com/input/?i='
         + encodeURIComponent('Plot[Exp['
-          + c[2] + ' x^2 +('
-          + c[1] + ')x +('
+          + c[2] + ' x^2+('
+          + c[1] + ')x+('
           + c[0] + ')],{x,105,160}]')
       );
+
     }
   });
 });
