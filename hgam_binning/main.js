@@ -55,7 +55,17 @@ function update_table(tab) {
     tab.appendChild(tr);
   }
 
-  fit_plot = new FitPlot('#fit_plot',table_data.data.bins[0].hist);
+  let svg = make_svg('#fit_plot',400,250);
+  let canv = canvas(svg, [
+    { range: [105,160], padding: [20,10] },
+    { range: [0,12e3], padding: [45,5] }
+  ]);
+  hist('bkg_fit', canv, table_data.data.bins[0].hist.map(
+    (x,i) => [ 105+i, 106+i, x, Math.sqrt(x) ]
+  ),{
+    color: '#000099',
+    width: 2
+  });
 }
 
 function do_binning() {

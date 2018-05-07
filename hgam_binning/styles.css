@@ -10,7 +10,7 @@
 #true_lumi { font-size: small; padding-left: 10px; }
 
 div#stuff { margin-left: 2px; }
-div#mxaods { margin-left: 20px; }
+div.right { margin-left: 20px; }
 #mxaods p { padding: 0; margin: 0; }
 #mxaods ul {
   padding-left: 2ch;
@@ -33,4 +33,8 @@ div#mxaods { margin-left: 20px; }
   margin-left: 4px;
   font-size: small;
   color: #999;
+}
+
+#fit_plot {
+  margin-top: 15px;
 }
