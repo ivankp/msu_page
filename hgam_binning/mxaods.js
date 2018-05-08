@@ -1,8 +1,13 @@
-$(function(){
+function mxaodFiles(div) {
+  let p = doc.createElement('p');
+  p.innerHTML = 'MxAOD files';
+
   let show = doc.createElement('span');
   show.classList.add('show');
   show.innerHTML = '[show]';
-  $('#mxaods p').get(0).appendChild(show);
+
+  p.appendChild(show);
+  div.appendChild(p);
 
   $(show).click(function() {
     let hidden = this.innerHTML=='[show]';
@@ -31,4 +36,4 @@ $(function(){
     });
 
   });
-});
+}

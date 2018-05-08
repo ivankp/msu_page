@@ -24,6 +24,7 @@
 /hgam_binning/bin
 /hgam_binning/lib
 /hgam_binning/vars/*.dat
+/hgam_binning/visitors.txt
 
 **.swp
 **.db

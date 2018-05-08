@@ -11,6 +11,10 @@
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
 
+<script src="hgam_binning/mxaods.js"></script>
+<script src="hgam_binning/fit_plot.js"></script>
+<script src="hgam_binning/main.js"></script>
+
 <script>
 const vars = [
 <?php
@@ -18,7 +22,15 @@ const vars = [
   exec('./vars/list.sh',$out);
   echo "'" . implode("','", $out) . "'";
 ?> ];
+
+var atlas_logged_in = false;
+
 </script>
+
+<img style="display:none;"
+  onload="atlas_logged_in = true"
+  onerror="atlas_logged_in = false"
+  src="https://indico.cern.ch/category/6733/logo-2131521408.png">
 
 <div class="float">
 <div>
@@ -43,8 +55,6 @@ const vars = [
 click row to show backround fit</label>
 
 <div id="table"></div>
-<script src="hgam_binning/fit_plot.js"></script>
-<script src="hgam_binning/main.js"></script>
 
 <div class="note">
 <p>sig: number of signal events, taken from Monte Carlo.</p>
@@ -57,13 +67,11 @@ sidebands.</p>
 </div>
 
 <div class="right">
-
-<div id="mxaods"><p>MxAOD files</p></div>
-<script src="hgam_binning/mxaods.js"></script>
-
-<div id="fit_plot"></div>
-
+  <div id="warning"></div>
+  <div id="mxaods"></div>
+  <div id="fit_plot"></div>
 </div>
+
 </div>
 
 <?php chdir($old_path); ?>

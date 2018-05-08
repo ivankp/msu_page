@@ -181,7 +181,21 @@ function change_var(v) {
   });
 }
 
-$(function(){
+$(function() {
+  $('input,select').prop("disabled", true);
+});
+
+$(window).on("load", function() {
+  if (!atlas_logged_in) {
+    $('#warning').append(
+      '<p>Log in to' +
+      ' <a href="https://indico.cern.ch/category/6733/" target="_blank">' +
+      'ATLAS Indico</a>' +
+      ' to view this page</p>');
+    return;
+  }
+  $('input,select').prop("disabled", false);
+
   $('#rowclick').prop("checked", enable_row_click = false);
 
   let select = $('#form select').get(0);
@@ -235,4 +249,6 @@ $(function(){
       fitPlot(i);
     }
   });
+
+  mxaodFiles($('#mxaods').get(0));
 });

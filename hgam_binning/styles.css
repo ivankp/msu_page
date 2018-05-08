@@ -43,3 +43,8 @@ p.fit_params {
   font-size: small;
   font-family: monospace;
 }
+
+#warning p {
+  font-size: large;
+  color: #f00;
+}
