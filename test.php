@@ -17,9 +17,4 @@
   run('gcc -v');
   run('xz -V');
   run('ls /usr/include');
-
-  // run(
-  //   'LD_LIBRARY_PATH=/home/ivanp/public_html/hgam_binning/lib '.
-  //   '/home/ivanp/public_html/hgam_binning/bin/bin_var '.
-  //   'vars/pT_yy_{data,mc}.dat 0 20 50 100')
 ?>

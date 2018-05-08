@@ -23,8 +23,6 @@ function canvas(svg,axes) {
         .attr('text-anchor','end')
         .attr('x',w-10)
         .attr('y',30)
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', '10px')
         .attr('fill', '#000')
         .text(a.label);
     }

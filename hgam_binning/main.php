@@ -1,6 +1,10 @@
 <?php
   $old_path = getcwd();
   chdir('hgam_binning');
+
+  $fvis = fopen('visitors.txt', 'a');
+  fwrite($fvis, date('Y F d H:i:s').' '.$_SERVER['REMOTE_ADDR']."\n");
+  fclose($fvis);
 ?>
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
