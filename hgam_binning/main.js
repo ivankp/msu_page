@@ -20,7 +20,7 @@ function update_table(tab) {
     set_lumi_field(lumi);
   }
   $('#true_lumi').html(
-    lumi==table_data.lumi ? '' : 'scaled from '+table_data.lumi+' ipb');
+    lumi==table_data.lumi ? '' : 'scaled from '+table_data.lumi+' ifb');
 
   let bins = table_data.data.bins;
   let edges = table_data.data.axes[0].edges;
@@ -226,7 +226,7 @@ $(window).on("load", function() {
 
   tr = doc.createElement('tr');
   ['bin','sig','\u221a(\u2211s\u00B2)',
-   'L bkg','R bkg','bkg','\u221a(\u2211b\u00B2)',
+   'L bkg','R bkg','bkg','\u221abkg',
    's/\u221a(s+b)','s/(s+b)'
   ].forEach(x => td(tr,x).style['text-align'] = 'center');
   tr.style['border-bottom'] = '1px solid #000';

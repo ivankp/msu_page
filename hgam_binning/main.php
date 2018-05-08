@@ -41,7 +41,7 @@ var atlas_logged_in = false;
 <div id="stuff">
 <form id="form">
   Luminosity:
-  <input type="text" name="lumi" size="6" style="text-align:right;"> ipb
+  <input type="text" name="lumi" size="6" style="text-align:right;"> ifb
   <span id="true_lumi"></span>
   <br>
   <select name="var"></select>
@@ -62,6 +62,7 @@ click row to show backround fit</label>
 sidebands.</p>
 <p>Background in the signal region is estimated by fitting ExpPoly2 to the
 sidebands.</p>
+<p>sig unc: square root of sum of MC event weights.</p>
 </div>
 </div>
 </div>
