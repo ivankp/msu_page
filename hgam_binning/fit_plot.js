@@ -14,10 +14,20 @@ function canvas(svg,axes) {
         ? [as[1-i].padding[0],w-a.padding[1]]
         : [h-as[1-i].padding[0],a.padding[1]] )
       .nice();
-    svg.append('g').attr('class','axis')
+    let g = svg.append('g').attr('class','axis')
        .attr('transform','translate('+(
            i==0 ? [0,h-a.padding[0]] : [a.padding[0],0]
          )+')').call( (i==0 ? d3.axisBottom : d3.axisLeft)(scale) );
+    if (a.label) {
+      g.append('text')
+        .attr('text-anchor','end')
+        .attr('x',w-10)
+        .attr('y',30)
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', '10px')
+        .attr('fill', '#000')
+        .text(a.label);
+    }
     return scale;
   }) };
 }

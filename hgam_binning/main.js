@@ -63,7 +63,7 @@ function fitPlot(bin_i) {
   let bin = table_data.data.bins[bin_i];
   let svg = make_svg('#fit_plot',400,250);
   let canv = canvas(svg, [
-    { range: [105,160], padding: [20,10] },
+    { range: [105,160], padding: [33,10], label: "m_yy [GeV]" },
     { range: [0,d3.max(bin.hist)*1.05], padding: [45,5] }
   ]);
   hist('bkg_hist', canv, bin.hist.map(
@@ -82,6 +82,16 @@ function fitPlot(bin_i) {
     'stroke-width': 2,
     'stroke-opacity': 0.65
   });
+
+  let edges = table_data.data.axes[0].edges;
+  svg.append('text').text(table_data.var + ' \u2208 ['
+      + edges[bin_i]+','
+      + (bin_i+1!=edges.length ? edges[bin_i+1] : '\u221e')+')')
+    .attr('x',canv.scale[0](121))
+    .attr('y',20)
+    .attr('font-family', 'sans-serif')
+    .attr('font-size', '12px')
+    .attr('fill', '#000');
 }
 
 function do_binning() {
