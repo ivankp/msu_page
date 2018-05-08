@@ -1,5 +1,6 @@
 var doc = document;
 var edges_str, lumi, table_data;
+var enable_row_click = false;
 
 function set_edges_field(str) { $('#form [name="edges"]').val(str); }
 function set_lumi_field(str)  { $('#form [name="lumi"]').val(str); }
@@ -52,6 +53,8 @@ function update_table(tab) {
       tds[i].style['text-align'] = 'right';
     tr.classList.add('bin');
 
+    if (enable_row_click) tr.style.cssText = 'cursor:pointer;'
+
     tab.appendChild(tr);
   }
 }
@@ -61,7 +64,7 @@ function fitPlot(bin_i) {
   let svg = make_svg('#fit_plot',400,250);
   let canv = canvas(svg, [
     { range: [105,160], padding: [20,10] },
-    { range: [0,d3.max(bin.hist)], padding: [45,5] }
+    { range: [0,d3.max(bin.hist)*1.05], padding: [45,5] }
   ]);
   hist('bkg_hist', canv, bin.hist.map(
     (x,i) => [ 105+i, 106+i, x, Math.sqrt(x) ]
@@ -162,6 +165,8 @@ function change_var(v) {
 }
 
 $(function(){
+  $('#rowclick').prop("checked", enable_row_click = false);
+
   let select = $('#form select').get(0);
   vars.forEach(x => {
     let opt = doc.createElement('option');
@@ -200,29 +205,17 @@ $(function(){
 
   change_var(vars[0]);
 
-  var enable_row_click = false;
   $('#rowclick').change(function() {
     $('#table tr.bin').css('cursor',
       (enable_row_click = this.checked) ? 'pointer' : '');
   });
 
-  // var fit_plot;
   $('#table').on('click',function(event) {
     if (enable_row_click) {
       if (event.target.nodeName!='TD') return;
       let i = event.target.parentElement.rowIndex - 2;
       if (i<0) return;
-
-      // let c = table_data.data.bins[i].fit.c;
-      // window.open('http://www.wolframalpha.com/input/?i='
-      //   + encodeURIComponent('Plot[Exp['
-      //     + c[2] + ' x^2+('
-      //     + c[1] + ')x+('
-      //     + c[0] + ')],{x,105,160}]')
-      // );
-
       fitPlot(i);
-
     }
   });
 });
