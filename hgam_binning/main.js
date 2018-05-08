@@ -38,7 +38,7 @@ function update_table(tab) {
     // const b = (bin.b[0]+bin.b[1])*f_lumi*0.17021;
     const b = bin.b[2];
     td(tr, b.toFixed(2) );
-    td(tr, (Math.sqrt(bin.b[0]+bin.b[1])*f_lumi*0.17021).toFixed(2) );
+    td(tr, (Math.sqrt(b)*f_lumi).toFixed(2) );
     const signif = s/Math.sqrt(s+b);
     let style = td(tr, signif.toFixed(2) ).style;
     style['font-weight'] = 'bold';
