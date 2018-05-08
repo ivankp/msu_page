@@ -54,17 +54,30 @@ function update_table(tab) {
 
     tab.appendChild(tr);
   }
+}
 
+function fitPlot(bin_i) {
+  let bin = table_data.data.bins[bin_i];
   let svg = make_svg('#fit_plot',400,250);
   let canv = canvas(svg, [
     { range: [105,160], padding: [20,10] },
-    { range: [0,12e3], padding: [45,5] }
+    { range: [0,d3.max(bin.hist)], padding: [45,5] }
   ]);
-  hist('bkg_fit', canv, table_data.data.bins[0].hist.map(
+  hist('bkg_hist', canv, bin.hist.map(
     (x,i) => [ 105+i, 106+i, x, Math.sqrt(x) ]
   ),{
     color: '#000099',
     width: 2
+  });
+  let c = bin.fit.c;
+  fcurve('bkg_fit', canv, {
+    f: x => Math.exp(c[2]*x*x + c[1]*x + c[0]),
+    a: 105, b:160, n:100
+  }).attrs({
+    stroke: 'red',
+    fill: 'none',
+    'stroke-width': 2,
+    'stroke-opacity': 0.65
   });
 }
 
@@ -200,13 +213,15 @@ $(function(){
       let i = event.target.parentElement.rowIndex - 2;
       if (i<0) return;
 
-      let c = table_data.data.bins[i].fit.c;
-      window.open('http://www.wolframalpha.com/input/?i='
-        + encodeURIComponent('Plot[Exp['
-          + c[2] + ' x^2+('
-          + c[1] + ')x+('
-          + c[0] + ')],{x,105,160}]')
-      );
+      // let c = table_data.data.bins[i].fit.c;
+      // window.open('http://www.wolframalpha.com/input/?i='
+      //   + encodeURIComponent('Plot[Exp['
+      //     + c[2] + ' x^2+('
+      //     + c[1] + ')x+('
+      //     + c[0] + ')],{x,105,160}]')
+      // );
+
+      fitPlot(i);
 
     }
   });

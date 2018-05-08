@@ -47,3 +47,20 @@ function hist(id,canv,data,args) {
     });
 }
 
+function curve(id,canv,points) {
+  canv.svg.select('#'+id).remove();
+  return canv.svg.append('path').attr('id',id).attr('d',
+    d3.line().curve(d3.curveCardinal)(points.map(
+      p => [ canv.scale[0](p[0]), canv.scale[1](p[1]) ]
+    )) );
+}
+
+function fcurve(id,canv,args) {
+  let points = [];
+  let d = (args.b-args.a)/(args.n-1);
+  for (let i=0; i<args.n; ++i) {
+    let x = args.a+i*d;
+    points.push([x,args.f(x)]);
+  }
+  return curve(id, canv, points);
+}
