@@ -92,6 +92,13 @@ function fitPlot(bin_i) {
     .attr('font-family', 'sans-serif')
     .attr('font-size', '12px')
     .attr('fill', '#000');
+
+  $('#fit_plot p.fit_params').remove();
+  $('#fit_plot').append('<p class="fit_params">' +
+    // 'χ<sup>2</sup> = ' + bin.fit.chi2 + '<br>' +
+    'p<sub>0</sub> = ' + c[0] + '<br>' +
+    'p<sub>1</sub> = ' + c[1] + '<br>' +
+    'p<sub>2</sub> = ' + c[2] + '</p>');
 }
 
 function do_binning() {

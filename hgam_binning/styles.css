@@ -38,3 +38,8 @@ div.right { margin-left: 20px; }
 #fit_plot {
   margin-top: 15px;
 }
+
+p.fit_params {
+  font-size: small;
+  font-family: monospace;
+}
