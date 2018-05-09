@@ -72,9 +72,9 @@ function fitPlot(bin_i) {
     color: '#000099',
     width: 2
   });
-  let c = bin.fit.c;
+  let p = bin.fit.p;
   fcurve('bkg_fit', canv, {
-    f: x => Math.exp(c[2]*x*x + c[1]*x + c[0]),
+    f: x => Math.exp(p[2]*x*x + p[1]*x + p[0]),
     a: 105, b:160, n:100
   }).attrs({
     stroke: 'red',
@@ -93,12 +93,23 @@ function fitPlot(bin_i) {
     .attr('font-size', '12px')
     .attr('fill', '#000');
 
-  $('#fit_plot p.fit_params').remove();
-  $('#fit_plot').append('<p class="fit_params">' +
-    // 'χ<sup>2</sup> = ' + bin.fit.chi2 + '<br>' +
-    'p<sub>0</sub> = ' + c[0] + '<br>' +
-    'p<sub>1</sub> = ' + c[1] + '<br>' +
-    'p<sub>2</sub> = ' + c[2] + '</p>');
+  let num_fmt = x => x
+    .toExponential(3)
+    .replace(/^([^-])/,'&nbsp;$1')
+    .replace(/(e[+-])([0-9])$/,'$10$2');
+  let cov = bin.fit.cov.map(num_fmt);
+  $('#fit_plot #fit_params').remove();
+  $('#fit_plot').append(
+    '<div id="fit_params" class="float"><div><p class="stt">' +
+    'χ<sup>2</sup> = ' + bin.fit.chi2 + '<br>' +
+    p.map((p,i) => 'p<sub>'+i+'</sub> = '+num_fmt(p)).join('<br>') +
+    '</p></div><div class="right">' +
+    '<p class="stt">cov:<br>' +
+    cov[0] +' '+ cov[3] +' '+ cov[4] + '<br>' +
+    cov[3] +' '+ cov[1] +' '+ cov[5] + '<br>' +
+    cov[4] +' '+ cov[5] +' '+ cov[2] + '<br>' +
+    '</p></div></div>'
+  );
 }
 
 function do_binning() {
