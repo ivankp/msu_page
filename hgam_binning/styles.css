@@ -39,9 +39,10 @@ div.right { margin-left: 20px; }
   margin-top: 15px;
 }
 
-.stt {
-  font-size: small;
+#fit_params {
+  font-size: 90%;
   font-family: monospace;
+  margin-left: 40px;
 }
 
 #warning p {

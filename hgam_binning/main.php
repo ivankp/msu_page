@@ -2,8 +2,15 @@
   $old_path = getcwd();
   chdir('hgam_binning');
 
-  $fvis = fopen('visitors.txt', 'a');
-  fwrite($fvis, date('Y F d H:i:s').' '.$_SERVER['REMOTE_ADDR']."\n");
+  $vip = $_SERVER['REMOTE_ADDR'];
+  $ip_info = array();
+  exec('curl -s ipinfo.io/'.end($line),$ip_info);
+  $ip_info = json_decode(implode('',$ip_info));
+  $ip_info =
+    $ip_info->{'city'} .' '. $ip_info->{'region'} .' '. $ip_info->{'country'};
+
+  $fvis = fopen('visitors.txt','a');
+  fwrite($fvis, date('Y F d H:i:s').' '.$vip.' '.$ip_info. "\n");
   fclose($fvis);
 ?>
 
@@ -30,7 +37,8 @@ var atlas_logged_in = false;
 <img style="display:none;"
   onload="atlas_logged_in = true"
   onerror="atlas_logged_in = false"
-  src="https://indico.cern.ch/category/6733/logo-2131521408.png">
+  src="https://indico.cern.ch/category/6733/logo-2131521408.png"
+  alt="ATLAS">
 
 <div class="float">
 <div>
@@ -53,16 +61,26 @@ var atlas_logged_in = false;
 </form>
 <label style="font-size:small;"><input id="rowclick" type="checkbox">
 click row to show backround fit</label>
+<label style="font-size:small;"><input id="showunc" type="checkbox">
+show uncertainties</label>
 
 <div id="table"></div>
 
 <div class="note">
-<p>sig: number of signal events, taken from Monte Carlo.</p>
-<p>bkg: number of background events in the signal region, estimated from data
+<p>sig - number of signal events, taken from Monte Carlo.</p>
+<p>bkg - number of background events in the signal region, estimated from data
 sidebands.</p>
-<p>Background in the signal region is estimated by fitting ExpPoly2 to the
-sidebands.</p>
-<p>sig unc: square root of sum of MC event weights.</p>
+<p>signal systematic uncertainty - square root of sum of MC event weights.</p>
+<p>Background in the signal region is estimated by a fit to the
+<span class="math">m_yy</span> sidebands.<br>
+The fit is done using a weighted linear least-squares
+<a
+  href="https://www.gnu.org/software/gsl/doc/html/lls.html#c.gsl_multifit_wlinear"
+  target="_blank"
+>algorithm</a>.<br>
+A second degree polynomial is fit to
+<span class="math">log</span>s of bin counts.
+</p>
 </div>
 </div>
 </div>

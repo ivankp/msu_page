@@ -1,11 +1,11 @@
 var doc = document;
 var edges_str, lumi, table_data;
-var enable_row_click = false;
+var enable_row_click = false, show_unc = false;
 
 function set_edges_field(str) { $('#form [name="edges"]').val(str); }
 function set_lumi_field(str)  { $('#form [name="lumi"]').val(str); }
 
-function td(tr,str) {
+function make_td(tr,str) {
   let td = doc.createElement('td');
   td.textContent = str;
   tr.appendChild(td);
@@ -28,29 +28,39 @@ function update_table(tab) {
   for (let i=0; i<nedges; ++i) {
     let tr = doc.createElement('tr');
     const bin = bins[i];
-    td(tr, '['+edges[i]+','+(i+1==nedges ? '\u221e' : edges[i+1])+')' );
+    make_td(tr, '['+edges[i]+','+(i+1==nedges ? '\u221e' : edges[i+1])+')');
     const s = bin.s[0] * lumi;
-    td(tr, s.toFixed(2) );
-    td(tr, (Math.sqrt(bin.s[1]) * lumi).toFixed(2) );
-    const f_lumi = lumi / table_data.lumi;
-    td(tr, scale_int(bin.b[0],f_lumi) );
-    td(tr, scale_int(bin.b[1],f_lumi) );
+    make_td(tr, s.toFixed(2));
+    make_td(tr, (Math.sqrt(bin.s[1]) * lumi).toFixed(2));
+    make_td(tr, Math.sqrt(s).toFixed(2));
+    const f_lumi = lumi / table_data.lumi; // lumi scaling factor
+    make_td(tr, scale_int(bin.b[0],f_lumi));
+    make_td(tr, scale_int(bin.b[1],f_lumi));
     // const b = (bin.b[0]+bin.b[1])*f_lumi*0.17021;
-    const b = bin.b[2];
-    td(tr, b.toFixed(2) );
-    td(tr, (Math.sqrt(b)*f_lumi).toFixed(2) );
+    const b = bin.b[2] * f_lumi;
+    make_td(tr, b.toFixed(2));
+    make_td(tr, (bin.b[3]*f_lumi).toFixed(2));
+    make_td(tr, (Math.sqrt(b)).toFixed(2));
     const signif = s/Math.sqrt(s+b);
-    let style = td(tr, signif.toFixed(2) ).style;
+    let style = make_td(tr, signif.toFixed(2)).style;
     style['font-weight'] = 'bold';
     if (isNaN(signif) || signif<1) style['color'] = '#CC0000';
     else if (signif<2)   style['color'] = '#FF6600';
     else if (signif<2.3) style['color'] = '#000099';
     else                 style['color'] = '#006600';
-    td(tr, (100*s/(s+b)).toFixed(2)+'%' );
+    make_td(tr, (100*s/(s+b)).toFixed(2)+'%');
+    const purity = bin.truth[0]/bin.s[0];
+    style = make_td(tr, (100*purity).toFixed(2)+'%').style;
+    if (isNaN(purity) || purity<0.4) style['color'] = '#CC0000';
+    else if (purity<0.5)  style['color'] = '#FF6600';
+    else if (purity<0.75) style['color'] = '#000099';
+    else                  style['color'] = '#006600';
 
     let tds = tr.childNodes;
-    for (let i=1; i<tds.length; ++i)
+    for (let i=1; i<tds.length; ++i) {
       tds[i].style['text-align'] = 'right';
+      if (!show_unc && [2,3,7,8].includes(i)) tds[i].style['display'] = 'none';
+    }
     tr.classList.add('bin');
 
     if (enable_row_click) tr.style.cssText = 'cursor:pointer;'
@@ -104,7 +114,9 @@ function fitPlot(bin_i) {
     'χ<sup>2</sup> = ' + bin.fit.chi2 + '<br>' +
     p.map((p,i) => 'p<sub>'+i+'</sub> = '+num_fmt(p)).join('<br>') +
     '</p></div><div class="right">' +
-    '<p class="stt">cov:<br>' +
+    '<p class="stt">' +
+    'ndf = 44<br>' +
+    'cov:<br>' +
     cov[0] +' '+ cov[3] +' '+ cov[4] + '<br>' +
     cov[3] +' '+ cov[1] +' '+ cov[5] + '<br>' +
     cov[4] +' '+ cov[5] +' '+ cov[2] + '<br>' +
@@ -194,6 +206,7 @@ function change_var(v) {
 
 $(function() {
   $('input,select').prop("disabled", true);
+  $('#rowclick').prop("checked", enable_row_click = false);
 });
 
 $(window).on("load", function() {
@@ -206,8 +219,6 @@ $(window).on("load", function() {
     return;
   }
   $('input,select').prop("disabled", false);
-
-  $('#rowclick').prop("checked", enable_row_click = false);
 
   let select = $('#form select').get(0);
   vars.forEach(x => {
@@ -230,16 +241,26 @@ $(window).on("load", function() {
   let tab = doc.createElement('table');
 
   let tr = doc.createElement('tr');
-  ['','[121,129]','unc','[105,121]','[129,160]','[121,129]','unc','signif',''
-  ].forEach(x => td(tr,x).style['text-align'] = 'center');
-  [1,3,4,5].forEach(i => tr.childNodes[i].style['font-size'] = 'small');
+  [ '','[121,129]','syst. unc.','stat. unc.',
+   '[105,121]','[129,160]','[121,129]','syst. unc.','stat. unc.',
+   'signif','','reco'
+  ].forEach((str,i) => {
+    let td = make_td(tr,str);
+    td.style['text-align'] = 'center';
+    if (i<9) td.style['font-size'] = 'small';
+    if (!show_unc && [2,3,7,8].includes(i)) td.style['display'] = 'none';
+  });
   tab.appendChild(tr);
 
   tr = doc.createElement('tr');
-  ['bin','sig','\u221a(\u2211s\u00B2)',
-   'L bkg','R bkg','bkg','\u221abkg',
-   's/\u221a(s+b)','s/(s+b)'
-  ].forEach(x => td(tr,x).style['text-align'] = 'center');
+  ['bin','sig','\u221a\u2211w\u00B2','\u221asig',
+   'L bkg','R bkg','bkg','from fit','\u221abkg',
+   's/\u221a(s+b)','s/(s+b)','purity'
+  ].forEach((str,i) => {
+    let td = make_td(tr,str);
+    td.style['text-align'] = 'center';
+    if (!show_unc && [2,3,7,8].includes(i)) td.style['display'] = 'none';
+  });
   tr.style['border-bottom'] = '1px solid #000';
   tab.appendChild(tr);
 
@@ -252,6 +273,13 @@ $(window).on("load", function() {
       (enable_row_click = this.checked) ? 'pointer' : '');
   });
 
+  $('#showunc').change(function() {
+    let $td = $('#table td').filter([3,4,8,9].map(
+      i => ':nth-child('+i+')').join(','));
+    if (show_unc = this.checked) $td.show();
+    else $td.hide();
+  });
+
   $('#table').on('click',function(event) {
     if (enable_row_click) {
       if (event.target.nodeName!='TD') return;
@@ -262,4 +290,13 @@ $(window).on("load", function() {
   });
 
   mxaodFiles($('#mxaods').get(0));
+
+}).on("error", function(evt) {
+  var e = evt.originalEvent;
+  console.log("original event:", e);
+  if (e.message) { 
+    alert("Error:\n\t" + e.message + "\nLine:\n\t" + e.lineno + "\nFile:\n\t" + e.filename);
+  } else {
+    alert("Error:\n\t" + e.type + "\nElement:\n\t" + (e.srcElement || e.target));
+  }
 });
