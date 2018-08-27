@@ -1,6 +1,5 @@
 var doc = document;
-var edges_str, lumi, table_data;
-var enable_row_click = false, show_unc = false;
+var table_data, fit_var;
 
 function set_edges_field(str) { $('#form [name="edges"]').val(str); }
 function set_lumi_field(str)  { $('#form [name="lumi"]').val(str); }
@@ -67,6 +66,7 @@ function update_table(tab) {
 
     tab.appendChild(tr);
   }
+  if (fit_i>=0 && fit_i<nedges && fit_var==var_name) fitPlot(fit_i);
 }
 
 function fitPlot(bin_i) {
@@ -122,6 +122,8 @@ function fitPlot(bin_i) {
     cov[4] +' '+ cov[5] +' '+ cov[2] + '<br>' +
     '</p></div></div>'
   );
+
+  fit_var = var_name;
 }
 
 function do_binning() {
@@ -198,6 +200,7 @@ function do_binning() {
 }
 
 function change_var(v) {
+  var_name = v;
   $.post('hgam_binning/get_edges.php', {'v':v}, function(data) {
     set_edges_field(data);
     do_binning();
@@ -206,7 +209,9 @@ function change_var(v) {
 
 $(function() {
   $('input,select').prop("disabled", true);
-  $('#rowclick').prop("checked", enable_row_click = false);
+  $('#rowclick').prop("checked", enable_row_click);
+  $('#showunc').prop("checked", show_unc);
+  if (lumi) set_lumi_field(lumi);
 });
 
 $(window).on("load", function() {
@@ -214,8 +219,9 @@ $(window).on("load", function() {
     $('#warning').append(
       '<p>Log in to' +
       ' <a href="https://indico.cern.ch/category/6733/" target="_blank">' +
-      'ATLAS Indico</a>' +
-      ' to view this page</p>');
+      'ATLAS Indico</a> and' +
+      ' <a href="javascript:location.reload();">reload</a>' +
+      ' to view this page.</p>');
     return;
   }
   $('input,select').prop("disabled", false);
@@ -266,7 +272,14 @@ $(window).on("load", function() {
 
   div.appendChild(tab);
 
-  change_var(vars[0]);
+  if (var_name) $('form [name="var"]').val(var_name);
+  else var_name = vars[0];
+  if (fit_i>=0) fit_var = var_name;
+  if (edges_str) {
+    set_edges_field(edges_str);
+    edges_str = '';
+    do_binning();
+  } else change_var(var_name);
 
   $('#rowclick').change(function() {
     $('#table tr.bin').css('cursor',
@@ -283,10 +296,21 @@ $(window).on("load", function() {
   $('#table').on('click',function(event) {
     if (enable_row_click) {
       if (event.target.nodeName!='TD') return;
-      let i = event.target.parentElement.rowIndex - 2;
-      if (i<0) return;
-      fitPlot(i);
+      fit_i = event.target.parentElement.rowIndex - 2;
+      if (fit_i<0) return;
+      fitPlot(fit_i);
     }
+  });
+
+  $('#permalink').mouseover(function permalink(event) {
+    let link = 'https://hep.pa.msu.edu/people/ivanp/?page=hgam_binning'
+      + '&var=' + var_name
+      + '&edges=' + edges_str.replace(/ /g,'+')
+      + '&lumi=' + lumi;
+    if (enable_row_click) link += '&click';
+    if (show_unc) link += '&unc';
+    if (fit_i>=0 && fit_var==var_name) link += '&fit=' + fit_i;
+    $(this).attr('href',link);
   });
 
   mxaodFiles($('#mxaods').get(0));
@@ -294,7 +318,7 @@ $(window).on("load", function() {
 }).on("error", function(evt) {
   var e = evt.originalEvent;
   console.log("original event:", e);
-  if (e.message) { 
+  if (e.message) {
     alert("Error:\n\t" + e.message + "\nLine:\n\t" + e.lineno + "\nFile:\n\t" + e.filename);
   } else {
     alert("Error:\n\t" + e.type + "\nElement:\n\t" + (e.srcElement || e.target));

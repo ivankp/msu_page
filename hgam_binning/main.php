@@ -18,21 +18,30 @@
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
 
-<script src="hgam_binning/mxaods.js"></script>
-<script src="hgam_binning/fit_plot.js"></script>
-<script src="hgam_binning/main.js"></script>
-
 <script>
 const vars = [
 <?php
-  $out = array();
-  exec('./vars/list.sh',$out);
-  echo "'" . implode("','", $out) . "'";
+  $vars = array();
+  exec('./vars/list.sh',$vars);
+  echo "'" . implode("','", $vars) . "'";
 ?> ];
 
-var atlas_logged_in = false;
+var var_name = <?php
+  $var_name = get($_GET['var']);
+  echo '\''.(in_array($var_name,$vars) ? $var_name : '').'\'';
+?>;
+var edges_str = <?php echo '\''. urldecode(get($_GET['edges'],'')) .'\''; ?>;
+var lumi = <?php echo (float)get($_GET['lumi'],0); ?>;
+var enable_row_click = <?php echo isset($_GET['click']) ? 'true' : 'false'; ?>;
+var show_unc  = <?php echo isset($_GET['unc']) ? 'true' : 'false'; ?>;
+var fit_i = <?php echo ((int)get($_GET['fit'],-1)); ?>;
 
+var atlas_logged_in = false;
 </script>
+
+<script src="hgam_binning/mxaods.js"></script>
+<script src="hgam_binning/fit_plot.js"></script>
+<script src="hgam_binning/main.js"></script>
 
 <img style="display:none;"
   onload="atlas_logged_in = true"
@@ -43,7 +52,10 @@ var atlas_logged_in = false;
 <div class="float">
 <div>
 <div class="note">
-<p>H→γγ binning estimator</p>
+<p>H→γγ binning estimator
+  <span style="margin-left:30px;">
+  <a href="https://hep.pa.msu.edu/people/ivanp/?page=hgam_binning"
+     id="permalink">&#x1f517; permalink</a></span></p>
 </div>
 
 <div id="stuff">
