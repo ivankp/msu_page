@@ -1,0 +1,111 @@
+[
+    [
+        "H1j_B",
+        [
+            "HT",
+            "H_eta",
+            "H_mass",
+            "H_pT",
+            "H_phi",
+            "H_y",
+            "Njets_excl",
+            "Njets_incl"
+        ],
+        [
+            [
+                "weight",
+                [
+                    "weight2"
+                ]
+            ],
+            [
+                "photon_cuts",
+                [
+                    "all",
+                    "with_photon_cuts"
+                ]
+            ],
+            [
+                "isp",
+                [
+                    "all",
+                    "gg",
+                    "gq",
+                    "qq"
+                ]
+            ],
+            [
+                "bin",
+                [
+                    "w",
+                    "w2",
+                    "n"
+                ]
+            ]
+        ],
+        {
+            "jets": {
+                "N_required": 1,
+                "alg": [
+                    "antikt",
+                    0.4
+                ],
+                "cuts": {
+                    "eta": 4.4,
+                    "pT": 30
+                }
+            }
+        }
+    ],
+    [
+        "dummy",
+        [
+            "dummy"
+        ],
+        [
+            [
+                "weight",
+                [
+                    "weight2"
+                ]
+            ],
+            [
+                "photon_cuts",
+                [
+                    "all",
+                    "with_photon_cuts"
+                ]
+            ],
+            [
+                "isp",
+                [
+                    "all",
+                    "gg",
+                    "gq",
+                    "qq"
+                ]
+            ],
+            [
+                "bin",
+                [
+                    "w",
+                    "w2",
+                    "n"
+                ]
+            ]
+        ],
+        {
+            "jets": {
+                "N_required": 1,
+                "alg": [
+                    "antikt",
+                    0.4
+                ],
+                "cuts": {
+                    "eta": 4.4,
+                    "pT": 30
+                }
+            }
+        }
+    ]
+]

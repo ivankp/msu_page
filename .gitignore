@@ -26,6 +26,9 @@
 /hgam_binning/vars/*.dat
 /hgam_binning/visitors.txt
 
+!/ntuples
+/ntuples/data
+
 **.swp
 **.db
 

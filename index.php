@@ -17,6 +17,7 @@
     "browser" => "Hist browser",
     "angular" => "Angular fits",
     "hgam_binning" => "HGam binning",
+    "ntuples" => "Histograms",
   );
   $page2file = array(
     "browser" => "browser/browser",
@@ -24,12 +25,16 @@
     "scale_nnlojet" => "scale/nnlojet/page.php",
     "angular" => "angular/main.php",
     "hgam_binning" => "hgam_binning/main.php",
+    "ntuples" => "ntuples/main.php",
   );
   echo arrget($title,$page);
 ?></title>
 <link rel="stylesheet" href="styles.css" type="text/css">
 <?php if ($page==='hgam_binning') { ?>
 <link rel="stylesheet" href="hgam_binning/styles.css" type="text/css">
+<?php } ?>
+<?php if ($page==='ntuples') { ?>
+<link rel="stylesheet" href="ntuples/styles.css" type="text/css">
 <?php } ?>
 </head>
 
@@ -54,6 +59,8 @@
   </li>
   <li><p><img src="icons/github.png" alt="">Code on GitHub</p>
   <ul>
+    <li><a href="https://github.com/ivankp/ntuple_analysis" target="_blank">
+        ntuple_analysis</a></li>
     <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
         bh_analysis</a></li>
     <li><a href="https://github.com/ivankp/bh_analysis2" target="_blank">
@@ -74,6 +81,7 @@
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
     <?php page_li('angular') ?>
     <?php page_li('hgam_binning') ?>
+    <?php page_li('ntuples') ?>
   </ul>
   </li>
   <li><p>Notes</p>

@@ -1,0 +1,9 @@
+div.float, div.right { margin: auto 10px; }
+
+fieldset {
+  border-radius: 8px;
+}
+fieldset legend {
+  padding: 2px 6px;
+  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
