@@ -7,6 +7,7 @@
 hist_sets = <?php include 'hist_sets.json'; ?>;
 </script>
 
+<script src="ntuples/plot.js"></script>
 <script src="ntuples/main.js"></script>
 
 <div class="float">
@@ -14,9 +15,7 @@ hist_sets = <?php include 'hist_sets.json'; ?>;
     <legend>Select histogram</legend>
     <div class="float" style="margin-left: 2px;">
       <div id="sel"></div>
-      <div class="right">
-        Hello
-      </div>
+      <div id="plot" class="right"></div>
     </div>
   </fieldset>
 </div>

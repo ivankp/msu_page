@@ -1,6 +1,7 @@
 var doc = document;
-var ii = [ ];
 var data = { };
+var leg = null;
+var ih = [ ], ib = [ ];
 
 $.prototype.el = function(tag,text=null) {
   var dom = doc.createElement(tag);
@@ -9,23 +10,53 @@ $.prototype.el = function(tag,text=null) {
   return $(dom);
 }
 
+function get_set_name() {
+  return (ih[0]==null) ? null : hist_sets[ih[0]][0];
+}
+function get_hist_name() {
+  return (ih[0]==null || ih[1]==null) ? null : hist_sets[ih[0]][1][ih[1]];
+}
+
+function update_hist() {
+  const set_name = get_set_name(), hist_name = get_hist_name();
+  leg.text(set_name+' : '+hist_name);
+  const hist_data = data[set_name].histograms[hist_name].bins.map(
+    x => x==null ? null : x[ib[0]][ib[1]][ib[2]]
+  );
+  console.log(hist_data);
+
+  let svg = make_svg('#plot',400,250);
+  let canv = canvas(svg, [
+    { range: [105,160], padding: [33,10], label: hist_name },
+    { range: [0,d3.max([1])*1.05], padding: [45,5] }
+  ]);
+  // hist('histogram', canv, bin.hist.map(
+  //   (x,i) => [ 105+i, 106+i, x, Math.sqrt(x) ]
+  // ),{
+  //   color: '#000099',
+  //   width: 2
+  // });
+}
+
 $(function() {
   var sel = $('#sel');
-  var leg = sel.parent().parent().parent().find('legend');
+  leg = sel.parent().parent().parent().find('legend');
 
   var sel_set = sel.el('select').attr('size',10).attr('id','sel-set');
   hist_sets.forEach(x => { sel_set.el('option',x[0]); });
 
   sel_set.change(function() {
-    const index = ii[0] = this.selectedIndex;
+    var hist_name = get_hist_name();
+    const index = ih[0] = this.selectedIndex;
     const set_name = hist_sets[index][0];
+    ib = hist_sets[index][2].map((x,i) => 0);
 
     var sel_hist = $('#sel-hist');
     if (!sel_hist.length) {
       sel_hist = sel.el('select').attr('size',10).attr('id','sel-hist');
       sel_hist.change(function() {
-        const index = ii[1] = this.selectedIndex;
-        leg.text(hist_sets[ii[0]][0]+' : '+hist_sets[ii[0]][1][index]);
+        ih[1] = this.selectedIndex;
+        update_hist();
       });
     } else sel_hist.empty();
     hist_sets[index][1].forEach(x => { sel_hist.el("option",x); });
@@ -39,57 +70,30 @@ $(function() {
       x[1].forEach(x => { sel_bin.el('option',x); });
     });
 
-    leg.text(set_name);
+    var update = function() {
+      if (hist_name != null) {
+        if (!sel_hist.find('option').filter((i,e) => e.text == hist_name)
+          .prop('selected', true).trigger('change').length)
+        {
+          leg.text(set_name);
+        }
+      } else leg.text(set_name);
+    };
 
-    // if (!(set_name in data)) $.ajax({
-    //   type: 'POST',
-    //   // dataType: 'text',
-    //   processData: false,
-    //   contentType: false,
-    //   url: 'ntuples/data/'+set_name+'.json.xz',
-    //   beforeSend: function() { sel_set.prop("disabled", true); },
-    //   success: function(xz) {
-    //     // http://cdn.jwebsocket.org/lzma-js/1.3.7/demos/simple_demo.html
-    //     console.log(xz.length);
-    //     LZMA.decompress(xz,
-    //       function on_finish(result, error) {
-    //         console.log(result);
-    //         console.log(error);
-    //         data[set_name] = JSON.parse(result);
-    //       },
-    //       function on_progress(percent) { }
-    //     );
-    //     sel_set.prop("disabled", false);
-    //   }
-    // });
-
-    fetch('ntuples/data/'+set_name+'.json.lzma').then(
-      r => r.arrayBuffer()
-    ).then( buf => { LZMA.decompress(
-      new Uint8Array(buf),
-      function on_finish(result, error) {
-        console.log(result);
-        console.log(error);
-        data[set_name] = JSON.parse(result);
-      },
-      function on_progress(percent) { }
-    )});
-
-    // xhr.open('get', file_name+'.json.xz');
-    // xhr.responseType="arrayBuffer";
-    // xhr.onload = e => {
-    //   LZMA.decompress(
-    //     new Uint8Array(xhr.result),
-    //     function on_finish(result, error) {
-    //       console.log(result);
-    //       console.log(error);
-    //       data[set_name] = JSON.parse(result);
-    //     },
-    //     function on_progress(percent) { }
-    //   )
-    // };
-
-    // console.log(data);
-    // console.log(Object.keys(data[set_name]['histograms']));
-  });
+    if (!(set_name in data)) {
+      sel_set.prop("disabled", true);
+      sel_hist.prop("disabled", true);
+      fetch('ntuples/data/'+set_name+'.json.lzma').then(
+        r => r.arrayBuffer()
+      ).then( buf => { LZMA.decompress(
+        new Uint8Array(buf),
+        function(result, error) {
+          data[set_name] = JSON.parse(result);
+          update();
+          sel_set.prop("disabled", false);
+          sel_hist.prop("disabled", false);
+        }
+      )});
+    } else update();
+  }); // end sel_set.change()
 });
