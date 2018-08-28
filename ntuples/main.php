@@ -1,6 +1,7 @@
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+<script src="js/lzma-d-min.js"></script>
 
 <script>
 hist_sets = <?php include 'hist_sets.json'; ?>;

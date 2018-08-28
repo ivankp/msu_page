@@ -5,10 +5,10 @@ from subprocess import Popen, PIPE
 
 out = [ ]
 
-for fname in glob.glob('data/*.json.xz'):
+for fname in glob.glob('data/*.json.*'):
     j = json.loads(Popen(["xz","-dc",fname],stdout=PIPE).communicate()[0])
     out.append([
-        re.sub(r'.*/(.*)\.json\.xz',r'\1',fname),
+        re.sub(r'.*/(.*)\.json\.[^.]+',r'\1',fname),
         sorted([ h for h in j['histograms'] ]),
         j['annotation']['bins'],
         {'jets': j['annotation']['runcard']['analysis']['jets']}
