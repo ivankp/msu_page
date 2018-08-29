@@ -4,7 +4,15 @@
 <script src="js/lzma-d-min.js"></script>
 
 <script>
-hist_sets = <?php include 'hist_sets.json'; ?>;
+function data_path(name) { return "ntuples/data/"+name+".json.lzma"; }
+const files = ["<?php
+  echo implode('","',
+    array_map(function($x){
+        return preg_replace('/.*\/(.*)\.json\.lzma/','$1',$x); },
+      glob("ntuples/data/*.json.lzma")
+    )
+  );
+?>"];
 </script>
 
 <script src="ntuples/plot.js"></script>
