@@ -20,22 +20,28 @@ function update_hist() {
 
   if (hist_axes.length!=1) return;
 
-  const yrange = d3.extent(hist_bins.map(x => x[0]));
-  var xedge = function(i) {
-    const a = hist_axes[0].range[0];
-    const b = hist_axes[0].range[1];
-    const n = hist_axes[0].nbins;
-    return a + i*(b-a)/n;
-  };
+  const logx = $('#logx').prop('checked');
+  const logy = $('#logy').prop('checked');
+
+  let nonzero = function(a,f){ return logy ? a.filter(x => f(x)>0) : a; };
+
+  const yrange = d3.extent(nonzero(hist_bins.map(x => x[0]),x=>x));
+  const xa = hist_axes[0].range[0];
+  const xb = hist_axes[0].range[1];
+  const xn = hist_axes[0].nbins;
+  const xw = (xb-xa)/xn;
+  var xedge = function(i) { return xa + i*xw; };
 
   let svg = make_svg('#plot',788,533);
   let canv = canvas(svg, [
-    { range: hist_axes[0].range, padding: [33,10], label: menu.hist },
-    { range: [yrange[0]*0.95,yrange[1]*1.05], padding: [45,5] }
+    { range: hist_axes[0].range, padding: [33,10], label: menu.hist,
+      log: logx },
+    { range: [yrange[0]*0.95,yrange[1]*1.05], padding: [45,5],
+      log: logy }
   ]);
-  hist('histogram', canv, hist_bins.map(
-    (x,i) => [ xedge(i), xedge(i+1), x[0], Math.sqrt(x[1]) ]
-  ),{
+  hist('histogram', canv, nonzero(hist_bins.map(
+    (x,i) => [ xedge(i), xedge(i+1), x[0], Math.sqrt(x[1]) ],
+  ),a => a[2]-a[3]),{
     color: '#000099',
     width: 2
   });
@@ -45,21 +51,23 @@ $(function() {
   const div = $('#sel');
   leg = div.parent().parent().parent().find('legend');
 
+  $('#log input').change(update_hist);
+
   var fsel = div.el('select').attr('size',10).attr('id','fsel');
   files.forEach(x => { fsel.el('option',x); });
 
-  fsel.change(function() {
+  fsel.change(function() { // select file
     const fname = menu.file = this.value;
 
     var hsel = $('#hsel');
     var update = function(file) {
       if (!hsel.length) {
         hsel = div.el('select').attr('size',10).attr('id','hsel');
-        hsel.change(function() {
+        hsel.change(function() { // select histogram
           menu.hist = this.value;
           update_hist();
         });
-      35} else hsel.empty();
+      } else hsel.empty();
       Object.keys(file.histograms).forEach(x => { hsel.el("option",x); });
 
       file.annotation.bins.forEach(x => {
@@ -70,6 +78,18 @@ $(function() {
         else sel_bin.empty();
         x[1].forEach(x => { sel_bin.el('option',x); });
       });
+
+      // ['x','y'].forEach(a => {
+      //   $('#logx:parent, #logy:parent').remove();
+      //   div.el('label','log '+a)
+      //     .css({'display': 'block'})
+      //     .el('input').attr('type','checkbox').attr('id','log'+a)
+      //     .change(function() {
+      //       // console.log('log '+a);
+      //       // console.log(this.checked);
+      //       update_hist();
+      //     });
+      // });
 
       if (menu.hist)
         if (hsel.find('option').filter((i,e) => e.text == menu.hist)

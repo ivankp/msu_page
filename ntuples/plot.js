@@ -8,7 +8,7 @@ function canvas(svg,axes) {
   let w = parseInt(svg.attr('width')), h = parseInt(svg.attr('height'));
   svg.selectAll('g.axis').remove();
   return { svg: svg, scale: axes.map((a,i,as) => {
-    let scale = d3.scaleLinear()
+    let scale = (a.log ? d3.scaleLog() : d3.scaleLinear())
       .domain(a.range)
       .range(i==0
         ? [as[1-i].padding[0],w-a.padding[1]]
