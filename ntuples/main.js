@@ -68,7 +68,7 @@ $(function() {
           update_hist();
         });
       } else hsel.empty();
-      Object.keys(file.histograms).forEach(x => { hsel.el("option",x); });
+      Object.keys(file.histograms).forEach(x => { hsel.el('option',x); });
 
       file.annotation.bins.forEach(x => {
         const id = x[0];
@@ -86,14 +86,14 @@ $(function() {
     };
 
     if (!(fname in data)) {
-      div.find('select').prop("disabled", true);
+      div.find('select').prop('disabled', true);
       fetch(data_path(fname)).then(r => r.arrayBuffer()).then(buf => {
         LZMA.decompress(
           new Uint8Array(buf),
           function(result, error) {
             const file = data[fname] = JSON.parse(result);
             update(file);
-            div.find('select').prop("disabled", false);
+            div.find('select').prop('disabled', false);
           }
         )
       });

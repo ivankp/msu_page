@@ -7,3 +7,7 @@ fieldset legend {
   padding: 2px 6px;
   font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+#sel > select {
+  width: 100px;
+}

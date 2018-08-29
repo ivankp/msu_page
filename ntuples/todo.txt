@@ -13,3 +13,6 @@
 - divide by bin width
 - units
 - auto-detect logy variables
+- save loaded file
+- save plotted histograms
+- substring matching fields (default NLO)
