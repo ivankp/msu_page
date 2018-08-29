@@ -24,10 +24,7 @@ const files = ["<?php
     <div class="float" style="margin-left: 2px;">
       <div>
         <div id="sel"></div>
-        <div id="log" style="display: block;">
-          <!-- <label><input type="checkbox" id="logx">log x</label> -->
-          <label><input type="checkbox" id="logy">log y</label>
-        </div>
+        <label><input type="checkbox" id="logy">log y</label>
       </div>
       <div id="plot" class="right"></div>
     </div>

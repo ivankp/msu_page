@@ -1,0 +1,15 @@
+- integer x-axis labels
+- override automatic axis ranges
+- multi-dimensional histograms
+- category selection
+- envelopes and weight selection
+- resize plot
+- multiple plots
+- overlay
+- plot ratios
+- logy for negative values
+- zoom in
+- legend when overlaying
+- divide by bin width
+- units
+- auto-detect logy variables
