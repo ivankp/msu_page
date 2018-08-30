@@ -1,7 +1,7 @@
 - integer x-axis labels
-- override automatic axis ranges
++ override automatic axis ranges
 - multi-dimensional histograms
-- category selection
++ category selection
 - envelopes and weight selection
 - resize plot
 - multiple plots

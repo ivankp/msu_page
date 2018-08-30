@@ -14,6 +14,9 @@ $.prototype.el = function(tag,text=null) {
 Array.prototype.filter_if = function(condition,f) {
   return condition ? this.filter(f) : this;
 };
+Array.prototype.map_if = function(condition,f) {
+  return condition ? this.map(f) : this;
+};
 
 function mget(a,i) { return i.length ? mget(a[i[0]],i.slice(1)) : a; }
 
@@ -29,22 +32,32 @@ function update_hist() {
 
   const logy = $('#logy').prop('checked');
 
-  const yrange = d3.extent(hist_bins.map(x => x[0]).filter_if(logy,x=>x>0));
+  let ys =
+    hist_bins.map(x => x[0]-Math.sqrt(x[1])).concat(
+    hist_bins.map(x => x[0]+Math.sqrt(x[1])));
+  let yrange = d3.extent(ys);
+  let factor = (yrange[1]>0 ? 1 : (yrange[0]<0 ? -1 : 1));
+
   const xa = hist_axes[0].range[0];
   const xb = hist_axes[0].range[1];
   const xn = hist_axes[0].nbins;
   const xw = (xb-xa)/xn;
   var xedge = function(i) { return xa + i*xw; };
 
+  const fb = d3.max(yrange.map(x=>Math.abs(x))) < 1e-2;
+  if (fb) factor *= 1e3;
+  yrange = hist_yrange(ys.map(x => x*factor),logy);
+
   let svg = make_svg('#plot',788,533);
   let canv = canvas(svg, [
-    { range: hist_axes[0].range, padding: [33,10], label: menu.hist },
-    { range: [yrange[0]*0.95,yrange[1]*1.05], padding: [45,5],
-      log: logy }
+    { range: hist_axes[0].range, padding: [43,10], label: menu.hist },
+    { range: yrange, padding: [45,5], log: logy, label:
+        (factor<0 ? '- ' : '') + 'cross section ' + (fb ? '[fb]' : '[pb]') }
   ]);
   hist('histogram', canv, hist_bins.map(
-    (x,i) => [ xedge(i), xedge(i+1), x[0], Math.sqrt(x[1]) ],
-  ).filter_if(logy,a => (a[2]-a[3])>0),{
+    (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, Math.sqrt(x[1])*factor ],
+  ).filter_if(logy,a => (a[2]-a[3])>0),
+  {
     color: '#000099',
     width: 2
   });

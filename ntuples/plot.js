@@ -12,19 +12,19 @@ function canvas(svg,axes) {
       .domain(a.range)
       .range(i==0
         ? [as[1-i].padding[0],w-a.padding[1]]
-        : [h-as[1-i].padding[0],a.padding[1]] )
-      .nice();
+        : [h-as[1-i].padding[0],a.padding[1]] );
     let g = svg.append('g').attr('class','axis')
        .attr('transform','translate('+(
            i==0 ? [0,h-a.padding[0]] : [a.padding[0],0]
          )+')').call( (i==0 ? d3.axisBottom : d3.axisLeft)(scale) );
     if (a.label) {
-      g.append('text')
+      let label = g.append('text')
         .attr('text-anchor','end')
-        .attr('x',w-10)
-        .attr('y',30)
         .attr('fill', '#000')
         .text(a.label);
+      if (i==0) label.attr('x',w-10).attr('y',30);
+      else label.attr('transform','rotate(-90)')
+        .attr('x',-10).attr('y',10-a.padding[0]);
     }
     return scale;
   }) };
@@ -71,4 +71,42 @@ function fcurve(id,canv,args) {
     points.push([x,args.f(x)]);
   }
   return curve(id, canv, points);
+}
+
+function hist_yrange(ys,logy) {
+  let min = Number.MAX_VALUE;
+  let max = (logy ? 0 : Number.MIN_VALUE);
+
+  for (y of ys) {
+    if (logy && y<=0) continue;
+    if (y<min) min = y;
+    if (y>max) max = y;
+  }
+
+  if (logy) return [
+    Math.pow(10,1.05*Math.log10(min) - 0.05*Math.log10(max)),
+    Math.pow(10,1.05*Math.log10(max) - 0.05*Math.log10(min))
+  ];
+  else {
+    let both = false;
+    if (min > 0.) {
+      if (min/max < 0.25) {
+        min = 0.;
+        max /= 0.95;
+      } else both = true;
+    } else if (max < 0.) {
+      if (min/max < 0.25) {
+        max = 0.;
+        min /= 0.95;
+      } else both = true;
+    } else if (min==0.) {
+      max /= 0.95;
+    } else if (max==0.) {
+      min /= 0.95;
+    } else both = true;
+    if (both) {
+      return [ 1.05556*min - 0.05556*max, 1.05556*max - 0.05556*min ];
+    }
+  }
+  return [ min, max ];
 }
