@@ -2,6 +2,7 @@ var doc = document;
 var data = { };
 var menu = { file: null, hist: null };
 var leg = null;
+var ii = [ ];
 
 $.prototype.el = function(tag,text=null) {
   var dom = doc.createElement(tag);
@@ -14,13 +15,15 @@ Array.prototype.filter_if = function(condition,f) {
   return condition ? this.filter(f) : this;
 };
 
+function mget(a,i) { return i.length ? mget(a[i[0]],i.slice(1)) : a; }
+
 function update_hist() {
   leg.text(menu.file+' : '+menu.hist);
   const hist_data = data[menu.file].histograms[menu.hist];
   const hist_axes = hist_data.axes;
   const hist_bins = hist_data.bins.map(
-    x => x==null ? null : x[0][0][0]
-  ).slice(1,-1);
+    x => (x==null ? null : mget(x,ii))
+  ).slice(1,-1); // trim overflow
 
   if (hist_axes.length!=1) return;
 
@@ -70,13 +73,16 @@ $(function() {
       } else hsel.empty();
       Object.keys(file.histograms).forEach(x => { hsel.el('option',x); });
 
-      file.annotation.bins.forEach(x => {
-        const id = x[0];
-        var sel_bin = $('#'+id);
-        if (!sel_bin.length)
-          sel_bin = div.el('select').attr('id',id).css({'display': 'block'});
-        else sel_bin.empty();
-        x[1].forEach(x => { sel_bin.el('option',x); });
+      const ann_bins = file.annotation.bins.slice(0,-1);
+      ii = ann_bins.map(x=>0);
+      $('.bin').remove();
+      ann_bins.forEach((x,i) => {
+        bsel = div.el('select').attr('class','bin').css({'display':'block'});
+        x[1].forEach(x => { bsel.el('option',x); });
+        bsel.change(function() { // select bin value
+          ii[i] = this.selectedIndex;
+          update_hist();
+        });
       });
 
       if (menu.hist)
