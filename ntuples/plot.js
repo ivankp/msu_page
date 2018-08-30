@@ -13,10 +13,12 @@ function canvas(svg,axes) {
       .range(i==0
         ? [as[1-i].padding[0],w-a.padding[1]]
         : [h-as[1-i].padding[0],a.padding[1]] );
+    let axis = (i==0 ? d3.axisBottom : d3.axisLeft)(scale);
+    axis.tickSizeOuter(0);
     let g = svg.append('g').attr('class','axis')
        .attr('transform','translate('+(
            i==0 ? [0,h-a.padding[0]] : [a.padding[0],0]
-         )+')').call( (i==0 ? d3.axisBottom : d3.axisLeft)(scale) );
+         )+')').call( axis );
     if (a.label) {
       let label = g.append('text')
         .attr('text-anchor','end')
