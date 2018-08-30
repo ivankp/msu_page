@@ -15,10 +15,18 @@ function canvas(svg,axes) {
         : [h-as[1-i].padding[0],a.padding[1]] );
     let axis = (i==0 ? d3.axisBottom : d3.axisLeft)(scale);
     axis.tickSizeOuter(0);
+    if (a.values) axis.tickValues(a.values);
     let g = svg.append('g').attr('class','axis')
        .attr('transform','translate('+(
            i==0 ? [0,h-a.padding[0]] : [a.padding[0],0]
          )+')').call( axis );
+    // https://stackoverflow.com/questions/19055414/d3-logarithmic-tick-labels-as-powers-of-10
+    // if (a.log) g.selectAll(".tick text").text(null)
+    //   .filter(d => (
+    //       d / Math.pow(10, Math.ceil(Math.log(d) / Math.LN10 - 1e-12)) === 1)
+    //     ).text(10)
+    //   .append("tspan").attr("dy", "-.7em")
+    //     .text(d => Math.round(Math.log(d) / Math.LN10));
     if (a.label) {
       let label = g.append('text')
         .attr('text-anchor','end')

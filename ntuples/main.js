@@ -11,6 +11,12 @@ $.prototype.el = function(tag,text=null) {
   return $(dom);
 }
 
+function indices(n) {
+  var a = [ ];
+  for (let i=0; i<n; ++i) a.push(i);
+  return a;
+}
+
 Array.prototype.filter_if = function(condition,f) {
   return condition ? this.filter(f) : this;
 };
@@ -50,7 +56,8 @@ function update_hist() {
 
   let svg = make_svg('#plot',788,533);
   let canv = canvas(svg, [
-    { range: hist_axes[0].range, padding: [43,10], label: menu.hist },
+    { range: hist_axes[0].range, padding: [43,10], label: menu.hist, values:
+      xn < 12 ? indices(xn+1).map(i=>xedge(i)): null },
     { range: yrange, padding: [45,5], log: logy, label:
         (factor<0 ? '- ' : '') + 'cross section ' + (fb ? '[fb]' : '[pb]') }
   ]);
