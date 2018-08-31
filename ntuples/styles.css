@@ -11,3 +11,9 @@ fieldset legend {
 #sel > select {
   width: 100px;
 }
+
+div.info {
+  margin-top: 10px;
+  font-family: monospace;
+}
+

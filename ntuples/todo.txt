@@ -3,6 +3,8 @@
 + integer x-axis labels
 + logy for negative values
 + divide by bin width
++ units
++ jet info
 - multi-dimensional histograms
 - envelopes and weight selection
 - resize plot
@@ -11,7 +13,6 @@
 - plot ratios
 - zoom in
 - legend when overlaying
-- units
 - auto-detect logy variables
 - save loaded file
 - save plotted histograms

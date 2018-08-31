@@ -1,6 +1,7 @@
 var doc = document;
 var data = { };
 var menu = { file: null, hist: null };
+var file_info = [ ];
 var leg = null;
 var ii = [ ];
 
@@ -90,13 +91,24 @@ function update_hist() {
 
   let info_div = $('#menu > .info');
   if (info_div.length) info_div.empty();
-  else info_div = $('#menu').el('div').attr('class','info')
-    .css({'margin-top':'10px','font-family':'monospace'});
+  else info_div = $('#menu').el('div').attr('class','info');
   info_div.el('p','N entries: '+nent.toLocaleString());
   if (overflow[0]) info_div.el('p','Underflow: '
-    + (overflow[0][0]*factor).toPrecision(3)+units());
+    + (overflow[0][0]*factor).toExponential(2)+units());
   if (overflow[1]) info_div.el('p','Overflow: '
-    + (overflow[1][0]*factor).toPrecision(3)+units());
+    + (overflow[1][0]*factor).toExponential(2)+units());
+
+  file_info.forEach(x => { info_div.el('p',x); });
+}
+
+function get_file_info(file) {
+  const jets = file.annotation.runcard.analysis.jets;
+  return [
+    'njets >= '+jets.N_required,
+    'jets algorithm: '+jets.alg[0]+' '+jets.alg[1],
+    'jet pT > '+jets.cuts.pT,
+    '|jet η| < '+jets.cuts.eta
+  ];
 }
 
 $(function() {
@@ -138,6 +150,8 @@ $(function() {
         if (hsel.find('option').filter((i,e) => e.text == menu.hist)
           .prop('selected', true).trigger('change').length) return;
       leg.text(fname);
+
+      file_info = get_file_info(file);
     };
 
     if (!(fname in data)) {
