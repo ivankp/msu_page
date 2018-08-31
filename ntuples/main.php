@@ -22,7 +22,7 @@ const files = ["<?php
   <fieldset>
     <legend>Select histogram</legend>
     <div class="float" style="margin-left: 2px;">
-      <div>
+      <div id="menu">
         <div id="sel"></div>
         <label><input type="checkbox" id="logy">log y</label>
       </div>

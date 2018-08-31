@@ -30,15 +30,17 @@ function update_hist() {
   leg.text(menu.file+' : '+menu.hist);
   const hist_data = data[menu.file].histograms[menu.hist];
   const hist_axes = hist_data.axes;
-  const hist_bins = hist_data.bins.map(
+  if (hist_axes.length!=1) return; // TODO: handle multidimensional
+  let hist_bins = hist_data.bins.map(
     x => (x==null ? null : mget(x,ii))
-  ).slice(1,-1); // trim overflow
-
-  if (hist_axes.length!=1) return;
+  );
+  const overflow = [ hist_bins[0], hist_bins[hist_bins.length-1] ];
+  const nent = hist_bins.map(x => (x==null?0:x[2])).reduce((s,x)=>(s+x),0);
+  hist_bins = hist_bins.slice(1,-1); // trim overflow
 
   const logy = $('#logy').prop('checked');
 
-  let ys =
+  const ys =
     hist_bins.map(x => x[0]-Math.sqrt(x[1])).concat(
     hist_bins.map(x => x[0]+Math.sqrt(x[1])));
   let yrange = d3.extent(ys);
@@ -48,18 +50,23 @@ function update_hist() {
   const xb = hist_axes[0].range[1];
   const xn = hist_axes[0].nbins;
   const xw = (xb-xa)/xn;
-  var xedge = function(i) { return xa + i*xw; };
+  const xedge = function(i) { return xa + i*xw; };
 
-  const fb = d3.max(yrange.map(x=>Math.abs(x))) < 1e-2;
-  if (fb) factor *= 1e3;
+  const units_ = ['pb','fb'];
+  const ui = d3.max(yrange.map(x=>Math.abs(x))) < 1e-2 ? 1 : 0;
+  const units = function() { return ' [' + units_[ui] + ']'; };
+  if (ui) factor *= 1e3;
+
+  overflow.forEach((x,i,xs) => { xs[i] })
+
   yrange = hist_yrange(ys.map(x => x*factor),logy);
 
-  let svg = make_svg('#plot',788,533);
-  let canv = canvas(svg, [
+  const svg = make_svg('#plot',788,533);
+  const canv = canvas(svg, [
     { range: hist_axes[0].range, padding: [43,10], label: menu.hist, values:
       xn < 12 ? indices(xn+1).map(i=>xedge(i)): null },
     { range: yrange, padding: [45,5], log: logy, label:
-        (factor<0 ? '- ' : '') + 'cross section ' + (fb ? '[fb]' : '[pb]') }
+        (factor<0 ? '\u2212 ' : '') + 'cross section' + units() }
   ]);
   hist('histogram', canv, hist_bins.map(
     (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, Math.sqrt(x[1])*factor ],
@@ -68,6 +75,16 @@ function update_hist() {
     color: '#000099',
     width: 2
   });
+
+  let info_div = $('#menu > .info');
+  if (info_div.length) info_div.empty();
+  else info_div = $('#menu').el('div').attr('class','info')
+    .css({'margin-top':'10px','font-family':'monospace'});
+  info_div.el('p','N entries: '+nent.toLocaleString());
+  if (overflow[0])
+    info_div.el('p','Underflow: '+(overflow[0][0]*factor).toPrecision(3)+units());
+  if (overflow[1])
+    info_div.el('p','Overflow: '+(overflow[1][0]*factor).toPrecision(3)+units());
 }
 
 $(function() {

@@ -20,13 +20,6 @@ function canvas(svg,axes) {
        .attr('transform','translate('+(
            i==0 ? [0,h-a.padding[0]] : [a.padding[0],0]
          )+')').call( axis );
-    // https://stackoverflow.com/questions/19055414/d3-logarithmic-tick-labels-as-powers-of-10
-    // if (a.log) g.selectAll(".tick text").text(null)
-    //   .filter(d => (
-    //       d / Math.pow(10, Math.ceil(Math.log(d) / Math.LN10 - 1e-12)) === 1)
-    //     ).text(10)
-    //   .append("tspan").attr("dy", "-.7em")
-    //     .text(d => Math.round(Math.log(d) / Math.LN10));
     if (a.label) {
       let label = g.append('text')
         .attr('text-anchor','end')
