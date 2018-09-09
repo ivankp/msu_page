@@ -67,10 +67,8 @@ function update_hist() {
 
   const units_ = ['pb','fb'];
   const ui = d3.max(yrange.map(x=>Math.abs(x))) < 1e-2 ? 1 : 0;
-  const units = function() { return ' [' + units_[ui] + ']'; };
+  const units = function() { return units_[ui]; };
   if (ui) factor *= 1e3;
-
-  overflow.forEach((x,i,xs) => { xs[i] })
 
   yrange = hist_yrange(ys.map(x => x*factor),logy);
 
@@ -79,7 +77,7 @@ function update_hist() {
     { range: hist_axes[0].range, padding: [43,10], label: menu.hist, values:
       xn < 12 ? indices(xn+1).map(i=>xedge(i)): null },
     { range: yrange, padding: [45,5], log: logy, label:
-        (factor<0 ? '\u2212 ' : '') + 'cross section' + units() }
+        (factor<0 ? '\u2212 ' : '') + 'cross section [' + units() + ']' }
   ]);
   hist('histogram', canv, hist_bins.map(
     (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, x[1]*factor ]
@@ -94,9 +92,9 @@ function update_hist() {
   else info_div = $('#menu').el('div').attr('class','info');
   info_div.el('p','N entries: '+nent.toLocaleString());
   if (overflow[0]) info_div.el('p','Underflow: '
-    + (overflow[0][0]*factor).toExponential(2)+units());
+    + (overflow[0][0]*factor).toExponential(2)+' '+units());
   if (overflow[1]) info_div.el('p','Overflow: '
-    + (overflow[1][0]*factor).toExponential(2)+units());
+    + (overflow[1][0]*factor).toExponential(2)+' '+units());
 
   file_info.forEach(x => { info_div.el('p',x); });
 }
