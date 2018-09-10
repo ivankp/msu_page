@@ -4,6 +4,7 @@ var menu = { file: null, hist: null };
 var file_info = [ ];
 var leg = null;
 var ii = [ ];
+var wi = 0;
 
 $.prototype.el = function(tag,text=null) {
   var dom = doc.createElement(tag);
@@ -25,6 +26,8 @@ Array.prototype.map_if = function(condition,f) {
   return condition ? this.map(f) : this;
 };
 
+function get(a,i) { return a==null ? null : a[i]; }
+
 function mget(a,i) { return i.length ? mget(a[i[0]],i.slice(1)) : a; }
 
 function update_hist() {
@@ -32,11 +35,13 @@ function update_hist() {
   const hist_data = data[menu.file].histograms[menu.hist];
   const hist_axes = hist_data.axes;
   if (hist_axes.length!=1) return; // TODO: handle multidimensional
-  let hist_bins = hist_data.bins.map(
-    x => (x==null ? null : mget(x,ii))
-  );
+  let hist_bins = hist_data.bins.map( x => {
+    if (x==null) return null;
+    let b = mget(x,ii);
+    return [ b[0][wi], b[1] ]; // w, w2, n
+  });
   const overflow = [ hist_bins[0], hist_bins[hist_bins.length-1] ];
-  const nent = hist_bins.map(x => (x==null?0:x[2])).reduce((s,x)=>(s+x),0);
+  const nent = hist_bins.map(b => (b==null?0:b[1])).reduce((s,x)=>(s+x),0);
 
   const xa = hist_axes[0].range[0];
   const xb = hist_axes[0].range[1];
@@ -49,20 +54,32 @@ function update_hist() {
 
   hist_bins = hist_bins.slice(1,-1) // trim overflow
   .map((b,i) => {
-    b = b.slice(); // copy array
+    b = b[0].slice(); // copy array
     b[1] = Math.sqrt(b[1]); // take root of w2
     if (divbinw) {
       const w = xedge(i+1) - xedge(i);
       b[0] /= w;
       b[1] /= w;
+      if (b[2]!=null) { // scale unc
+        b[2] = b[2].slice();
+        b[2][0] /= w;
+        b[2][1] /= w;
+      }
+      if (b[3]!=null) { // pdf unc
+        b[3] = b[3].slice();
+        b[3][0] /= w;
+        b[3][1] /= w;
+      }
     }
     return b;
   });
 
-  const ys =
-    hist_bins.map(x => x[0]-x[1]).concat(
-    hist_bins.map(x => x[0]+x[1]));
-  let yrange = d3.extent(ys);
+  const min_ys = hist_bins.map(x => // TODO: optimize
+    d3.min([x[0]-x[1],get(x[2],0),get(x[3],0)].filter(x => x!=null)));
+  const max_ys = hist_bins.map(x =>
+    d3.max([x[0]+x[1],get(x[2],1),get(x[3],1)].filter(x => x!=null)));
+
+  let yrange = [ d3.min(min_ys), d3.max(max_ys) ];
   let factor = (yrange[1]>0 ? 1 : (yrange[0]<0 ? -1 : 1));
 
   const units_ = ['pb','fb'];
@@ -70,6 +87,7 @@ function update_hist() {
   const units = function() { return units_[ui]; };
   if (ui) factor *= 1e3;
 
+  let ys = min_ys.concat(max_ys);
   yrange = hist_yrange(ys.map(x => x*factor),logy);
 
   const svg = make_svg('#plot',788,533);
@@ -79,11 +97,27 @@ function update_hist() {
     { range: yrange, padding: [45,5], log: logy, label:
         (factor<0 ? '\u2212 ' : '') + 'cross section [' + units() + ']' }
   ]);
+
+  const scale_unc = hist_bins.map(x => x[2]);
+  if (scale_unc[0]!=null) {
+    band('scale_unc', canv, {
+        edges: indices(xn+1).map(i=>xedge(i)),
+        bins : scale_unc
+      },'fill:#FF0000;fill-opacity:0.5;');
+  }
+  const pdf_unc = hist_bins.map(x => x[3]);
+  if (pdf_unc[0]!=null) {
+    band('pdf_unc', canv, {
+        edges: indices(xn+1).map(i=>xedge(i)),
+        bins : pdf_unc
+      },'fill:#0000FF;fill-opacity:0.5;');
+  }
+
   hist('histogram', canv, hist_bins.map(
     (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, x[1]*factor ]
   ).filter_if(logy,a => (a[2]-a[3])>0),
   {
-    color: '#000099',
+    color: '#000000',
     width: 2
   });
 
@@ -91,10 +125,10 @@ function update_hist() {
   if (info_div.length) info_div.empty();
   else info_div = $('#menu').el('div').attr('class','info');
   info_div.el('p','N entries: '+nent.toLocaleString());
-  if (overflow[0]) info_div.el('p','Underflow: '
-    + (overflow[0][0]*factor).toExponential(2)+' '+units());
-  if (overflow[1]) info_div.el('p','Overflow: '
-    + (overflow[1][0]*factor).toExponential(2)+' '+units());
+  if (overflow[0]!=null) info_div.el('p','Underflow: '
+    + (overflow[0][0][0]*factor).toExponential(2)+' '+units());
+  if (overflow[1]!=null) info_div.el('p','Overflow: '
+    + (overflow[1][0][0]*factor).toExponential(2)+' '+units());
 
   file_info.forEach(x => { info_div.el('p',x); });
 }
@@ -102,7 +136,7 @@ function update_hist() {
 function get_file_info(file) {
   const jets = file.annotation.runcard.analysis.jets;
   return [
-    'njets >= '+jets.N_required,
+    'njets >= '+jets.min_njets,
     'jets algorithm: '+jets.alg[0]+' '+jets.alg[1],
     'jet pT > '+jets.cuts.pT,
     '|jet η| < '+jets.cuts.eta
@@ -136,12 +170,20 @@ $(function() {
       ii = ann_bins.map(x=>0);
       $('.bin').remove();
       ann_bins.forEach((x,i) => {
-        bsel = div.el('select').attr('class','bin').css({'display':'block'});
+        let bsel = div.el('select').attr('class','bin')
+          .css({'display':'block'});
         x[1].forEach(x => { bsel.el('option',x); });
         bsel.change(function() { // select bin value
           ii[i] = this.selectedIndex;
           update_hist();
         });
+      });
+      let wsel = div.el('select').attr('class','bin')
+        .css({'display':'block'});
+      file.annotation.weights.forEach(x => { wsel.el('option',x); });
+      wsel.change(function() { // select weight
+        wi = this.selectedIndex;
+        update_hist();
       });
 
       if (menu.hist)

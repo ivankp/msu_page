@@ -47,15 +47,37 @@ function hist(id,canv,data,args) {
         stroke: args.color,
         'stroke-width': args.width
       }));
-      g.filter(d => (typeof d[3]!=='undefined')).append("line").attrs(d => ({
+      g.filter(d => (d[3]!=null)).append("line").attrs(d => ({
         x1: s[0]((d[0]+d[1])/2),
         x2: s[0]((d[0]+d[1])/2),
         y1: s[1](d[2]+d[3]),
-        y2: s[1](d[2]-(typeof d[4]!=='undefined' ? d[4] : d[3])),
+        y2: s[1](d[2]-(d[4]!=null ? d[4] : d[3])),
         stroke: args.color,
         'stroke-width': args.width
       }));
     });
+}
+
+function band(id,canv,data,style) {
+  canv.svg.select('#'+id).remove();
+  let s = canv.scale;
+  let points = [ ];
+  const n = data.bins.length;
+  for (let i=0; i<n; ++i) {
+    points.push([data.edges[i  ],data.bins[i][0]]);
+    points.push([data.edges[i+1],data.bins[i][0]]);
+  }
+  for (let i=n-1; i>=0; --i) {
+    points.push([data.edges[i+1],data.bins[i][1]]);
+    points.push([data.edges[i  ],data.bins[i][1]]);
+  }
+  canv.svg.append('polygon').attr('id',id).attr('points',
+    points.map(p => p.map((x,i) => {
+      if (x < s[i].domain()[0]) return s[i].range()[0];
+      if (x > s[i].domain()[1]) return s[i].range()[1];
+      return s[i](x);
+    }).join(',')).join(' ')
+  ).attr('style',style);
 }
 
 function curve(id,canv,points) {
