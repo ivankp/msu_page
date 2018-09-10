@@ -138,6 +138,17 @@ function update_hist() {
     + (overflow[1][0][0]*factor).toExponential(2)+' '+units());
 
   file_info.forEach(x => { info_div.el('p',x); });
+
+  $("#plot")
+  var svgBlob = new Blob(
+    [ $("#plot").html() ],
+    { type:"image/svg+xml;charset=utf-8" }
+  );
+  let save_plot = $('#menu > a');
+  if (save_plot.length) save_plot.remove();
+  $('#menu').el('a','save plot')
+    .attr('href',URL.createObjectURL(svgBlob))
+    .attr('download','plot.svg');
 }
 
 function get_file_info(file) {
