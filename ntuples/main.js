@@ -31,8 +31,9 @@ function get(a,i) { return a==null ? null : a[i]; }
 function mget(a,i) { return i.length ? mget(a[i[0]],i.slice(1)) : a; }
 
 function update_hist() {
-  leg.text(menu.file+' : '+menu.hist);
   const hist_data = data[menu.file].histograms[menu.hist];
+  if (hist_data==null) return;
+  leg.text(menu.file+' : '+menu.hist);
   const hist_axes = hist_data.axes;
   if (hist_axes.length!=1) return; // TODO: handle multidimensional
   let hist_bins = hist_data.bins.map( x => {
@@ -74,10 +75,17 @@ function update_hist() {
     return b;
   });
 
-  const min_ys = hist_bins.map(x => // TODO: optimize
+  let min_ys = hist_bins.map(x => // TODO: optimize
     d3.min([x[0]-x[1],get(x[2],0),get(x[3],0)].filter(x => x!=null)));
-  const max_ys = hist_bins.map(x =>
+  let max_ys = hist_bins.map(x =>
     d3.max([x[0]+x[1],get(x[2],1),get(x[3],1)].filter(x => x!=null)));
+  if (logy) {
+    for (let i=0; i<min_ys.length; ++i) {
+      if ( Math.log(max_ys[i]/hist_bins[i][0])
+         / Math.log(hist_bins[i][0]/min_ys[i]) < 0.2 )
+        min_ys[i] = hist_bins[i][0]*hist_bins[i][0]/max_ys[i];
+    }
+  }
 
   let yrange = [ d3.min(min_ys), d3.max(max_ys) ];
   let factor = (yrange[1]>0 ? 1 : (yrange[0]<0 ? -1 : 1));
@@ -88,7 +96,7 @@ function update_hist() {
   if (ui) factor *= 1e3;
 
   let ys = min_ys.concat(max_ys);
-  yrange = hist_yrange(ys.map(x => x*factor),logy);
+  yrange = hist_yrange(ys.map(y => y*factor),logy);
 
   const svg = make_svg('#plot',788,533);
   const canv = canvas(svg, [
@@ -98,15 +106,15 @@ function update_hist() {
         (factor<0 ? '\u2212 ' : '') + 'cross section [' + units() + ']' }
   ]);
 
-  const scale_unc = hist_bins.map(x => x[2]);
-  if (scale_unc[0]!=null) {
+  if (hist_bins[0][2]!=null) {
+    const scale_unc = hist_bins.map(x => x[2].map(x => x*factor));
     band('scale_unc', canv, {
         edges: indices(xn+1).map(i=>xedge(i)),
         bins : scale_unc
       },'fill:#FF0000;fill-opacity:0.5;');
   }
-  const pdf_unc = hist_bins.map(x => x[3]);
-  if (pdf_unc[0]!=null) {
+  if (hist_bins[0][3]!=null) {
+    const pdf_unc = hist_bins.map(x => x[3].map(x => x*factor));
     band('pdf_unc', canv, {
         edges: indices(xn+1).map(i=>xedge(i)),
         bins : pdf_unc
@@ -115,8 +123,7 @@ function update_hist() {
 
   hist('histogram', canv, hist_bins.map(
     (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, x[1]*factor ]
-  ).filter_if(logy,a => (a[2]-a[3])>0),
-  {
+  ),{
     color: '#000000',
     width: 2
   });

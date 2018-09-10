@@ -12,7 +12,8 @@ function canvas(svg,axes) {
       .domain(a.range)
       .range(i==0
         ? [as[1-i].padding[0],w-a.padding[1]]
-        : [h-as[1-i].padding[0],a.padding[1]] );
+        : [h-as[1-i].padding[0],a.padding[1]] )
+      .clamp(true);
     let axis = (i==0 ? d3.axisBottom : d3.axisLeft)(scale);
     axis.tickSizeOuter(0);
     if (a.values) axis.tickValues(a.values);
@@ -72,11 +73,7 @@ function band(id,canv,data,style) {
     points.push([data.edges[i  ],data.bins[i][1]]);
   }
   canv.svg.append('polygon').attr('id',id).attr('points',
-    points.map(p => p.map((x,i) => {
-      if (x < s[i].domain()[0]) return s[i].range()[0];
-      if (x > s[i].domain()[1]) return s[i].range()[1];
-      return s[i](x);
-    }).join(',')).join(' ')
+    points.map(p => p.map((x,i) => s[i](x)).join(',')).join(' ')
   ).attr('style',style);
 }
 
