@@ -8,7 +8,7 @@ var wi = 0;
 
 $.prototype.el = function(tag,text=null) {
   var dom = doc.createElement(tag);
-  if (!!text) dom.textContent = text;
+  if (!!text) dom.innerHTML = text;
   this.append(dom);
   return $(dom);
 }
@@ -98,7 +98,9 @@ function update_hist() {
   let ys = min_ys.concat(max_ys);
   yrange = hist_yrange(ys.map(y => y*factor),logy);
 
-  const svg = make_svg('#plot',788,533);
+  const svg = make_svg('#plot',788,533)
+    .attr('version','1.1')
+    .attr('xmlns','http://www.w3.org/2000/svg');
   const canv = canvas(svg, [
     { range: hist_axes[0].range, padding: [43,10], label: menu.hist, values:
       xn < 12 ? indices(xn+1).map(i=>xedge(i)): null },
@@ -139,16 +141,23 @@ function update_hist() {
 
   file_info.forEach(x => { info_div.el('p',x); });
 
-  $("#plot")
+  const ann = data[menu.file].annotation;
+  info_div.el('p').el('a','&#x1f517; permalink')
+    .attr('href',encodeURI(
+      'https://hep.pa.msu.edu/people/ivanp/?page=ntuples'
+      + '&file=' + menu.file
+      + '&hist=' + menu.hist
+      + ii.map((x,i) => '&'+ann.bins[i][0]+'='+ann.bins[i][1][x]).join('')
+      + '&weight=' + ann.weights[wi]
+    )).attr('target','_blank');
+
   var svgBlob = new Blob(
-    [ $("#plot").html() ],
+    [ '<?xml version="1.0" standalone="no"?>\n', $("#plot").html() ],
     { type:"image/svg+xml;charset=utf-8" }
   );
-  let save_plot = $('#menu > a');
-  if (save_plot.length) save_plot.remove();
-  $('#menu').el('a','save plot')
+  info_div.el('p').el('a','save svg')
     .attr('href',URL.createObjectURL(svgBlob))
-    .attr('download','plot.svg');
+    .attr('download',menu.file+'_'+menu.hist+'.svg');
 }
 
 function get_file_info(file) {
@@ -162,6 +171,10 @@ function get_file_info(file) {
 }
 
 $(function() {
+  var url_vars = { };
+  decodeURI(window.location.href).replace(
+    /[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) => { url_vars[key] = value; });
+
   const div = $('#sel');
   leg = div.parent().parent().parent().find('legend');
 
@@ -196,13 +209,31 @@ $(function() {
           update_hist();
         });
       });
-      let wsel = div.el('select').attr('class','bin')
+      let wsel = div.el('select').attr('class','weight')
         .css({'display':'block'});
       file.annotation.weights.forEach(x => { wsel.el('option',x); });
       wsel.change(function() { // select weight
         wi = this.selectedIndex;
         update_hist();
       });
+
+      if (url_vars!=null) {
+        menu.hist = url_vars.hist;
+        ii = file.annotation.bins.slice(0,-1).map(
+          c => url_vars[c[0]]==null ? 0 : c[1].indexOf(url_vars[c[0]])
+        );
+        div.find('select.bin').each((si,s) => {
+          $(s).find('option').each((i,opt) => {
+            if (i == ii[si]) opt.selected = true;
+          })
+        });
+        wi = file.annotation.weights.indexOf(url_vars.weight);
+        div.find('select.weight').find('option').each((i,opt) => {
+          if (i == wi) opt.selected = true;
+        });
+        url_vars = null;
+        file_info = get_file_info(file);
+      }
 
       if (menu.hist)
         if (hsel.find('option').filter((i,e) => e.text == menu.hist)
@@ -226,5 +257,10 @@ $(function() {
       });
     } else update(data[fname]);
   }); // end fsel change
+
+  if (url_vars['file']!=null) {
+    fsel.find('option').filter((i,e) => e.text == url_vars.file)
+      .prop('selected', true).trigger('change');
+  }
 });
 
