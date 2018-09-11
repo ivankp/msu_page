@@ -217,7 +217,7 @@ $(function() {
         update_hist();
       });
 
-      if (url_vars!=null) {
+      if (url_vars.hist!=null) {
         menu.hist = url_vars.hist;
         ii = file.annotation.bins.slice(0,-1).map(
           c => url_vars[c[0]]==null ? 0 : c[1].indexOf(url_vars[c[0]])
