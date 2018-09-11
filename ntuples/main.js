@@ -142,17 +142,17 @@ function update_hist() {
   file_info.forEach(x => { info_div.el('p',x); });
 
   const ann = data[menu.file].annotation;
+  let link = 'https://hep.pa.msu.edu/people/ivanp/?page=ntuples'
+    + '&file=' + menu.file
+    + '&hist=' + menu.hist
+    + ii.map((x,i) => '&'+ann.bins[i][0]+'='+ann.bins[i][1][x]).join('')
+    + '&weight=' + ann.weights[wi];
+  if (logy) link += '&logy=true';
   info_div.el('p').el('a','&#x1f517; permalink')
-    .attr('href',encodeURI(
-      'https://hep.pa.msu.edu/people/ivanp/?page=ntuples'
-      + '&file=' + menu.file
-      + '&hist=' + menu.hist
-      + ii.map((x,i) => '&'+ann.bins[i][0]+'='+ann.bins[i][1][x]).join('')
-      + '&weight=' + ann.weights[wi]
-    )).attr('target','_blank');
+    .attr('href',encodeURI(link)).attr('target','_blank');
 
   var svgBlob = new Blob(
-    [ '<?xml version="1.0" standalone="no"?>\n', $("#plot").html() ],
+    [ '<?xml version="1.0" encoding="UTF-8" ?>\n', $("#plot").html() ],
     { type:"image/svg+xml;charset=utf-8" }
   );
   info_div.el('p').el('a','save svg')
@@ -231,6 +231,7 @@ $(function() {
         div.find('select.weight').find('option').each((i,opt) => {
           if (i == wi) opt.selected = true;
         });
+        if (url_vars['logy']==='true') $('#logy').prop('checked',true);
         url_vars = null;
         file_info = get_file_info(file);
       }
