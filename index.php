@@ -5,10 +5,12 @@
   function get(&$var, $default=null) { return isset($var) ? $var : $default; }
   function arrget(&$arr, $x) { return get($arr[$x],$x); }
 
-  $page = get($_GET['page'],'');
+  $page = get($_GET['page'],'hist');
   $title = array(
     "" => "Index",
     "hist" => "Histograms",
+    "old_hist" => "Old histograms",
+    "hgam_binning" => "HGam binning",
     "scale" => "GoSam",
     "scale_gosam" => "GoSam",
     "scale_nnlojet" => "NNLOJET",
@@ -16,8 +18,6 @@
     "sherpa" => "Sherpa+MINLO",
     "browser" => "Hist browser",
     "angular" => "Angular fits",
-    "hgam_binning" => "HGam binning",
-    "ntuples" => "Histograms",
   );
   $page2file = array(
     "browser" => "browser/browser",
@@ -25,7 +25,7 @@
     "scale_nnlojet" => "scale/nnlojet/page.php",
     "angular" => "angular/main.php",
     "hgam_binning" => "hgam_binning/main.php",
-    "ntuples" => "ntuples/main.php",
+    "hist" => "ntuples/main.php",
   );
   echo arrget($title,$page);
 ?></title>
@@ -33,7 +33,7 @@
 <?php if ($page==='hgam_binning') { ?>
 <link rel="stylesheet" href="hgam_binning/styles.css" type="text/css">
 <?php } ?>
-<?php if ($page==='ntuples') { ?>
+<?php if ($page==='hist') { ?>
 <link rel="stylesheet" href="ntuples/styles.css" type="text/css">
 <?php } ?>
 </head>
@@ -51,47 +51,38 @@
 <div id="nav">
 <ul>
   <?php page_li('hist') ?>
-  <li><p>Scale dependence</p>
-  <ul>
+  <li><p>Scale dependence</p><ul>
     <?php page_li('scale') ?>
     <?php page_li('scale_nnlojet') ?>
-  </ul>
-  </li>
-  <li><p><img src="icons/github.png" alt="">Code on GitHub</p>
-  <ul>
+  </ul></li>
+  <?php page_li('hgam_binning') ?>
+  <li><p><img src="icons/github.png" alt="">Code on GitHub</p><ul>
     <li><a href="https://github.com/ivankp/ntuple_analysis" target="_blank">
         ntuple_analysis</a></li>
     <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
         bh_analysis</a></li>
     <li><a href="https://github.com/ivankp/bh_analysis2" target="_blank">
         bh_analysis2</a></li>
-  </ul>
-  <li><p>References</p>
-  <ul>
+  </ul></li>
+  <li><p>References</p><ul>
     <li><a href="http://arxiv.org/abs/1310.7439" target="_blank">
       Ntuples for NLO [1310.7439]</a></li>
     <li><a href="http://arxiv.org/abs/1608.01195" target="_blank">
       Full mass dependence [1608.01195]</a></li>
-  </ul>
-  </li>
-  <li><p>Other</p>
-  <ul>
+  </ul></li>
+  <li><p>Other</p><ul>
+    <li><p>Notes</p><ul>
+      <li><a href="build.html">
+        Building from source</a></li>
+      <li><a href="INSTALL">
+        INSTALL</a></li>
+    </ul></li>
+    <?php page_li('old_hist') ?>
     <?php page_li('sherpa') ?>
     <?php page_li('unweighted') ?>
     <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
     <?php page_li('angular') ?>
-    <?php page_li('hgam_binning') ?>
-    <?php page_li('ntuples') ?>
-  </ul>
-  </li>
-  <li><p>Notes</p>
-  <ul>
-    <li><a href="build.html">
-      Building from source</a></li>
-    <li><a href="INSTALL">
-      INSTALL</a></li>
-  </ul>
-  </li>
+  </ul></li>
 </ul>
 </div>
 

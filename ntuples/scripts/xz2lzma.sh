@@ -6,6 +6,6 @@ for f in data/*.xz; do
   base=$(sed 's/\.xz$//' <<< $f)
   echo $base
   unxz $f
-  lzma $base
+  lzma -f $base
 done
 

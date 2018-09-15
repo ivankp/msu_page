@@ -122,7 +122,7 @@ function update_hist() {
       transform: 'translate('+(svg_w*0.76)+','+(svg_h*0.01)+')',
       'font-family': 'sans-serif',
       'font-size': 14,
-      'text-anchor': 'left'
+      'text-anchor': 'start'
     });
     g.append('rect').attrs({
       width: svg_h*0.03,
@@ -146,7 +146,7 @@ function update_hist() {
       transform: 'translate('+(svg_w*0.88)+','+(svg_h*0.01)+')',
       'font-family': 'sans-serif',
       'font-size': 14,
-      'text-anchor': 'left'
+      'text-anchor': 'start'
     });
     g.append('rect').attrs({
       width: svg_h*0.03,
@@ -163,7 +163,8 @@ function update_hist() {
   plot.hist('histogram', canv, hist_bins.map(
     (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, x[1]*factor ]
   ),{
-    color: '#000000',
+    color: ((hist_bins[0][2]!=null || hist_bins[0][3]!=null)
+            ? '#000000' : '#000099'),
     width: 2
   });
 
@@ -176,10 +177,11 @@ function update_hist() {
   if (overflow[1]!=null) info_div.el('p','Overflow: '
     + (overflow[1][0][0]*factor).toExponential(2)+' '+units());
 
+  console.log(file_info);
   file_info.forEach(x => { info_div.el('p',x); });
 
   const ann = data[menu.file].annotation;
-  let link = 'https://hep.pa.msu.edu/people/ivanp/?page=ntuples'
+  let link = 'https://hep.pa.msu.edu/people/ivanp/?page=hist'
     + '&file=' + menu.file
     + '&hist=' + menu.hist
     + ii.map((x,i) => '&'+ann.bins[i][0]+'='+ann.bins[i][1][x]).join('')
@@ -271,20 +273,18 @@ $(function() {
         });
         if (url_vars['logy']==='true') $('#logy').prop('checked',true);
         url_vars = null;
-        file_info = get_file_info(file);
       }
+      file_info = get_file_info(file);
 
       if (menu.hist)
         if (hsel.find('option').filter((i,e) => e.text == menu.hist)
           .prop('selected', true).trigger('change').length) return;
       leg.text(fname);
-
-      file_info = get_file_info(file);
     };
 
     if (!(fname in data)) {
       div.find('select').prop('disabled', true);
-      $('#loading').html('<p>Downloading: '+fname+'</p>');
+      $('#loading').html('<p>Downloading '+fname+'</p>');
       fetch(data_path(fname)).then(r => r.arrayBuffer()).then(buf => {
         LZMA.decompress(
           new Uint8Array(buf),
@@ -294,7 +294,7 @@ $(function() {
           },
           function(frac) {
             $('#loading').html(
-              frac<1 ? '<p>Decompressing: '+frac*100+'%</p>' : '');
+              frac<1 ? '<p>Decompressing '+fname+'</p>' : '');
           }
         )
       });
