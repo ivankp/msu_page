@@ -1,10 +1,14 @@
-function make_svg(selection,width,height) {
+var plot = (function() {
+
+return {
+
+make_svg: function(selection,width,height) {
   let el = d3.select(selection);
   el.select('svg').remove();
   return el.append('svg').attr('width',width).attr('height',height);
-}
+},
 
-function canvas(svg,axes) {
+canvas: function(svg,axes) {
   let w = parseInt(svg.attr('width')), h = parseInt(svg.attr('height'));
   svg.selectAll('g.axis').remove();
   return { svg: svg, scale: axes.map((a,i,as) => {
@@ -32,9 +36,9 @@ function canvas(svg,axes) {
     }
     return scale;
   }) };
-}
+},
 
-function hist(id,canv,data,args) {
+hist: function(id,canv,data,args) {
   canv.svg.select('#'+id).remove();
   let s = canv.scale;
   canv.svg.append('g').attr('id',id)
@@ -57,9 +61,9 @@ function hist(id,canv,data,args) {
         'stroke-width': args.width
       }));
     });
-}
+},
 
-function band(id,canv,data,style) {
+band: function(id,canv,data,style) {
   canv.svg.select('#'+id).remove();
   let s = canv.scale;
   let points = [ ];
@@ -75,17 +79,19 @@ function band(id,canv,data,style) {
   canv.svg.append('polygon').attr('id',id).attr('points',
     points.map(p => p.map((x,i) => s[i](x)).join(',')).join(' ')
   ).attr('style',style);
-}
+},
 
-function curve(id,canv,points) {
+// legend: function()
+
+curve: function(id,canv,points) {
   canv.svg.select('#'+id).remove();
   return canv.svg.append('path').attr('id',id).attr('d',
     d3.line().curve(d3.curveCardinal)(points.map(
       p => [ canv.scale[0](p[0]), canv.scale[1](p[1]) ]
     )) );
-}
+},
 
-function fcurve(id,canv,args) {
+fcurve: function(id,canv,args) {
   let points = [];
   let d = (args.b-args.a)/(args.n-1);
   for (let i=0; i<args.n; ++i) {
@@ -93,9 +99,9 @@ function fcurve(id,canv,args) {
     points.push([x,args.f(x)]);
   }
   return curve(id, canv, points);
-}
+},
 
-function hist_yrange(ys,logy) {
+hist_yrange: function(ys,logy) {
   let min = Number.MAX_VALUE;
   let max = (logy ? 0 : Number.MIN_VALUE);
 
@@ -132,3 +138,6 @@ function hist_yrange(ys,logy) {
   }
   return [ min, max ];
 }
+
+};
+})();

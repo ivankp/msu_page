@@ -96,12 +96,12 @@ function update_hist() {
   if (ui) factor *= 1e3;
 
   let ys = min_ys.concat(max_ys);
-  yrange = hist_yrange(ys.map(y => y*factor),logy);
+  yrange = plot.hist_yrange(ys.map(y => y*factor),logy);
 
-  const svg = make_svg('#plot',788,533)
+  const svg = plot.make_svg('#plot',788,533)
     .attr('version','1.1')
     .attr('xmlns','http://www.w3.org/2000/svg');
-  const canv = canvas(svg, [
+  const canv = plot.canvas(svg, [
     { range: hist_axes[0].range, padding: [43,10], label: menu.hist, values:
       xn < 12 ? indices(xn+1).map(i=>xedge(i)): null },
     { range: yrange, padding: [45,5], log: logy, label:
@@ -110,25 +110,27 @@ function update_hist() {
 
   if (hist_bins[0][2]!=null) {
     const scale_unc = hist_bins.map(x => x[2].map(x => x*factor));
-    band('scale_unc', canv, {
+    plot.band('scale_unc', canv, {
         edges: indices(xn+1).map(i=>xedge(i)),
         bins : scale_unc
       },'fill:#FF0000;fill-opacity:0.5;');
   }
   if (hist_bins[0][3]!=null) {
     const pdf_unc = hist_bins.map(x => x[3].map(x => x*factor));
-    band('pdf_unc', canv, {
+    plot.band('pdf_unc', canv, {
         edges: indices(xn+1).map(i=>xedge(i)),
         bins : pdf_unc
       },'fill:#0000FF;fill-opacity:0.5;');
   }
 
-  hist('histogram', canv, hist_bins.map(
+  plot.hist('histogram', canv, hist_bins.map(
     (x,i) => [ xedge(i), xedge(i+1), x[0]*factor, x[1]*factor ]
   ),{
     color: '#000000',
     width: 2
   });
+
+
 
   let info_div = $('#menu > .info');
   if (info_div.length) info_div.empty();
@@ -199,7 +201,7 @@ $(function() {
 
       const ann_bins = file.annotation.bins.slice(0,-1);
       ii = ann_bins.map(x=>0);
-      $('.bin').remove();
+      $('select.bin').remove();
       ann_bins.forEach((x,i) => {
         let bsel = div.el('select').attr('class','bin')
           .css({'display':'block'});
@@ -209,6 +211,7 @@ $(function() {
           update_hist();
         });
       });
+      $('select.weight').remove();
       let wsel = div.el('select').attr('class','weight')
         .css({'display':'block'});
       file.annotation.weights.forEach(x => { wsel.el('option',x); });
@@ -228,7 +231,7 @@ $(function() {
           })
         });
         wi = file.annotation.weights.indexOf(url_vars.weight);
-        div.find('select.weight').find('option').each((i,opt) => {
+        wsel.find('option').each((i,opt) => {
           if (i == wi) opt.selected = true;
         });
         if (url_vars['logy']==='true') $('#logy').prop('checked',true);
@@ -246,13 +249,17 @@ $(function() {
 
     if (!(fname in data)) {
       div.find('select').prop('disabled', true);
+      $('#loading').html('<p>Downloading: '+fname+'</p>');
       fetch(data_path(fname)).then(r => r.arrayBuffer()).then(buf => {
         LZMA.decompress(
           new Uint8Array(buf),
           function(result, error) {
-            const file = data[fname] = JSON.parse(result);
-            update(file);
+            update((data[fname] = JSON.parse(result)));
             div.find('select').prop('disabled', false);
+          },
+          function(frac) {
+            $('#loading').html(
+              frac<1 ? '<p>Decompressing: '+frac*100+'%</p>' : '');
           }
         )
       });

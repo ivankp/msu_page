@@ -17,3 +17,10 @@ div.info {
   font-family: monospace;
 }
 
+#loading > p {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #A10C0C;
+}
+
