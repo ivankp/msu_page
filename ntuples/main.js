@@ -98,7 +98,7 @@ function update_hist() {
   let ys = min_ys.concat(max_ys);
   yrange = plot.hist_yrange(ys.map(y => y*factor),logy);
 
-  const svg = plot.make_svg('#plot',788,533)
+  const svg = plot.make_svg('#plot',788,533,'white')
     .attr('version','1.1')
     .attr('xmlns','http://www.w3.org/2000/svg');
   const canv = plot.canvas(svg, [
@@ -108,19 +108,56 @@ function update_hist() {
         (factor<0 ? '\u2212 ' : '') + 'cross section [' + units() + ']' }
   ]);
 
+  let svg_w = canv.svg.attr('width');
+  let svg_h = canv.svg.attr('height');
+
+  canv.svg.select('#scale_unc_leg').remove();
   if (hist_bins[0][2]!=null) {
     const scale_unc = hist_bins.map(x => x[2].map(x => x*factor));
     plot.band('scale_unc', canv, {
         edges: indices(xn+1).map(i=>xedge(i)),
         bins : scale_unc
       },'fill:#FF0000;fill-opacity:0.5;');
+    let g = canv.svg.append('g').attr('id','scale_unc_leg').attrs({
+      transform: 'translate('+(svg_w*0.76)+','+(svg_h*0.01)+')',
+      'font-family': 'sans-serif',
+      'font-size': 14,
+      'text-anchor': 'left'
+    });
+    g.append('rect').attrs({
+      width: svg_h*0.03,
+      height: svg_h*0.03,
+      style: 'fill:#FF0000;fill-opacity:0.5;'
+    });
+    g.append('text').attrs({
+      x: svg_h*0.04,
+      y: svg_h*0.025,
+      fill: 'black'
+    }).text('scale unc');
   }
+  canv.svg.select('#pdf_unc_leg').remove();
   if (hist_bins[0][3]!=null) {
     const pdf_unc = hist_bins.map(x => x[3].map(x => x*factor));
     plot.band('pdf_unc', canv, {
         edges: indices(xn+1).map(i=>xedge(i)),
         bins : pdf_unc
       },'fill:#0000FF;fill-opacity:0.5;');
+    let g = canv.svg.append('g').attr('id','pdf_unc_leg').attrs({
+      transform: 'translate('+(svg_w*0.88)+','+(svg_h*0.01)+')',
+      'font-family': 'sans-serif',
+      'font-size': 14,
+      'text-anchor': 'left'
+    });
+    g.append('rect').attrs({
+      width: svg_h*0.03,
+      height: svg_h*0.03,
+      style: 'fill:#0000FF;fill-opacity:0.5;'
+    });
+    g.append('text').attrs({
+      x: svg_h*0.04,
+      y: svg_h*0.025,
+      fill: 'black'
+    }).text('PDF unc');
   }
 
   plot.hist('histogram', canv, hist_bins.map(
@@ -129,8 +166,6 @@ function update_hist() {
     color: '#000000',
     width: 2
   });
-
-
 
   let info_div = $('#menu > .info');
   if (info_div.length) info_div.empty();

@@ -2,10 +2,17 @@ var plot = (function() {
 
 return {
 
-make_svg: function(selection,width,height) {
+make_svg: function(selection,width,height,bkg=null) {
   let el = d3.select(selection);
   el.select('svg').remove();
-  return el.append('svg').attr('width',width).attr('height',height);
+  let svg = el.append('svg').attr('width',width).attr('height',height);
+  if (bkg!=null)
+    svg.append('rect').attrs({
+      'width': width,
+      'height': height,
+      'fill': bkg
+    });
+  return svg;
 },
 
 canvas: function(svg,axes) {
@@ -80,8 +87,6 @@ band: function(id,canv,data,style) {
     points.map(p => p.map((x,i) => s[i](x)).join(',')).join(' ')
   ).attr('style',style);
 },
-
-// legend: function()
 
 curve: function(id,canv,points) {
   canv.svg.select('#'+id).remove();
