@@ -181,14 +181,15 @@ function update_hist() {
   file_info.forEach(x => { info_div.el('p',x); });
 
   const ann = data[menu.file].annotation;
-  let link = 'https://hep.pa.msu.edu/people/ivanp/?page=hist'
-    + '&file=' + menu.file
+  let link
+    = '&file=' + menu.file
     + '&hist=' + menu.hist
     + ii.map((x,i) => '&'+ann.bins[i][0]+'='+ann.bins[i][1][x]).join('')
     + '&weight=' + ann.weights[wi];
-  if (logy) link += '&logy=true';
+  let permalink = 'https://hep.pa.msu.edu/people/ivanp/?page=hist' + link;
+  if (logy) permalink += '&logy=true';
   info_div.el('p').el('a','&#x1f517; permalink')
-    .attr('href',encodeURI(link)).attr('target','_blank');
+    .attr('href',encodeURI(permalink)).attr('target','_blank');
 
   var svgBlob = new Blob(
     [ '<?xml version="1.0" encoding="UTF-8" ?>\n', $("#plot").html() ],
@@ -197,6 +198,11 @@ function update_hist() {
   info_div.el('p').el('a','save svg')
     .attr('href',URL.createObjectURL(svgBlob))
     .attr('download',menu.file+'_'+menu.hist+'.svg');
+
+  var datalink = 'https://hep.pa.msu.edu/people/ivanp/ntuples/get_hist.php?'
+    + link;
+  info_div.el('p').el('a','{JSON} histogram data')
+    .attr('href',encodeURI(datalink)).attr('target','_blank');
 }
 
 function get_file_info(file) {
