@@ -1,0 +1,211 @@
+(run){
+  % general settings
+  $RUNNAME:=GGFHT;
+  $BENERGY:=6500;
+  EVENTS 5M; ERROR 0.05;
+  RANDOM_SEED $RNDSEED1 $RNDSEED2;
+
+  % tags for model
+  $mZ:=91.1876;
+  $mW:=80.419;
+  $mH:=125.0;
+  $wZ:=2.4900;
+  $wW:=2.0476;
+  $wH:=0.0;
+
+  % tags and settings for scale definitions
+  $SCF:=4.0; $FSF:=$SCF; $RSF:=$SCF;
+  $NJETS:=3.0; $QCUT:=25.0; $ETACUT:=4.5;
+  $FAC_SCALE2:=sqr($FSF)*sqr(0.5)*sqr(sqrt(H_T2)-PPerp(p[2])+MPerp(p[2]));
+  $REN_SCALE2:=sqr($RSF)*sqr(0.5)*sqr(sqrt(H_T2)-PPerp(p[2])+MPerp(p[2]));
+
+  % For MiNLO
+  SCALES MINLO;
+  KFACTOR MINLO;
+  MINLO_NOUT_MIN=1;
+  # ROOTNTUPLE_LO_MODE=1
+  % For ordering of the scales in the branchings (default is 0)
+  # MINLO_FORCE_ORDER=1;
+  CORE_SCALE VAR{$REN_SCALE2}
+  SHERPA_LDADD MINLO;
+
+  % tags and settings for ME generators
+  $DIPAL:=0.01;
+  $NLOPART:=B;
+  $LOOPGEN:=LHOLE;
+  ME_SIGNAL_GENERATOR   Comix $LOOPGEN;
+  EVENT_GENERATION_MODE Weighted;
+  RESULT_DIRECTORY      Results/Res_$RUNNAME_$BENERGY_$NLOPART_d$DIPAL/;
+  DIPOLE_ALPHA          $DIPAL;
+  USE_DUMMY_VIRTUAL     1;
+
+  % LHOLE settings
+  # LHOLE_OLP          GoSam;
+  # LHOLE_IR_REGULARISATION CDR;
+  # LHOLE_CONTRACTFILE OLE_order.olc;
+  # SHERPA_LDADD       golem_olp;
+
+  % pole checks & debugging
+  # CHECK_POLES 1;
+  # CHECK_POLES_THRESHOLD 1e-7;
+  # PRINT_PS_POINTS 0;
+  # SHOW_ANALYSIS_SYNTAX=1;
+
+  % model parameters
+  MODEL HEFT;
+  EW_SCHEME 0;
+  WIDTH_SCHEME Fixed;
+  MASS[23]=$mZ; WIDTH[23]=$wZ;
+  MASS[24]=$mW; WIDTH[24]=$wW;
+  MASS[25]=$mH; WIDTH[25]=$wH;
+  YUKAWA[5] =0;
+  YUKAWA[15]=0;
+  STABLE[5] =1;
+  VEV = 246.0;
+
+  % analysis settings
+  ANALYSIS Rivet;
+  ANALYSIS_OUTPUT ana_H2j_GGFHT_B_6500_pt25.0_eta4.5_r100_100_fsf$FSF_rsf$RSF;
+  % NTuple input
+  EVT_FILE_PATH /msu/data/t3work4/luisonig/H2jets_ggf/NTuplesFiles;
+  EVENT_INPUT Root[/msu/data/t3work4/luisonig/H2jets_ggf/NTuplesFiles/H2.0j_GGFHT_B_6500_pt25.0_eta4.5_r100_100];
+
+  % PDF settings
+  PDF_LIBRARY LHAPDFSherpa;
+  USE_PDF_ALPHAS=1;
+  PDF_SET     CT10nnlo;
+
+  % collider setup
+  BEAM_1  2212; BEAM_ENERGY_1 $BENERGY;
+  BEAM_2  2212; BEAM_ENERGY_2 $BENERGY;
+  K_PERP_MEAN_1 0.; K_PERP_SIGMA_1 0.;
+  K_PERP_MEAN_2 0.; K_PERP_SIGMA_2 0.;
+}(run);
+
+(processes){
+  ### The Born piece
+  Process 93 93 -> 25 93 93 93;
+  NLO_QCD_Mode Fixed_Order;
+  NLO_QCD_Part $NLOPART;
+  Loop_Generator $LOOPGEN;
+  Order_EW 1;
+  End process;
+}(processes);
+
+(selector){
+  MinSelector {
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.1 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.1 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.2 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.2 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.3 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.3 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.4 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.4 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.5 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.5 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.6 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.6 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.7 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.7 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.8 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.8 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 0.9 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 0.9 0.75 $ETACUT
+    FastjetFinder antikt  $NJETS $QCUT 0. 1.0 0.75 $ETACUT
+    FastjetFinder kt      $NJETS $QCUT 0. 1.0 0.75 $ETACUT
+    }
+}(selector)
+
+(analysis){
+    BEGIN_RIVET {
+       -a MC_HJETS_LH15;
+       USE_HEPMC_SHORT 1;
+       IGNOREBEAMS 1;
+    } END_RIVET
+}(analysis);
+
+(analysis){
+    BEGIN_ANALYSIS {
+        LEVEL MENLO
+        PATH_PIECE H2j_$RUNNAME_$NLOPART_fs$FSF_rs$RSF_r$RNDSEED1_$RNDSEED2
+
+	% Select partons
+        PartSel {
+            InList FinalState;
+            OutList partons;
+            Qual Parton;
+        }
+	% Non QCD particle
+	PartSel {
+            InList FinalState;
+            OutList Higgs;
+            Qual !Parton;
+        }
+	% Apply JetAlg to all partons
+        FastJets {
+            InList    partons
+            OutList   AnyNJets
+            PTMin     30.
+	    EtaMax    4.4
+            Algorithm antikt
+      	    Scheme    E	    
+            R         0.4
+      	    p         1.0
+     	    Strategy  Best
+	    BTag      0
+        }
+
+	NJetsMinMax  2   100  AnyNJets TwoJets
+	MergeLists     Higgs  TwoJets  H2Jets
+
+	% Total XS
+	XS							         AnyNJets
+	InclMulti		       0.    5.      5           LinErr  AnyNJets
+	Multi			       0.    5.      5           LinErr  AnyNJets
+	XS							         TwoJets
+	InclMulti		       0.    5.      5           LinErr  TwoJets
+	Multi			       0.    5.      5           LinErr  TwoJets
+
+	% Inclusive jets
+        JetPT			       0.  300.     60  1  1  4  LinErr	 TwoJets
+        JetPT			       0.  500.    200  1  1  4  LinErr	 TwoJets
+        JetPT			       0   500.    100  1  1  4  LinErr  TwoJets
+        JetPT			       0.  500.     50  1  1  4  LinErr  TwoJets
+        JetRap			      -5.    5.     20  1  1  4  LinErr  TwoJets
+        JetEta			      -5.    5.     40  1  1  4  LinErr  TwoJets
+        JetEta			      -5.    5.     20  1  1  4  LinErr  TwoJets
+        JetDiMass            	       0. 1000.     25  1  1  3  LinErr  TwoJets
+        JetDiMass            	       0. 1000.    100  1  1  3  LinErr  TwoJets
+        JetDY			       0.   10.     20  1  1  3  LinErr  TwoJets
+        JetDPhi			       0.    3.14   20  1  1  3  LinErr  TwoJets
+        JetDR                	       0.    5.     10  1  1  3  LinErr  TwoJets
+        JetDR			       0.    5.     50  1  1  3  LinErr  TwoJets
+        Y3Star                	      -5.    5.     20  1  1  3  LinErr  TwoJets
+
+	% Exclusive jets
+        JetPT                	       0.  300.     60  2  1  4  LinErr	 TwoJets
+        JetPT                	       0.  500.    100  2  1  4  LinErr	 TwoJets
+        JetRap			      -5.    5.     20  2  1  4  LinErr  TwoJets
+        JetEta              	      -5.    5.     20  2  1  4  LinErr  TwoJets
+
+	% Higgs observables
+        HT			       0.  500.     50           LinErr  H2Jets
+        HT                   	       0.  500.     20           LinErr  H2Jets
+        PT          25		       0.  300.     60           LinErr  H2Jets
+        PT          25		       0.  500.    100           LinErr  H2Jets
+        PT          25		       0.  200.     50           LinErr  H2Jets
+        Eta         25		      -5.    5.     20           LinErr  H2Jets
+        Eta         25		      -5.    5.    100           LinErr  H2Jets
+        Eta         25       	      -5.    5.     40           LinErr  H2Jets
+        Y           25       	      -5.    5.     20           LinErr  H2Jets
+        Y           25       	      -5.    5.    100           LinErr  H2Jets
+        Y           25       	      -5.    5.     40           LinErr  H2Jets
+
+	% Higgs and jets observables
+	PT3         25   93   93       0.  300.     60           LinErr  H2Jets
+	DPhi3	    93   93   25       0.    3.14   20           LinErr  H2Jets
+	Ystar3abs   25   93   93       0.   10.     20           LinErr  H2Jets
+
+    } END_ANALYSIS;
+}(analysis)

@@ -1,0 +1,179 @@
+<h1 align="center">Building from Source</h1>
+<p>
+In this note, I discuss building software, important for programming and
+running simulations and data analysis in High Energy Physics.
+This includes software developed within the HEP community, as well as newer
+versions of compilers and other utilities.
+</p><p>
+The basic assumption will be that you are using a Linux system, on which you
+don't necessarily have <code>root</code> access.
+Hence, examples will assume installation in some convenient directory, where
+one has write access, rather than <code>/usr</code>. I'll refer to it as
+<code>/opt/soft</code>.
+</p><p>
+Being not an expert on all the individual software packages, I've come up with
+the intallation procedures to my best ability, from the information that I was
+able to gather on the internet, largely from
+<a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a> and
+<a href="http://www.linuxfromscratch.org/lfs/view/development/" target="_blank">
+  Linux from Scratch</a> (for basic GNU utilities).
+</p>
+
+<hr/>
+
+<h2>Table of Contents</h2>
+<ul class="toc">
+  <li><a href="#utilities">Compilers and Utilities</a></li>
+  <ul>
+    <li><a href="#gcc.binutils">GCC and Binutils</a></li>
+  </ul>
+  <li><a href="#physics">Physics software</a></li>
+  <ul>
+  </ul>
+</ul>
+
+<hr/>
+
+<h2><a id="utilities"></a>Compilers and Utilities</h2>
+
+<p class="shell">
+env_pre() { export $1=$2${!1:+:${!1}} ; }
+</p>
+<p class="shell">
+env_suf() { export $1=${!1:+${!1}:}$2 ; }
+</p>
+<p class="todo">Explain these functions</p>
+
+<h3><a id="gcc.binutils"></a>GCC and Binutils</h3>
+
+<p>
+<a target="_blank" href="http://gcc.gnu.org/">GCC</a>:
+<a target="_blank" href="http://ftp.gnu.org/gnu/gcc/" class="dl"></a>
+<br/>
+<a target="_blank" href="https://www.gnu.org/software/binutils/">Binutils</a>:
+<a target="_blank" href="https://ftp.gnu.org/gnu/binutils/" class="dl"></a>
+</p>
+
+<p>
+Last time I compilied <code>gcc</code>, I did a two pass compilation, compiling
+<code>gcc</code> once, then <code>binutils</code>, then <code>gcc</code> again,
+using the new <code>binutils</code>. I'm not sure if this is strictly
+necessary, or what the effects are of compiling one or the other first. I would
+like to get this resolved, but as of now I haven't. Here, I document the
+procedure I performed.
+</p>
+
+<p>
+<code>gcc</code> and <code>binutils</code> have several dependencies:
+</p>
+<ul>
+  <li>
+    <a target="_blank" href="https://gmplib.org/">GMP</a>:
+    <a target="_blank" href="https://gmplib.org/#DOWNLOAD" class="dl"></a>
+  </li><li>
+    <a target="_blank" href="http://www.mpfr.org/">MPFR</a>:
+    <a target="_blank" href="http://www.mpfr.org/mpfr-current/#download" class="dl"></a>
+  </li><li>
+    <a target="_blank" href="http://www.multiprecision.org/">MPC</a>:
+    <a target="_blank" href="http://www.multiprecision.org/index.php?prog=mpc&page=download" class="dl"></a>
+  </li><li>
+    <a target="_blank" href="http://freecode.com/projects/isl">ISL</a>:
+    <a target="_blank" href="http://isl.gforge.inria.fr/" class="dl"></a>
+  </li><li>
+    <a target="_blank" href="https://www.cloog.org/">CLooG</a>:
+    <a target="_blank" href="https://www.bastoul.net/cloog/download.php" class="dl"></a>
+  </li>
+</ul>
+
+<p>
+These don't need to be compiled separately. Both <code>gcc</code> and
+<code>binutils</code> can build them <em>in-tree</em>.
+
+<p class="todo">Links for in-tree build</p>
+
+<h4><code>gcc</code>: 1<sup>st</sup> compilation</h4>
+
+<p class="shell">
+configure --prefix=/opt/soft/gcc1 --build=x86_64-redhat-linux
+--enable-languages=c,c++ --with-default-libstdcxx-abi=gcc4-compatible
+--enable-threads=posix --enable-lto --with-long-double-128 --enable-long-long
+--with-system-zlib --disable-nls --disable-libstdcxx-pch
+</p>
+<p class="shell"> make </p>
+<p class="shell"> make install </p>
+<p>
+As a finishing touch, create a symlink. Many programs and scripts run cc
+instead of gcc, which is used to keep programs generic and therefore usable on
+all kinds of UNIX systems where the GNU C compiler is not always installed.
+Running cc leaves the system administrator free to decide which C compiler to
+install
+[--<a href=
+  "http://www.linuxfromscratch.org/lfs/view/development/chapter05/gcc-pass2.html"
+  target="_blank">LFS</a>]:
+</p>
+<p class="shell">
+ln -s gcc /opt/soft/gcc1/bin/cc
+</p>
+
+<h4><code>binutils</code></h4>
+
+<p class="shell">
+env_pre PATH /opt/soft/gcc1/bin
+</p>
+<p class="shell">
+export CC=$(which gcc) CXX=$(which g++)
+</p>
+<p class="shell">
+configure --prefix=/opt/soft
+--build=x86_64-redhat-linux --enable-ld=default --enable-gold --enable-lto
+--enable-plugins --enable-shared --with-system-zlib --disable-nls
+</p>
+
+<h4><code>gcc</code>: 2<sup>nd</sup> compilation</h4>
+
+<p class="shell">
+env_pre PATH /opt/soft/bin
+</p>
+<p class="shell">
+env_pre LD_LIBRARY_PATH /opt/soft/lib
+</p>
+<p class="shell">
+env_pre LIBRARY_PATH /opt/soft/lib
+</p>
+<p class="shell">
+env_pre C_INCLUDE_PATH /opt/soft/include
+</p>
+<p class="shell">
+env_pre CPLUS_INCLUDE_PATH /opt/soft/include
+</p>
+<p class="shell">
+configure --prefix=/opt/soft/gcc
+--build=x86_64-redhat-linux --enable-languages=c,c++,fortran
+--with-default-libstdcxx-abi=gcc4-compatible --enable-threads=posix
+--with-long-double-128 --enable-long-long --enable-lto --with-system-zlib
+--disable-nls
+</p>
+<p class="shell"> make </p>
+<p class="shell"> make install </p>
+
+<h4>Finishing up</h4>
+
+<p>
+At this point it should be save to remove <code>/opt/soft/gcc1</code>.
+</p><p>
+The environmental script should now look like:
+</p><p class="code">
+env_pre PATH "/opt/soft/gcc/bin:/opt/soft/bin"<br/>
+env_pre LD_LIBRARY_PATH "/opt/soft/gcc/lib64:/opt/soft/gcc/lib:/opt/soft/lib64:/opt/soft/lib"<br/>
+env_pre LIBRARY_PATH "/opt/soft/lib"<br/>
+env_pre C_INCLUDE_PATH "/opt/soft/include"<br/>
+env_pre CPLUS_INCLUDE_PATH "/opt/soft/include"<br/>
+env_pre MANPATH "/opt/soft/share/man"<br/>
+env_pre PKG_CONFIG_PATH "/opt/soft/lib/pkgconfig"<br/>
+<br/>
+export CC=/opt/soft/bin/gcc<br/>
+export CXX=/opt/soft/bin/g++<br/>
+</p>
+
+
+<h2><a id="physics"></a>Physics software</h2>

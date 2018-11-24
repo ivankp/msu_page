@@ -1,139 +1,127 @@
 <!DOCTYPE HTML>
+<?php
+function get($var, $default=null) { return isset($var) ? $var : $default; }
+
+function test($x) { echo "\n<!-- ".$x." -->\n"; }
+
+$is_mobile = preg_match(
+  "/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini".
+  "|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i",
+  $_SERVER["HTTP_USER_AGENT"]);
+
+$menu = json_decode(file_get_contents('menu.json'),true);
+$pages = $menu['pages'];
+$this_page = get($_GET['page'],'hist');
+function get_prop($prop,$default=null) {
+  global $pages, $this_page;
+  return get($pages[$this_page][$prop],$default);
+}
+
+$page_base = preg_split('~/(?=[^/]*$)~',get_prop('page',$this_page));
+$dir = 'pages';
+if (count($page_base)==1) $page_base = $page_base[0];
+else {
+  $dir = $dir.'/'.$page_base[0];
+  $page_base = $page_base[1];
+}
+$page_base_len = strlen($page_base);
+$page_file = null;
+$page_is_txt = false;
+foreach (scandir($dir) as $f) {
+  if (strncmp($f,$page_base,$page_base_len)) continue;
+  $ext = substr($f,$page_base_len);
+  if ($ext=='.php' || $ext=='.html') {
+    $page_file = $dir.'/'.$page_base.$ext; break;
+  }
+  if (!$ext) {
+    if (!is_dir($dir.'/'.$page_base)) continue;
+    $dir = $dir.'/'.$page_base;
+    foreach (scandir($dir) as $f) {
+      if (strncmp($f,$page_base,$page_base_len)) continue;
+      $ext2 = substr($f,$page_base_len);
+      if ($ext2=='.php' || $ext2=='.html') {
+        $page_file = $dir.'/'.$page_base.$ext2; break;
+      }
+    }
+    break;
+  }
+  if ($ext=='.txt') {
+    $page_is_txt = true;
+    $page_file = $dir.'/'.$page_base.'.txt'; break;
+  }
+}
+?>
 <html lang="en-US">
 <head>
-<title><?php
-  function get(&$var, $default=null) { return isset($var) ? $var : $default; }
-  function arrget(&$arr, $x) { return get($arr[$x],$x); }
+<title><?php echo get_prop('title',get_prop('name',$this_page)); ?></title>
 
-  $page = get($_GET['page'],'hist');
-  $title = array(
-    "" => "Index",
-    "hist" => "Histograms",
-    "old_hist" => "Old histograms",
-    "hgam_binning" => "HGam binning",
-    "scale" => "GoSam",
-    "scale_gosam" => "GoSam",
-    "scale_nnlojet" => "NNLOJET",
-    "unweighted" => "Unweighted",
-    "sherpa" => "Sherpa+MINLO",
-    "browser" => "Hist browser",
-    "angular" => "Angular fits",
-  );
-  $page2file = array(
-    "browser" => "browser/browser",
-    "scale_gosam" => "scale/gosam/page.php",
-    "scale_nnlojet" => "scale/nnlojet/page.php",
-    "angular" => "angular/main.php",
-    "hgam_binning" => "hgam_binning/main.php",
-    "hist" => "ntuples/main.php",
-  );
-  echo arrget($title,$page);
-?></title>
-<link rel="stylesheet" href="styles.css" type="text/css">
-<?php if ($page==='hgam_binning') { ?>
-<link rel="stylesheet" href="hgam_binning/styles.css" type="text/css">
-<?php } ?>
-<?php if ($page==='hist') { ?>
-<link rel="stylesheet" href="ntuples/styles.css" type="text/css">
-<?php } ?>
-</head>
+<?php
+function link_css($css) {
+  echo '<link rel="stylesheet" href="'.$css.'" type="text/css">'."\n";
+}
+link_css('styles.css');
+if (array_key_exists($this_page,$pages)) {
+  foreach ($pages[$this_page]['css'] as $css) link_css($css);
+}
+if ($dir!='pages') {
+  $css = $dir.'/styles.css';
+  if (file_exists($css)) link_css($css);
+}
+?>
 
 <body>
 
-<?php
-  function page_li($p) {
-    echo '<li';
-    if ($GLOBALS['page'] === $p) echo ' class="current-menu-item"';
-    echo '><a href="?page='.$p.'">'.$GLOBALS['title'][$p]."</a></li>\n";
-  }
-?>
-
 <div id="nav">
 <ul>
-  <?php page_li('hist') ?>
-  <li><p>Scale dependence</p><ul>
-    <?php page_li('scale') ?>
-    <?php page_li('scale_nnlojet') ?>
-  </ul></li>
-  <?php page_li('hgam_binning') ?>
-  <li><p><img src="icons/github.png" alt="">Code on GitHub</p><ul>
-    <li><a href="https://github.com/ivankp/ntuple_analysis" target="_blank">
-        ntuple_analysis</a></li>
-    <li><a href="https://github.com/ivankp/bh_analysis" target="_blank">
-        bh_analysis</a></li>
-    <li><a href="https://github.com/ivankp/bh_analysis2" target="_blank">
-        bh_analysis2</a></li>
-  </ul></li>
-  <li><p>References</p><ul>
-    <li><a href="http://arxiv.org/abs/1310.7439" target="_blank">
-      Ntuples for NLO [1310.7439]</a></li>
-    <li><a href="http://arxiv.org/abs/1608.01195" target="_blank">
-      Full mass dependence [1608.01195]</a></li>
-  </ul></li>
-  <li><p>Other</p><ul>
-    <li><p>Notes</p><ul>
-      <li><a href="build.html">
-        Building from source</a></li>
-      <li><a href="INSTALL">
-        INSTALL</a></li>
-    </ul></li>
-    <?php page_li('old_hist') ?>
-    <?php page_li('sherpa') ?>
-    <?php page_li('unweighted') ?>
-    <li><a href="https://hep.pa.msu.edu/resum/more/ivanp/" target="_blank">CSV files</a></li>
-    <?php page_li('angular') ?>
-  </ul></li>
+<?php
+function make_menu($page, $x) {
+  global $this_page, $pages;
+  echo '<li';
+  if ($page === $this_page) echo ' class="current-menu-item"';
+  echo '>';
+  $text = get($x['name'],$page);
+  if ($x['icon']) {
+    $text = '<img src="img/icons/'.$x['icon'].'" alt="">'.$text;
+  }
+  if ($x['link']) {
+    echo '<a href="'.$x['link'].'" target="_blank">'.$text.'</a>';
+  } else if ($x['page'] !== false) {
+    echo '<a href="?page='.$page.'">'.$text.'</a>';
+  } else echo '<p>'.$text.'</p>';
+  if (array_key_exists('sub',$x)) {
+    echo "\n<ul>";
+    foreach ($x['sub'] as $sub) make_menu($sub,$pages[$sub]);
+    echo "</ul>\n";
+  }
+  echo "</li>\n";
+}
+foreach ($menu['top'] as $page) make_menu($page,$pages[$page]);
+?>
 </ul>
 </div>
 
+<div id="main">
 <?php
-  function endsWith($str, $end) {
-    $len = strlen($end);
-    return $len === 0 || (substr($str,-$len) === $end);
-  }
-
-  function find_without_ext($name) {
-    $exts = array('.php','.html');
-    foreach ($exts as &$ext) {
-      if (endsWith($name,$ext)) return file_exists($name) ? $name : null;
-    }
-    foreach ($exts as &$ext) {
-      $full = $name . $ext;
-      if (file_exists($full)) return $full;
-    }
-    return null;
-  }
-
-  $page_file = find_without_ext(arrget($page2file,$page));
+if ($page_is_txt)
+  echo "<div style=\"white-space: pre-wrap; font-family:monospace;\">\n";
+if ($page_file) include $page_file;
+else include 'not_found.html';
+if ($page_is_txt) echo "</div>\n";
 ?>
+</div>
 
-<?php
-  function isMobile() {
-    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
-  }
-
-  if (!isMobile()) {
-?>
+<?php if (!$is_mobile) { ?>
 <div id="date"> Last updated:
 <?php
   echo $page_file ? date("F d Y H:i",filemtime($page_file)) : '?';
 ?>
 </div>
-<?php
-  }
-?>
-
-<div id="main">
-<?php
-  include $page_file ? $page_file : 'page_not_found.html';
-?>
-</div>
 
 <div id="w3c">
 <a href="" target="_blank" id="valid_html">
-<img src="icons/valid_html_blue.png" alt="valid html"></a>
+<img src="img/icons/valid_html_blue.png" alt="valid html"></a>
 <a href="" target="_blank" id="valid_css">
-<img src="icons/valid_css_blue.png" alt="valid css"></a>
+<img src="img/icons/valid_css_blue.png" alt="valid css"></a>
 </div>
 
 <script>
@@ -143,6 +131,7 @@
     "http://jigsaw.w3.org/css-validator/validator?uri="
     + document.styleSheets[0].href);
 </script>
+<?php } ?>
 
 </body>
 </html>

@@ -6,28 +6,15 @@
 !*.php
 !*.css
 !*.js
+!*.json
 
-!/icons
-!/eq
-!/scripts
+!/pages
 
-!/browser
-/browser/files
-/browser/bin
+!/img
 
-!/scale
-/scale/gosam/data
-
-!/angular
-
-!/hgam_binning
-/hgam_binning/bin
-/hgam_binning/lib
-/hgam_binning/vars/*.dat
-/hgam_binning/visitors.txt
-
-!/ntuples
-/ntuples/data
+!/js
+/js/*
+!/js/my
 
 **.swp
 **.db

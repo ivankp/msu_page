@@ -1,0 +1,72 @@
+{
+  "top": ["hist","scales","hgam_binning","github","refs","other"],
+  "pages": {
+    "hist": {
+      "name": "Histograms",
+      "title": "Histograms",
+      "page": "hist",
+      "css": []
+    },
+    "scales": {
+      "name": "Scale dependence",
+      "page": false,
+      "sub": ["scales_gosam","scales_nnlojet"]
+    },
+    "scales_gosam": {
+      "name": "GoSam",
+      "page": "scales/scale"
+    },
+    "scales_nnlojet": {
+      "name": "NNLOJET",
+      "page": "scales/nnlojet/page"
+    },
+    "hgam_binning": { "name": "HGam binning" },
+    "github": {
+      "name": "Code on GitHub",
+      "icon": "github.png",
+      "page": false,
+      "sub": ["ntuple_analysis","bh_analysis","bh_analysis2"]
+    },
+    "ntuple_analysis": { "link": "https://github.com/ivankp/ntuple_analysis" },
+    "bh_analysis": { "link": "https://github.com/ivankp/bh_analysis" },
+    "bh_analysis2": { "link": "https://github.com/ivankp/bh_analysis2" },
+    "refs": {
+      "name": "References",
+      "page": false,
+      "sub": ["plots","1310.7439","1608.01195"]
+    },
+    "plots": { "name": "Plots" },
+    "1310.7439": {
+      "name": "Ntuples for NLO [1310.7439]",
+      "link": "http://arxiv.org/abs/1310.7439"
+    },
+    "1608.01195": {
+      "name": "Full mass dependence [1608.01195]",
+      "link": "http://arxiv.org/abs/1608.01195"
+    },
+    "other": {
+      "name": "Other",
+      "page": false,
+      "sub": ["notes","old_hist","sherpa","unweighted","csv_files"]
+    },
+    "notes": {
+      "name": "Notes",
+      "page": false,
+      "sub": ["build_notes","INSTALL"]
+    },
+    "build_notes": { "name": "Building from source" },
+    "old_hist": {
+      "name": "Old histograms"
+    },
+    "sherpa": {
+      "name": "Sherpa+MINLO"
+    },
+    "unweighted": {
+      "name": "Unweighted"
+    },
+    "csv_files": {
+      "name": "CSV files",
+      "link": "https://hep.pa.msu.edu/resum/more/ivanp/"
+    }
+  }
+}

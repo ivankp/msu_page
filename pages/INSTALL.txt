@@ -1,0 +1,105 @@
+# GCC 6.3.0
+
+ln -s ../gmp-6.1.2 gmp
+ln -s ../cloog-0.18.4 cloog
+ln -s ../cloog-0.18.4/isl isl
+ln -s ../mpc-1.0.3 mpc
+ln -s ../mpfr-3.1.5 mpfr
+for file in ../binutils-2.28/* ; do ln -s ${file} ; done
+
+../gcc-6.3.0/configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --build=x86_64-redhat-linux --enable-languages=c,c++,fortran --with-default-libstdcxx-abi=gcc4-compatible --enable-bootstrap --enable-threads=posix --with-long-double-128 --enable-long-long --enable-lto --enable-gnu-unique-object --enable-gold --with-system-zlib --disable-nls
+
+make -j8
+make install
+
+# make
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --build=x86_64-redhat-linux
+
+# openssl-1.0.2j (for python _ssl) lxplus134
+
+./config shared --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/lib -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/gcc/lib64 -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/gcc/lib
+
+# curl
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --enable-optimize --with-ssl=/msu/data/t3work9/ivanp/gcc-6.3.0 LDFLAGS="-Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/lib -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/gcc/lib64 -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/gcc/lib"
+
+# cmake
+
+./bootstrap --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --parallel=8 --system-curl --system-zlib
+make
+make install
+
+# for cmake to pick up the right toolchain later
+export CC=$(which gcc)
+export CXX=$(which g++)
+
+# sqlite3 (for python)
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0
+
+# python-2.7.13
+
+../Python-2.7.12/configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --build=x86_64-redhat-linux --enable-shared --enable-optimizations
+
+../Python-2.7.13/configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --build=x86_64-redhat-linux --enable-shared --enable-optimizations LDFLAGS="-Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/lib -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/gcc/lib64 -Wl,-rpath=/msu/data/t3work9/ivanp/gcc-6.3.0/gcc/lib"
+
+make -j8
+make -j8 install
+
+wget https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+pip install cython numpy matplotlib bitarray requests virtualenv
+
+# boost 1.63.0
+
+./bootstrap.sh --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0
+./b2 -j 8 install
+
+# git
+# https://github.com/git/git/blob/master/INSTALL
+wget https://www.kernel.org/pub/software/scm/git/git-2.12.0.tar.xz
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0 --without-tcltk
+
+# xrootd
+
+cmake ../xrootd-4.4.1 -DCMAKE_INSTALL_PREFIX=/msu/data/t3work9/ivanp/gcc-6.3.0
+
+# lhapdf
+
+../LHAPDF-6.1.6/configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0/hep --with-boost=/msu/data/t3work9/ivanp/gcc-6.3.0
+
+lhapdf update
+
+lhapdf install CT10nlo CT10nnlo CT14nlo CT14nnlo MMHT2014nlo68clas118 MMHT2014nnlo68cl MSTW2008nlo68cl MSTW2008nnlo68cl
+
+
+# fastjet
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0/hep --enable-allcxxplugins
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0/hep --fastjet-config=/msu/data/t3work9/ivanp/gcc-6.3.0/hep/bin/fastjet-config
+
+# pythia
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0/hep --with-lhapdf6 --with-fastjet3 --with-gzip --with-boost --enable-shared --enable-64bit
+
+# root
+
+cmake -Dall=On -Dcxx14=On -Dr=Off ../root-6.08.06 -DCMAKE_INSTALL_PREFIX=/msu/data/t3work9/ivanp/gcc-6.3.0/hep/root-6.08.06
+make
+make install
+
+# YODA
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0/hep --enable-static --enable-shared
+
+# hepmc 2
+
+./configure --prefix=/msu/data/t3work9/ivanp/gcc-6.3.0/hep/hepmc-2.06.09 --with-momentum=GEV --with-length=MM
+
+# GoSam
+wget http://gosam.hepforge.org/gosam-installer/gosam_installer.py
+PYTHONHTTPSVERIFY=0 python gosam_installer.py
+
