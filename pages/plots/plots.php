@@ -10,7 +10,7 @@ function find_first_of($haystack, $needles) {
 
 $plots = array();
 foreach (scandir($plots_dir) as $f) {
-  if ($f[0]=='.') continue;
+  if ($f[0]=='.' || substr($f,1)=='~') continue;
   $path_parts = pathinfo($f);
   $base = $path_parts['basename'];
   $ext = $path_parts['extension'];

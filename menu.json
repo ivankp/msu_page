@@ -1,11 +1,9 @@
 {
-  "top": ["hist","scales","hgam_binning","github","refs","other"],
+  "top": ["hist","scales","hgam","github","refs","other"],
   "pages": {
     "hist": {
       "name": "Histograms",
-      "title": "Histograms",
-      "page": "hist",
-      "css": []
+      "title": "Histograms from GoSam ntuples"
     },
     "scales": {
       "name": "Scale dependence",
@@ -14,13 +12,21 @@
     },
     "scales_gosam": {
       "name": "GoSam",
+      "title": "GoSam scale dependence",
       "page": "scales/scale"
     },
     "scales_nnlojet": {
       "name": "NNLOJET",
+      "title": "NNLOJET scale dependence",
       "page": "scales/nnlojet/page"
     },
-    "hgam_binning": { "name": "HGam binning" },
+    "hgam": {
+      "name": "H ➞ γγ",
+      "page": false,
+      "sub": ["hgam_binning","ptrat3d"]
+    },
+    "hgam_binning": { "name": "Binning" },
+    "ptrat3d": { "name": "pT ratio" },
     "github": {
       "name": "Code on GitHub",
       "icon": "github.png",
@@ -33,7 +39,7 @@
     "refs": {
       "name": "References",
       "page": false,
-      "sub": ["plots","1310.7439","1608.01195"]
+      "sub": ["plots","1310.7439","1608.01195","usatlas2018","vp1light"]
     },
     "plots": { "name": "Plots" },
     "1310.7439": {
@@ -43,6 +49,13 @@
     "1608.01195": {
       "name": "Full mass dependence [1608.01195]",
       "link": "http://arxiv.org/abs/1608.01195"
+    },
+    "usatlas2018": {
+      "name": "US ATLAS 2018",
+      "link": "https://indico.cern.ch/event/721557/timetable/#20180801.detailed"
+    },
+    "vp1light": {
+      "link": "http://test-vp1light.web.cern.ch/"
     },
     "other": {
       "name": "Other",
