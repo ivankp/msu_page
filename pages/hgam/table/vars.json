@@ -1,1 +1,14 @@
-[ "pT_yy", "m_yy" ]
+[
+"pT_yy",
+"m_yy",
+"pT_y1",
+"pT_y2",
+"rat_pT_y1_y2",
+"eta_y1",
+"eta_y2",
+"Njets",
+"pT_j1",
+"pT_j2",
+"eta_j1",
+"eta_j2"
+]

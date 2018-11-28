@@ -7,14 +7,10 @@ const vars = <?php include $dir.'/vars.json'; ?>;
 
 <form>
 <fieldset><legend>Table options</legend>
-<input name="page" type="hidden" value="<?php echo $_GET["page"];?>">
-<div id="axes">
-<label>Var 1: <select name="x1"></select></label>
-<label>Var 2: <select name="x2"></select></label>
 <button type="submit">Show</button>
-</div>
-<div id="cuts"></div>
-<button id="add_cut" type="button">&plus; cut</button>
+<input name="page" type="hidden" value="<?php echo $_GET["page"];?>">
+<div id="vars"></div><button id="add_var" type="button">&plus; var</button>
+<div id="cuts"></div><button id="add_cut" type="button">&plus; cut</button>
 </fieldset>
 </form>
 
