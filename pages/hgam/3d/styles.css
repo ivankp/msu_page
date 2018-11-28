@@ -1,0 +1,15 @@
+#event_table td {
+  padding-left: 7px;
+  margin: 0;
+  border: 0;
+  font-family: monospace;
+  font-size: 12px;
+}
+#event_table {
+  margin: 10px 0 12px 2px;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+#event_table tr:not(.head):hover {
+  background-color: lightgreen;
+}

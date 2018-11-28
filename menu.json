@@ -23,10 +23,23 @@
     "hgam": {
       "name": "H ➞ γγ",
       "page": false,
-      "sub": ["hgam_binning","ptrat3d"]
+      "sub": ["hgam_binning","hgam_table"]
     },
-    "hgam_binning": { "name": "Binning" },
-    "ptrat3d": { "name": "pT ratio" },
+    "hgam_binning": {
+      "name": "Binning",
+      "title": "H➞γγ binning",
+      "page": "hgam/binning/main"
+    },
+    "hgam_table": {
+      "name": "Table",
+      "title": "H➞γγ data table",
+      "page": "hgam/table"
+    },
+    "hgam_3d": {
+      "name": "3D",
+      "title": "H➞γγ 3D explorer",
+      "page": "hgam/3d/main"
+    },
     "github": {
       "name": "Code on GitHub",
       "icon": "github.png",
