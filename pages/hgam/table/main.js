@@ -27,9 +27,14 @@ function add_cut(cx,op,cv) {
   let cut_div = cuts.el('div');
   let cut_var = cut_div.el('select').attr('name','cx'+n);
   vars.forEach(x => cut_var.el('option',x).prop('selected',x==cx));
-  let cut_op = cut_div.el('select').attr('name','op'+n);
-  [['&lt;','l'],['&gt;','g']].forEach(
-    x => cut_op.el('option',x[0]).attr('value',x[1]).prop('selected',x[1]==op));
+  let op_in = cut_div.el('input')
+    .attr({'name':'op'+n,'type':'hidden','value':(op=='g' ? 'g' : 'l')})
+  cut_div.el('button').attr('type','button').html(op=='g' ? '>' : '<')
+    .on('click',function() {
+      var op = op_in.attr('value')=='l' ? ['g','>'] : ['l','<'];
+      op_in.attr('value',op[0]);
+      $(this).html(op[1]);
+    });
   cut_div.el('input').attr({ 'name': 'cv'+n, 'size': 5, 'value': cv });
   cut_div.el('button','&minus;').attr('type','button')
     .on('click',function() { cut_div.remove(); });
@@ -68,6 +73,8 @@ $(function(){
     if (Number.isInteger(json[json.length-1])) nmore = json.pop();
     json.sort((a,b) => b[2]-a[2]);
     let table = $('#event_table');
+    table.el('tr').el('td',(nmore+json.length)+' events selected')
+      .attr('colspan',json[0].length);
     let head = table.el('tr').css({'font-weight':'bold'});
     ["runNumber","eventNumber"].concat(req.vars)
       .forEach(col => { head.el('td',col) });
