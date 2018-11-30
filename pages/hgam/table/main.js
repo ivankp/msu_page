@@ -12,6 +12,10 @@ function getUrlVars() {
   return vars;
 }
 
+function leftPad(x,n,c) {
+  return (c.repeat(n)+x.toString()).slice(-n);
+}
+
 function add_var(v) {
   let _vars = $('#vars');
   let n = _vars.children().length;
@@ -76,11 +80,11 @@ $(function(){
     table.el('tr').el('td',(nmore+json.length)+' events selected')
       .attr('colspan',json[0].length);
     let head = table.el('tr').css({'font-weight':'bold'});
-    ["runNumber","eventNumber"].concat(req.vars)
+    ["run #","event #"].concat(req.vars)
       .forEach(col => { head.el('td',col) });
     for (let row of json) {
       let tr = table.el('tr');
-      for (let col of row) tr.el('td',col);
+      row.forEach((x,i) => tr.el('td', i>1 ? x : leftPad(x,(i==0?8:11),'0')));
     }
     if (nmore) table.el('tr').el('td',nmore+' more events')
       .attr('colspan',json[0].length);
