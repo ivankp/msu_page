@@ -80,11 +80,15 @@ $(function(){
     table.el('tr').el('td',(nmore+json.length)+' events selected')
       .attr('colspan',json[0].length);
     let head = table.el('tr').css({'font-weight':'bold'});
-    ["run #","event #"].concat(req.vars)
-      .forEach(col => { head.el('td',col) });
+    head.el('td','run# event#');
+    req.vars.forEach(col => { head.el('td',col) });
     for (let row of json) {
       let tr = table.el('tr');
-      row.forEach((x,i) => tr.el('td', i>1 ? x : leftPad(x,(i==0?8:11),'0')));
+      let num = [8,11].map((x,i) => leftPad(row[i],x,'0'));
+      let url = 'https://atlas-event-index.cern.ch/EIHadoop/ELView.jsp?e='
+        +num.join('+')+'&details_type=type&details_rich=rich';
+      tr.el('td').el('a',num.join(' ')).attr({'href':url,'target':'_blank'});
+      row.slice(2).forEach(x => tr.el('td',x));
     }
     if (nmore) table.el('tr').el('td',nmore+' more events')
       .attr('colspan',json[0].length);

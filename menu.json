@@ -33,7 +33,22 @@
     "hgam_table": {
       "name": "Table",
       "title": "H➞γγ data table",
-      "page": "hgam/table"
+      "page": "hgam/table",
+      "args": [
+        ["x0","pT_yy"],
+        ["x1","m_yy"],
+        ["x2","Njets"],
+        ["x3","pT_j1"],
+        ["cx0","pT_yy"],
+        ["op0","g"],
+        ["cv0","300"],
+        ["cx1","m_yy"],
+        ["op1","g"],
+        ["cv1","121"],
+        ["cx2","m_yy"],
+        ["op2","l"],
+        ["cv2","129"]
+      ]
     },
     "hgam_3d": {
       "name": "3D",
@@ -46,9 +61,18 @@
       "page": false,
       "sub": ["ntuple_analysis","bh_analysis","bh_analysis2"]
     },
-    "ntuple_analysis": { "link": "https://github.com/ivankp/ntuple_analysis" },
-    "bh_analysis": { "link": "https://github.com/ivankp/bh_analysis" },
-    "bh_analysis2": { "link": "https://github.com/ivankp/bh_analysis2" },
+    "ntuple_analysis": {
+      "link": "https://github.com/ivankp/ntuple_analysis",
+      "_blank": true
+    },
+    "bh_analysis": {
+      "link": "https://github.com/ivankp/bh_analysis",
+      "_blank": true
+    },
+    "bh_analysis2": {
+      "link": "https://github.com/ivankp/bh_analysis2",
+      "_blank": true
+    },
     "refs": {
       "name": "References",
       "page": false,
@@ -57,18 +81,22 @@
     "plots": { "name": "Plots" },
     "1310.7439": {
       "name": "Ntuples for NLO [1310.7439]",
-      "link": "http://arxiv.org/abs/1310.7439"
+      "link": "http://arxiv.org/abs/1310.7439",
+      "_blank": true
     },
     "1608.01195": {
       "name": "Full mass dependence [1608.01195]",
-      "link": "http://arxiv.org/abs/1608.01195"
+      "link": "http://arxiv.org/abs/1608.01195",
+      "_blank": true
     },
     "usatlas2018": {
       "name": "US ATLAS 2018",
-      "link": "https://indico.cern.ch/event/721557/timetable/#20180801.detailed"
+      "link": "https://indico.cern.ch/event/721557/timetable/#20180801.detailed",
+      "_blank": true
     },
     "vp1light": {
-      "link": "http://test-vp1light.web.cern.ch/"
+      "link": "http://test-vp1light.web.cern.ch/",
+      "_blank": true
     },
     "other": {
       "name": "Other",
@@ -92,7 +120,8 @@
     },
     "csv_files": {
       "name": "CSV files",
-      "link": "https://hep.pa.msu.edu/resum/more/ivanp/"
+      "link": "https://hep.pa.msu.edu/resum/more/ivanp/",
+      "_blank": true
     }
   }
 }

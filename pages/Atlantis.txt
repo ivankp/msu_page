@@ -1,0 +1,46 @@
+https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/Atlantis
+https://twiki.cern.ch/twiki/bin/view/Sandbox/RongkunEventDisplay
+https://twiki.cern.ch/twiki/bin/view/Sandbox/GridNotes
+https://twiki.cern.ch/twiki/bin/viewauth/AtlasComputing/EventIndexTutorial#RAW_to_RAW_event_picking_and_wra
+
+##################
+
+setupATLAS
+
+# Get GUID of the event
+lsetup eiclient
+el -e '00339205 00367667949' -details typerich
+
+# Get LFN (what file the event is in)
+1. Go to https://ami.in2p3.fr/
+2. Log in
+3. In the top menu select Files -> Search by GUID
+4. Enter the GUID, e.g. F831A78C-DABA-E711-A98D-44A8420A83D9
+5. Copy LFN
+
+# Theoretically this command should work too
+voms-proxy-init -voms atlas
+lsetup pyami
+ami command AMIGetFileInfo -fileGUID=F831A78C-DABA-E711-A98D-44A8420A83D9
+
+# Download the data file
+# The files will be a few Gb is size
+voms-proxy-init -voms atlas
+lsetup rucio
+rucio download data17_13TeV.00339205.physics_Main.daq.RAW._lb0179._SFO-5._0001.data
+
+# Select the event of interest
+1. Make a file containing only event run and event numbers, e.g.
+echo '00339205 00367667949' > ev.txt
+2. Run acmd.py
+asetup Athena,21.0,latest,here
+acmd.py filter-files -s ev.txt data17_13TeV.00339205.physics_Main.daq.RAW._lb0179._SFO-5._0001.data -o 00339205_00367667949.RAW
+
+##################
+
+https://atlas-event-index.cern.ch/EIHadoop/ELView.jsp?e=00339205+00367667949&api=rich&details_type=type&details_id=id
+
+https://ami.in2p3.fr/app?subapp=tagsShow&userdata=f887
+
+Reco_tf.py --AMITag f887 --geometryVersion all:ATLAS-R2-2016-01-00-01 --conditionsTag all:CONDBR2-BLKPA-2017-13 --preExec 'all:jp.Rec.doJiveXML.set_Value_and_Lock(True)' --inputBSFile=00339205_00367667949.RAW --outputESDFile=00339205_00367667949.ESD.pool.root
+

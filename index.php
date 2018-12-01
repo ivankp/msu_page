@@ -84,9 +84,14 @@ function make_menu($page, $x) {
     $text = '<img src="img/icons/'.$x['icon'].'" alt="">'.$text;
   }
   if ($x['link']) {
-    echo '<a href="'.$x['link'].'" target="_blank">'.$text.'</a>';
+    echo '<a href="'.$x['link'].'"';
+    if ($x['_blank']) echo ' target="_blank"';
+    echo '>'.$text.'</a>';
   } else if ($x['page'] !== false) {
-    echo '<a href="?page='.$page.'">'.$text.'</a>';
+    echo '<a href="?page='.$page;
+    foreach ($x['args'] as $arg)
+      echo '&'.$arg[0].'='.$arg[1];
+    echo '">'.$text.'</a>';
   } else echo '<p>'.$text.'</p>';
   if (array_key_exists('sub',$x)) {
     echo "\n<ul>";
@@ -130,6 +135,11 @@ if ($page_is_txt) echo "</div>\n";
   document.getElementById("valid_css").setAttribute("href",
     "http://jigsaw.w3.org/css-validator/validator?uri="
     + document.styleSheets[0].href);
+  document.addEventListener("keypress",event => {
+    var x = event.which || event.keyCode;
+    if (x==103) window.scrollTo(0,0);
+    else if (x==71) window.scrollTo(0,document.body.scrollHeight);
+  });
 </script>
 <?php } ?>
 

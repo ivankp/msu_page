@@ -1,6 +1,6 @@
 <table class="table_of_figures">
 <?php
-$plots_dir = $dir.'/plots';
+$files_dir = $dir.'/files';
 
 function find_first_of($haystack, $needles) {
   foreach ($needles as $needle)
@@ -9,7 +9,7 @@ function find_first_of($haystack, $needles) {
 }
 
 $plots = array();
-foreach (scandir($plots_dir) as $f) {
+foreach (scandir($files_dir) as $f) {
   if ($f[0]=='.' || substr($f,1)=='~') continue;
   $path_parts = pathinfo($f);
   $base = $path_parts['basename'];
@@ -18,7 +18,7 @@ foreach (scandir($plots_dir) as $f) {
   $plots[$base][] = $ext;
 }
 foreach ($plots as $name => $exts) {
-  $prefix = $plots_dir.'/'.$name;
+  $prefix = $files_dir.'/'.$name;
   $img_ext  = find_first_of($exts,array('png','jpg','jpeg'));
   $text_ext = find_first_of($exts,array('html','txt'));
 
