@@ -23,17 +23,18 @@
     "hgam": {
       "name": "H ➞ γγ",
       "page": false,
-      "sub": ["hgam_binning","hgam_table"]
+      "sub": ["hgam_binning","hgam_table","hgam_events"]
     },
     "hgam_binning": {
-      "name": "Binning",
-      "title": "H➞γγ binning",
-      "page": "hgam/binning/main"
+      "forward": ["https://cern.ch/ivankp/hgam/",{
+        "page": "binning"
+      }],
+      "name": "Binning"
     },
     "hgam_table": {
-      "name": "Table",
-      "title": "H➞γγ data table",
-      "page": "hgam/table",
+      "forward": ["https://cern.ch/ivankp/hgam/",{
+        "page": "table"
+      }],
       "args": [
         ["x0","pT_yy"],
         ["x1","m_yy"],
@@ -48,12 +49,14 @@
         ["cx2","m_yy"],
         ["op2","l"],
         ["cv2","129"]
-      ]
+      ],
+      "name": "Table"
     },
-    "hgam_3d": {
-      "name": "3D",
-      "title": "H➞γγ 3D explorer",
-      "page": "hgam/3d/main"
+    "hgam_events": {
+      "forward": ["https://cern.ch/ivankp/hgam/",{
+        "page": "events"
+      }],
+      "name": "Events"
     },
     "github": {
       "name": "Code on GitHub",

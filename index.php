@@ -1,4 +1,3 @@
-<!DOCTYPE HTML>
 <?php
 function get($var, $default=null) { return isset($var) ? $var : $default; }
 
@@ -15,6 +14,15 @@ $this_page = get($_GET['page'],'hist');
 function get_prop($prop,$default=null) {
   global $pages, $this_page;
   return get($pages[$this_page][$prop],$default);
+}
+
+$forward = get_prop('forward');
+if ($forward) {
+  $url = $forward[0];
+  if ($forward[1])
+    $url .= '?'.http_build_query(array_merge($_GET,$forward[1]));
+  header('Location: '.$url);
+  exit;
 }
 
 $page_base = preg_split('~/(?=[^/]*$)~',get_prop('page',$this_page));
@@ -51,6 +59,7 @@ foreach (scandir($dir) as $f) {
   }
 }
 ?>
+<!DOCTYPE HTML>
 <html lang="en-US">
 <head>
 <title><?php echo get_prop('title',get_prop('name',$this_page)); ?></title>
