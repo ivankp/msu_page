@@ -13,17 +13,24 @@
     "scales_gosam": {
       "name": "GoSam",
       "title": "GoSam scale dependence",
-      "page": "scales/scale"
+      "page": "scales/scale",
+      "css": ["old_styles.css"]
     },
     "scales_nnlojet": {
       "name": "NNLOJET",
       "title": "NNLOJET scale dependence",
-      "page": "scales/nnlojet/page"
+      "page": "scales/nnlojet/page",
+      "css": ["old_styles.css"]
     },
     "hgam": {
       "name": "H ➞ γγ",
       "page": false,
-      "sub": ["hgam_binning","hgam_table","hgam_events"]
+      "sub": ["hgam_binning","hgam_table","hgam_events","hgam_meetings"]
+    },
+    "hgam_meetings": {
+      "name": "Meetings",
+      "link": "https://indico.cern.ch/category/6142/",
+      "_blank": true
     },
     "hgam_binning": {
       "forward": ["https://cern.ch/ivankp/hgam/",{
@@ -113,13 +120,15 @@
     },
     "build_notes": { "name": "Building from source" },
     "old_hist": {
-      "name": "Old histograms"
+      "name": "Old histograms",
+      "css": ["old_styles.css"]
     },
     "sherpa": {
       "name": "Sherpa+MINLO"
     },
     "unweighted": {
-      "name": "Unweighted"
+      "name": "Unweighted",
+      "css": ["old_styles.css"]
     },
     "csv_files": {
       "name": "CSV files",
