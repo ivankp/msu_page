@@ -53,14 +53,6 @@ input[type=search]::-webkit-search-cancel-button {
   font-family: monospace;
   font-size: small;
 }
-#hist_info span.obj {
-  display: block;
-}
-#hist_info span.obj_val > .obj {
-  margin: 0 0 0 10px;
-}
+#hist_info span.obj { display: block; }
+#hist_info span.obj_val > .obj { margin: 0 0 0 1ch; }
 #hist_info span.val::before { content: " "; }
-/* #hist_info span.key::after { content: ":"; } */
-#hist_info > span.obj {
-  display: block;
-}
