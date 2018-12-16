@@ -36,6 +36,7 @@ foreach (scandir($files_dir) as $f) {
 <label><input id="divbinw" type="checkbox">&divide;width</label>
 </div>
 </div>
+<div class="form_row" id="hist_info"></div>
 </div>
 
 <div id="plot"></div>

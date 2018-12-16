@@ -17,6 +17,8 @@
   font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+#plot { margin: 0 20px; }
+
 .tall_select {
   border: 1px solid #999;
   border-radius: 3px;
@@ -42,4 +44,23 @@ input[type=search]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
 
-#plot { margin: 0 20px; }
+#hist_info {
+  width: 250px;
+  display: initial;
+}
+
+#hist_info span {
+  font-family: monospace;
+  font-size: small;
+}
+#hist_info span.obj {
+  display: block;
+}
+#hist_info span.obj_val > .obj {
+  margin: 0 0 0 10px;
+}
+#hist_info span.val::before { content: " "; }
+/* #hist_info span.key::after { content: ":"; } */
+#hist_info > span.obj {
+  display: block;
+}

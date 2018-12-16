@@ -106,8 +106,9 @@ function update_hist(resp) {
       },$(this));
     });
   }
-  console.log(JSON.stringify(hist));
+  // console.log(JSON.stringify(hist));
 
+  // draw plot ------------------------------------------------------
   const xi = 0;
   const xrange = ['min','max'].map(x => hist.axes[xi][x]);
   const xn = hist.axes[xi].nbins;
@@ -128,10 +129,35 @@ function update_hist(resp) {
       values: xn < 12 ? indices(xn+1).map(i=>xedge(i)) : null
     },
     { range: yrange, padding: [45,5], log: logy,
-      label: 'cross section'
+      label: 'cross section [pb]'
       // label: (factor<0 ? '\u2212 ' : '') + 'cross section [' + units() + ']'
     }
   ]);
+
+  // print info -----------------------------------------------------
+  (function t(o,f) {
+    if (typeof o == 'object') {
+      if (Array.isArray(o)) {
+        /*if (x.every(x => typeof x!='object'))
+          f.call(this,x.join(', '));
+        else*/ for (const x of o)
+          t.call(this,x,f);
+      } else {
+        for (const key of Object.keys(o))
+          t.call(f.call(this,key,'obj'),o[key],f);
+      }
+    } else f.call(this,o,'val');
+  }).call($('#hist_info').empty(),resp.info,function(x,m){
+    if (m=='obj') {
+      const span = this.el('span').addClass('obj');
+      span.el('span',x+':').addClass('key');
+      return span.el('span').addClass('obj_val');
+    } else {
+      const span = this.el('span',x);
+      if (m) span.addClass(m);
+      return span;
+    }
+  });
 }
 
 $(function(){

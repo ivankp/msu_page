@@ -16,11 +16,14 @@ kbd {
 .mathrm { font-style: normal; }
 
 #w3c {
+  z-index: 1;
   position: absolute;
+  display: block;
   float: right;
   right: 17px;
   top: 35px;
 }
+#w3c * { z-index: 1; }
 
 /* Navigation panel =============================================== */
 #nav {
@@ -28,9 +31,7 @@ kbd {
   height: 45px;
   width: 100%;
 }
-#nav * {
-  z-index: 1;
-}
+#nav * { z-index: 1; }
 #nav a, #nav p, #date {
   display: block;
   color: #333;
