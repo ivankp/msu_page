@@ -135,29 +135,42 @@ function update_hist(resp) {
   ]);
 
   // print info -----------------------------------------------------
-  (function t(o,f) {
+  // (function t(o,f) {
+  //   if (typeof o == 'object') {
+  //     if (Array.isArray(o)) {
+  //       #<{(|if (x.every(x => typeof x!='object'))
+  //         f.call(this,x.join(', '));
+  //       else|)}># for (const x of o)
+  //         t.call(this,x,f);
+  //     } else {
+  //       for (const key of Object.keys(o))
+  //         t.call(f.call(this,key,'obj'),o[key],f);
+  //     }
+  //   } else f.call(this,o,'val');
+  // }).call($('#hist_info').empty(),resp.info,function(x,m){
+  //   if (m=='obj') {
+  //     const span = this.el('span').addClass('obj');
+  //     span.el('span',x+':').addClass('key');
+  //     return span.el('span').addClass('obj_val');
+  //   } else {
+  //     const span = this.el('span',x);
+  //     if (m) span.addClass(m);
+  //     return span;
+  //   }
+  // });
+  (function f(e,o) {
     if (typeof o == 'object') {
       if (Array.isArray(o)) {
-        /*if (x.every(x => typeof x!='object'))
-          f.call(this,x.join(', '));
-        else*/ for (const x of o)
-          t.call(this,x,f);
+        for (const x of o) f(e,x);
       } else {
-        for (const key of Object.keys(o))
-          t.call(f.call(this,key,'obj'),o[key],f);
+        for (const key of Object.keys(o)) {
+          const obj = e.el('span').addClass('obj');
+          obj.el('span',key+':').addClass('key');
+          f(obj,o[key]);
+        }
       }
-    } else f.call(this,o,'val');
-  }).call($('#hist_info').empty(),resp.info,function(x,m){
-    if (m=='obj') {
-      const span = this.el('span').addClass('obj');
-      span.el('span',x+':').addClass('key');
-      return span.el('span').addClass('obj_val');
-    } else {
-      const span = this.el('span',x);
-      if (m) span.addClass(m);
-      return span;
-    }
-  });
+    } else e.el('span',o).addClass('val');
+  })($('#hist_info').empty(),resp.info);
 }
 
 $(function(){
