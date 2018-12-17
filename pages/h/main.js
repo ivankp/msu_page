@@ -4,7 +4,7 @@ $.prototype.el = function(tag,text=null) {
   this.append(dom);
   return $(dom);
 }
-function bind(f,...x) { return function(...y){ f(...x,...y); } }
+function bind(f,...x) { return function(...y){ f.call(this,...x,...y); } }
 
 function indices(n) {
   let a = [ ];
@@ -53,11 +53,12 @@ function hist_req(name) {
   return req;
 }
 
-function post(req,done,focus) {
+function post(req,done,context) {
   return $.ajax({
     type: 'POST',
     url: dir+"/req.php",
     data: { 'file': safe_file_val(), 'do': req },
+    context: context,
     beforeSend: function() { $('#form :input').prop('disabled',true); },
     dataFilter: function(resp) {
       if (resp) {
@@ -71,9 +72,9 @@ function post(req,done,focus) {
       return false;
     },
     success: function(resp){
-      if (resp) done(resp);
+      if (resp) done.call(context,resp);
       $('#form :input').prop('disabled',false);
-      if (focus) focus.focus();
+      if (context) context.focus();
     }
   });
 }
@@ -81,30 +82,49 @@ function post(req,done,focus) {
 files = { all: files, cur: null, loaded: { } };
 const hists = { all: [ ], cur: null, loaded: { } };
 
+function load_file() {
+  if (files.loaded.hasOwnProperty(files.cur)) {
+    update_file.call($(this),files.loaded[files.cur]);
+  } else post('list',update_file,$(this)).done(resp => {
+    files.loaded[files.cur] = resp;
+  });
+}
+
+function load_hist() {
+  const req = hist_req(hists.cur);
+  const req_str = JSON.stringify([safe_file_val(),Object.values(req)]);
+  if (hists.loaded.hasOwnProperty(req_str)) {
+    update_hist.call($(this),hists.loaded[req_str]);
+  } else post(req,update_hist,$(this)).done(resp => {
+    hists.loaded[req_str] = resp;
+  });
+}
+
 function update_file(resp){
   hists.all.length = 0;
   hists.all.push(...resp);
   const sel = set_options('hist',hists.all);
-  if (hists.cur) sel.val(hists.cur).trigger('change');
+  if (hists.all.includes(hists.cur)) {
+    sel.val(hists.cur);//.trigger('change');
+    load_hist.call(this);
+  }
 }
 
 function update_hist(resp) {
   const hist_name = Object.keys(resp.hists)[0];
   const hist = resp.hists[hist_name];
-  const cats_col = $('#cats').find('select').remove().end();
-  const cats = hist['categories'];
-  for (const cat in cats) {
-    const sel = cats_col.el('select').prop({'name':cat,'title':cat});
-    let i = hist['selection'][cat];
-    for (let opt of cats[cat]) {
-      opt = sel.el('option',opt);
-      if (i--==0) opt.prop('selected',true);
+  if (this.parent()[0].id!='cats') {
+    const cats_col = $('#cats').find('select').remove().end();
+    const cats = hist['categories'];
+    for (const cat in cats) {
+      const sel = cats_col.el('select').prop({'name':cat,'title':cat});
+      let i = hist['selection'][cat];
+      for (let opt of cats[cat]) {
+        opt = sel.el('option',opt);
+        if (i--==0) opt.prop('selected',true);
+      }
+      sel.on('change',load_hist);
     }
-    sel.on('change',function(){
-      post(hist_req(hist_name),function(resp){
-        console.log(resp);
-      },$(this));
-    });
   }
   // console.log(JSON.stringify(hist));
 
@@ -117,7 +137,7 @@ function update_hist(resp) {
 
   const yrange = plot.hist_yrange(
     d3.extent(hist.bins.filter(x => x!==null).map(x => x[0])));
-  console.log(yrange);
+  // console.log(yrange);
 
   const logy = $('#logy').prop('checked');
 
@@ -135,29 +155,6 @@ function update_hist(resp) {
   ]);
 
   // print info -----------------------------------------------------
-  // (function t(o,f) {
-  //   if (typeof o == 'object') {
-  //     if (Array.isArray(o)) {
-  //       #<{(|if (x.every(x => typeof x!='object'))
-  //         f.call(this,x.join(', '));
-  //       else|)}># for (const x of o)
-  //         t.call(this,x,f);
-  //     } else {
-  //       for (const key of Object.keys(o))
-  //         t.call(f.call(this,key,'obj'),o[key],f);
-  //     }
-  //   } else f.call(this,o,'val');
-  // }).call($('#hist_info').empty(),resp.info,function(x,m){
-  //   if (m=='obj') {
-  //     const span = this.el('span').addClass('obj');
-  //     span.el('span',x+':').addClass('key');
-  //     return span.el('span').addClass('obj_val');
-  //   } else {
-  //     const span = this.el('span',x);
-  //     if (m) span.addClass(m);
-  //     return span;
-  //   }
-  // });
   (function f(e,o) {
     if (typeof o == 'object') {
       if (Array.isArray(o)) {
@@ -179,23 +176,12 @@ $(function(){
   filter('hist').on('input',bind(set_options,'hist',hists.all));
 
   select('file').on('change',function(){
-    const file_name = files.cur = $(this).val();
-    if (files.loaded.hasOwnProperty(file_name)) {
-      update_file(files.loaded[file_name]);
-    } else post('list',update_file,$(this)).done(resp => {
-      files.loaded[file_name] = resp;
-    });
+    files.cur = $(this).val();
+    load_file.call(this);
   });
-
   select('hist').on('change',function(){
-    const hist_name = hists.cur = $(this).val();
-    const req = hist_req(hist_name);
-    const req_str = JSON.stringify([safe_file_val(),Object.values(req)]);
-    if (hists.loaded.hasOwnProperty(req_str)) {
-      update_hist(hists.loaded[req_str]);
-    } else post(req,update_hist,$(this)).done(resp => {
-      hists.loaded[req_str] = resp;
-    });
+    hists.cur = $(this).val();
+    load_hist.call(this);
   });
 });
 
