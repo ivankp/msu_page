@@ -117,7 +117,8 @@ function update_hist(resp) {
     const cats_col = $('#cats').find('select').remove().end();
     const cats = hist['categories'];
     for (const cat in cats) {
-      const sel = cats_col.el('select').prop({'name':cat,'title':cat});
+      const sel = cats_col.el('div').attr({'tooltip':cat})
+        .el('select').prop('name',cat);
       let i = hist['selection'][cat];
       for (let opt of cats[cat]) {
         opt = sel.el('option',opt);

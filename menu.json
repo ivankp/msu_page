@@ -14,13 +14,13 @@
       "name": "GoSam",
       "title": "GoSam scale dependence",
       "page": "scales/scale",
-      "css": ["old_styles.css"]
+      "css": ["styles/old.css"]
     },
     "scales_nnlojet": {
       "name": "NNLOJET",
       "title": "NNLOJET scale dependence",
       "page": "scales/nnlojet/page",
-      "css": ["old_styles.css"]
+      "css": ["styles/old.css"]
     },
     "hgam": {
       "name": "H ➞ γγ",
@@ -121,14 +121,14 @@
     "build_notes": { "name": "Building from source" },
     "old_hist": {
       "name": "Old histograms",
-      "css": ["old_styles.css"]
+      "css": ["styles/old.css"]
     },
     "sherpa": {
       "name": "Sherpa+MINLO"
     },
     "unweighted": {
       "name": "Unweighted",
-      "css": ["old_styles.css"]
+      "css": ["styles/old.css"]
     },
     "csv_files": {
       "name": "CSV files",

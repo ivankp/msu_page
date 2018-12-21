@@ -9,7 +9,7 @@
 !*.json
 
 !/pages
-
+!/styles
 !/img
 
 !/js

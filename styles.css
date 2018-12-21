@@ -16,7 +16,7 @@ kbd {
 .mathrm { font-style: normal; }
 
 #w3c {
-  z-index: 1;
+  z-index: 9;
   position: absolute;
   display: block;
   float: right;

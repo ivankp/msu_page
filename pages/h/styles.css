@@ -9,6 +9,7 @@
   margin: 0 2px;
 }
 .form_col > * { width: 100%; }
+#cats select { width: 100%; }
 
 .form_col p {
   margin: 0;
@@ -64,3 +65,31 @@ label {
 #hist_info span.obj { display: block; }
 #hist_info span.obj > span.obj { margin: 0 0 0 1ch; }
 #hist_info span.val::before { content: " "; }
+
+[tooltip]::after {
+  content: attr(tooltip);
+  visibility: hidden;
+  z-index: 9;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.9);
+  color: #fff;
+  font-family: Arial;
+  font-size: small;
+  margin: 0 0 0 5px;
+  transform: translateY(-2px);
+}
+
+[tooltip]:hover::after,
+[tooltip]:hover::before {
+  visibility: visible;
+}
+
+[tooltip]::after:hover,
+[tooltip]::before:hover {
+  visibility: hidden;
+}
+
