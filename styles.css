@@ -1,7 +1,14 @@
 html { background: #fff; }
 body, div { margin: 0; padding: 0; border: 0; }
 
-a { text-decoration: none; }
+a {
+  text-decoration: none;
+  color: #0000EE;
+  cursor: pointer;
+}
+a:link { color: #0000EE; }
+a:visited { color: #551A8B; }
+a:active { color: #EE0000; }
 a:hover { text-decoration: underline; }
 
 #main { margin: 0 10px; }

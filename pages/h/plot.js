@@ -36,7 +36,7 @@ canvas: function(svg,axes) {
       let label = g.append('text')
         .attr('text-anchor','end')
         .attr('fill', '#000')
-        .text(a.label);
+        .html(a.label);
       if (i==0) label.attr('x',w-10).attr('y',30);
       else label.attr('transform','rotate(-90)')
         .attr('x',-10).attr('y',10-a.padding[0]);
@@ -59,7 +59,7 @@ hist: function(id,canv,data,args) {
         stroke: args.color,
         'stroke-width': args.width
       }));
-      g.filter(d => (d[3]!=null)).append("line").attrs(d => ({
+      g.filter(d => d[3]).append("line").attrs(d => ({
         x1: s[0]((d[0]+d[1])/2),
         x2: s[0]((d[0]+d[1])/2),
         y1: s[1](d[2]+d[3]),
@@ -68,6 +68,19 @@ hist: function(id,canv,data,args) {
         'stroke-width': args.width
       }));
     });
+},
+
+hline: function(id,canv,y,args) {
+  canv.svg.select('#'+id).remove();
+  const x = canv.scale[0].range();
+  y = canv.scale[1](y);
+  canv.svg.append('line').attrs({
+    id: id,
+    x1: x[0],
+    x2: x[1],
+    y1: y,
+    y2: y
+  }).attrs(args);
 },
 
 band: function(id,canv,data,style) {
@@ -110,7 +123,7 @@ hist_yrange: function(ys,logy) {
   let min = Number.MAX_VALUE;
   let max = (logy ? 0 : Number.MIN_VALUE);
 
-  for (y of ys) {
+  for (let y of ys) {
     if (logy && y<=0) continue;
     if (y<min) min = y;
     if (y>max) max = y;

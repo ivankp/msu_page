@@ -93,3 +93,9 @@ label {
   visibility: hidden;
 }
 
+.form_col kbd { float: right; }
+
+#links a {
+  margin: 0 10px 0 0;
+}
+

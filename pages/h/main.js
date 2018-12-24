@@ -1,3 +1,8 @@
+function print(x) {
+  console.log(x);
+  return x;
+}
+
 $.prototype.el = function(tag,text=null) {
   const dom = document.createElement(tag);
   if (text!=null) dom.innerHTML = text;
@@ -12,7 +17,13 @@ function indices(n) {
   return a;
 }
 
-function select(name) { return $('select[name='+name+'_select]'); }
+// Object.defineProperty(Array.prototype, 'map_if', {
+//   value: function(f,fIf=(x => x!=null),thisArg) {
+//     return this.map((x,...args) => (fIf(x) ? f(x,...args) : x),thisArg);
+//   }
+// });
+
+function select(name) { return $('select[name='+name+']'); }
 function filter(name) { return $('input[name='+name+'_filter]'); }
 
 function set_options(name,opts) {
@@ -80,7 +91,7 @@ function post(req,done,context) {
 }
 
 files = { all: files, cur: null, loaded: { } };
-const hists = { all: [ ], cur: null, loaded: { } };
+const hists = { all: [ ], cur: { name: null, data: null }, loaded: { } };
 
 function load_file() {
   if (files.loaded.hasOwnProperty(files.cur)) {
@@ -91,12 +102,12 @@ function load_file() {
 }
 
 function load_hist() {
-  const req = hist_req(hists.cur);
+  const req = hist_req(hists.cur.name);
   const req_str = JSON.stringify([safe_file_val(),Object.values(req)]);
   if (hists.loaded.hasOwnProperty(req_str)) {
-    update_hist.call($(this),hists.loaded[req_str]);
-  } else post(req,update_hist,$(this)).done(resp => {
-    hists.loaded[req_str] = resp;
+    update_hist.call(this,(hists.cur.data = hists.loaded[req_str]));
+  } else post(req,update_hist,this).done(resp => {
+    hists.cur.data = hists.loaded[req_str] = resp;
   });
 }
 
@@ -104,16 +115,37 @@ function update_file(resp){
   hists.all.length = 0;
   hists.all.push(...resp);
   const sel = set_options('hist',hists.all);
-  if (hists.all.includes(hists.cur)) {
-    sel.val(hists.cur);//.trigger('change');
+  if (hists.all.includes(hists.cur.name)) {
+    sel.val(hists.cur.name);
     load_hist.call(this);
   }
+}
+
+function unc_or_val(unc,val) {
+  const aval = Math.abs(val);
+  const aunc = Math.abs(unc);
+  const rat = aval/aunc;
+  if (rat > 10 || rat < 0.1) return val;
+  return unc;
+}
+
+function save_svg() {
+  const svgBlob = new Blob(
+    [ '<?xml version="1.0" encoding="UTF-8" ?>\n', $("#plot").html() ],
+    { type:"image/svg+xml;charset=utf-8" }
+  );
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(svgBlob);
+  a.download = files.cur+'-'+hists.cur.name+'.svg';
+  a.click();
 }
 
 function update_hist(resp) {
   const hist_name = Object.keys(resp.hists)[0];
   const hist = resp.hists[hist_name];
-  if (this.parent()[0].id!='cats') {
+
+  // set category selectors -----------------------------------------
+  if (this.hasClass('tall_select')) {
     const cats_col = $('#cats').find('select').remove().end();
     const cats = hist['categories'];
     for (const cat in cats) {
@@ -124,10 +156,9 @@ function update_hist(resp) {
         opt = sel.el('option',opt);
         if (i--==0) opt.prop('selected',true);
       }
-      sel.on('change',load_hist);
+      sel.on('change',function(){ load_hist.call($(this)); });
     }
   }
-  // console.log(JSON.stringify(hist));
 
   // draw plot ------------------------------------------------------
   const xi = 0;
@@ -136,11 +167,49 @@ function update_hist(resp) {
   const xw = (xrange[1]-xrange[0])/xn;
   const xedge = function(i) { return xrange[0] + i*xw; };
 
-  const yrange = plot.hist_yrange(
-    d3.extent(hist.bins.filter(x => x!==null).map(x => x[0])));
-  // console.log(yrange);
+  let bins = hist.bins.map( (b,i) => b==null ? null :
+    [ i, ...(Array.isArray(b[0])
+      ? [ b[0][0], Math.sqrt(b[0][1]), ...b.slice(1) ]
+      : [ b[0], Math.sqrt(b[1]) ]
+    )]
+  );
+  const overflow = [ bins.shift(), bins.pop() ];
+  bins = bins.filter(b => b!=null);
 
-  const logy = $('#logy').prop('checked');
+  const envelopes = bins[0].length > 3;
+
+  const minus = bins.reduce((a,b) => a + b[1],0) < 0;
+  if (minus) for (const b of bins) {
+    b[1] = -b[1];
+    const len = b.length;
+    for (let i=3; i<len; ++i) b[i] = [ -b[i][1], -b[i][0] ];
+  }
+
+  const logy = $('#switches [name=logy]').prop('checked');
+  if (logy) bins = bins.filter(b => b[1]>0);
+
+  // let yrange = plot.hist_yrange(
+  //   bins.reduce((a,b) => {
+  //     print(a);
+  //     return [
+  //     Math.min(a[0],
+  //       unc_or_val(Math.min(b[1]-b[2],...b.slice(3).map(x => x[0])),b[1])),
+  //     Math.max(a[1],
+  //       unc_or_val(Math.max(b[1]+b[2],...b.slice(3).map(x => x[1])),b[1]))
+  //   ];},[bins[0][1],bins[0][1]]), logy
+  // );
+  let yrange = plot.hist_yrange(
+    bins.map(b => [
+      Math.min(
+        unc_or_val(b[1]-b[2],b[1]),
+        ...b.slice(3).map(x => unc_or_val(x[0],b[1]))),
+      Math.max(
+        unc_or_val(b[1]+b[2],b[1]),
+        ...b.slice(3).map(x => unc_or_val(x[1],b[1])))
+    ]).flat(), logy
+  );
+  // TODO: put bins<0 on the axis in logy mode
+  // print(yrange);
 
   const svg = plot.make_svg('#plot',788,533,'white')
     .attr('version','1.1')
@@ -150,13 +219,28 @@ function update_hist(resp) {
       values: xn < 12 ? indices(xn+1).map(i=>xedge(i)) : null
     },
     { range: yrange, padding: [45,5], log: logy,
-      label: 'cross section [pb]'
-      // label: (factor<0 ? '\u2212 ' : '') + 'cross section [' + units() + ']'
+      label: (minus?'<tspan font-weight="bold">\u2212</tspan> ':'')
+             + 'cross section [pb]'
     }
   ]);
 
+  if (yrange[0] < 0 && yrange[1] > 0) {
+    plot.hline('zero-line',canv,0,{
+      stroke: '#444',
+      'stroke-width': 1,
+      'stroke-dasharray': '5 2'
+    });
+  }
+
+  plot.hist('histogram', canv, bins.map(
+    b => [ xedge(b[0]-1), xedge(b[0]), b[1], b[2] ]
+  ),{
+    color: '#000099',
+    width: 2
+  });
+
   // print info -----------------------------------------------------
-  (function f(e,o) {
+  if (this.prop('type')!='checkbox') (function f(e,o) {
     if (typeof o == 'object') {
       if (Array.isArray(o)) {
         for (const x of o) f(e,x);
@@ -169,6 +253,21 @@ function update_hist(resp) {
       }
     } else e.el('span',o).addClass('val');
   })($('#hist_info').empty(),resp.info);
+
+  // links ----------------------------------------------------------
+  const links = $('#links').empty().el('div');
+
+  let link = '?' + /[?&](page=[^?&]+)/.exec(window.location.href)[1];
+  for (const x of $('#form :input')) {
+    const name = x.name;
+    if (!name) continue;
+    const val = $(x).val();
+    if (!val) continue;
+    link += '&'+encodeURIComponent(name)+'='+encodeURIComponent(val);
+  }
+  links.el('a','&#x1f517; link').prop('href',link);
+
+  links.el('a','&#x2B73; save svg').click(save_svg);
 }
 
 $(function(){
@@ -177,12 +276,60 @@ $(function(){
   filter('hist').on('input',bind(set_options,'hist',hists.all));
 
   select('file').on('change',function(){
-    files.cur = $(this).val();
-    load_file.call(this);
+    let x = $(this);
+    files.cur = x.val();
+    load_file.call(x);
   });
   select('hist').on('change',function(){
-    hists.cur = $(this).val();
-    load_hist.call(this);
+    let x = $(this);
+    hists.cur.name = x.val();
+    load_hist.call(x);
   });
+
+  $('#switches :input').change(function(){
+    if (hists.cur.name) update_hist.call($(this),hists.cur.data);
+  });
+
+  $('#switches kbd').each(function(){
+    $(this).prop('title','press '+$(this).text()+' to toggle');
+  });
+
+  $(document).keypress(function(e) {
+    const x = (key => {
+      if (key=='l') return $('#switches [name=logy]');
+      if (key=='w') return $('#switches [name=divbinw]');
+      if (key=='o') return $('#switches [name=overflow]');
+    })(e.key);
+    if (x) {
+      x[0].checked ^= 1;
+      if (hists.cur.name) update_hist.call(x,hists.cur.data);
+    }
+  });
+
+  // apply url argument ---------------------------------------------
+  (function() {
+    const args = [ ];
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+      function(m,key,val) {
+        if (key=='page') return;
+        const input = $(`#form [name=${key}]`);
+        args.push([key,val,(input.length ? input : null),false]);
+      });
+    if (!args.length) return;
+    function set(name,trig) {
+      const arg = args.find(x => x[0]==name);
+      if (!arg || !arg[2]) return null;
+      arg[3] = true;
+      const elem = arg[2].val(arg[1]);
+      if (trig) return $.when(elem.trigger(trig));
+      return elem;
+    }
+    set('file_filter','input');
+    const file = set('file','change');
+    if (!file) return;
+    file.done(function(){ set('hist'); });
+    print(args);
+    // print(args.filter(x => (!x[2] || x[2].is('select'))));
+  })();
 });
 
