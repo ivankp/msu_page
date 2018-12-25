@@ -17,20 +17,13 @@ function indices(n) {
   return a;
 }
 
-// Object.defineProperty(Array.prototype, 'map_if', {
-//   value: function(f,fIf=(x => x!=null),thisArg) {
-//     return this.map((x,...args) => (fIf(x) ? f(x,...args) : x),thisArg);
-//   }
-// });
-
-function select(name) { return $('select[name='+name+']'); }
-function filter(name) { return $('input[name='+name+'_filter]'); }
+function by_name(name) { return $('#form [name='+name+']'); }
 
 function set_options(name,opts) {
-  const sel = select(name).find('option').remove().end();
+  const sel = by_name(name).find('option').remove().end();
   let res = [ ];
   try {
-    res = filter(name).val().split(' ')
+    res = by_name(name+'_filter').val().split(' ')
       .filter(x => x).map(x => new RegExp(x,'i'));
   } catch(e) { }
   opts_loop: for (const opt of opts) {
@@ -41,7 +34,7 @@ function set_options(name,opts) {
 }
 
 function safe_file_val() {
-  const sel = select('file');
+  const sel = by_name('file');
   let f = sel.val();
   if (f) return f;
   if (files.cur) {
@@ -185,19 +178,9 @@ function update_hist(resp) {
     for (let i=3; i<len; ++i) b[i] = [ -b[i][1], -b[i][0] ];
   }
 
-  const logy = $('#switches [name=logy]').prop('checked');
+  const logy = by_name('logy').prop('checked');
   if (logy) bins = bins.filter(b => b[1]>0);
 
-  // let yrange = plot.hist_yrange(
-  //   bins.reduce((a,b) => {
-  //     print(a);
-  //     return [
-  //     Math.min(a[0],
-  //       unc_or_val(Math.min(b[1]-b[2],...b.slice(3).map(x => x[0])),b[1])),
-  //     Math.max(a[1],
-  //       unc_or_val(Math.max(b[1]+b[2],...b.slice(3).map(x => x[1])),b[1]))
-  //   ];},[bins[0][1],bins[0][1]]), logy
-  // );
   let yrange = plot.hist_yrange(
     bins.map(b => [
       Math.min(
@@ -272,15 +255,15 @@ function update_hist(resp) {
 
 $(function(){
   set_options('file',files.all);
-  filter('file').on('input',bind(set_options,'file',files.all));
-  filter('hist').on('input',bind(set_options,'hist',hists.all));
+  by_name('file_filter').on('input',bind(set_options,'file',files.all));
+  by_name('hist_filter').on('input',bind(set_options,'hist',hists.all));
 
-  select('file').on('change',function(){
+  by_name('file').on('change',function(){
     let x = $(this);
     files.cur = x.val();
     load_file.call(x);
   });
-  select('hist').on('change',function(){
+  by_name('hist').on('change',function(){
     let x = $(this);
     hists.cur.name = x.val();
     load_hist.call(x);
@@ -296,9 +279,9 @@ $(function(){
 
   $(document).keypress(function(e) {
     const x = (key => {
-      if (key=='l') return $('#switches [name=logy]');
-      if (key=='w') return $('#switches [name=divbinw]');
-      if (key=='o') return $('#switches [name=overflow]');
+      if (key=='l') return by_name('logy');
+      if (key=='w') return by_name('divbinw');
+      if (key=='o') return by_name('overflow');
     })(e.key);
     if (x) {
       x[0].checked ^= 1;
@@ -312,7 +295,7 @@ $(function(){
     window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
       function(m,key,val) {
         if (key=='page') return;
-        const input = $(`#form [name=${key}]`);
+        const input = by_name(key);
         args.push([key,val,(input.length ? input : null),false]);
       });
     if (!args.length) return;
