@@ -38,11 +38,9 @@ function safe_file_val() {
   let f = sel.val();
   if (f) return f;
   if (files.cur) {
-    if (sel.children().filter(function(){
-      return this.text == files.cur;
-    }).prop('selected',true).length != 1) {
+    sel.val(files.cur);
+    if (!sel.val())
       sel.el('option',files.cur).prop('selected',true);
-    }
     return files.cur;
   }
   if (sel.length > 0) return $(sel[0][0]).prop('selected',true).text;
@@ -89,7 +87,7 @@ const hists = { all: [ ], cur: { name: null, data: null }, loaded: { } };
 function load_file() {
   if (files.loaded.hasOwnProperty(files.cur)) {
     update_file.call($(this),files.loaded[files.cur]);
-  } else post('list',update_file,$(this)).done(resp => {
+  } else return post('list',update_file,$(this)).done(resp => {
     files.loaded[files.cur] = resp;
   });
 }
@@ -99,7 +97,7 @@ function load_hist() {
   const req_str = JSON.stringify([safe_file_val(),Object.values(req)]);
   if (hists.loaded.hasOwnProperty(req_str)) {
     update_hist.call(this,(hists.cur.data = hists.loaded[req_str]));
-  } else post(req,update_hist,this).done(resp => {
+  } else return post(req,update_hist,this).done(resp => {
     hists.cur.data = hists.loaded[req_str] = resp;
   });
 }
@@ -110,7 +108,7 @@ function update_file(resp){
   const sel = set_options('hist',hists.all);
   if (hists.all.includes(hists.cur.name)) {
     sel.val(hists.cur.name);
-    load_hist.call(this);
+    return load_hist.call(this);
   }
 }
 
@@ -242,11 +240,22 @@ function update_hist(resp) {
 
   let link = '?' + /[?&](page=[^?&]+)/.exec(window.location.href)[1];
   for (const x of $('#form :input')) {
-    const name = x.name;
+    let name = x.name, val;
     if (!name) continue;
-    const val = $(x).val();
-    if (!val) continue;
-    link += '&'+encodeURIComponent(name)+'='+encodeURIComponent(val);
+    if (x.type=='checkbox') {
+      if (!x.checked) name = false;
+    } else {
+      val = x.value;
+      if (!val) {
+        if (name=='file') val = files.cur; else
+        if (name=='hist') val = hists.cur.name; else
+        continue;
+      }
+    }
+    if (name) {
+      link += '&'+encodeURIComponent(name);
+      if (val) link += '='+encodeURIComponent(val);
+    }
   }
   links.el('a','&#x1f517; link').prop('href',link);
 
@@ -291,28 +300,25 @@ $(function(){
 
   // apply url argument ---------------------------------------------
   (function() {
-    const args = [ ];
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+    const args = { };
+    window.location.href.replace(/[?&]+([^=&]+)(?:=([^&]*))?/gi,
       function(m,key,val) {
         if (key=='page') return;
-        const input = by_name(key);
-        args.push([key,val,(input.length ? input : null),false]);
+        args[key] = val;
       });
-    if (!args.length) return;
-    function set(name,trig) {
-      const arg = args.find(x => x[0]==name);
-      if (!arg || !arg[2]) return null;
-      arg[3] = true;
-      const elem = arg[2].val(arg[1]);
-      if (trig) return $.when(elem.trigger(trig));
-      return elem;
-    }
-    set('file_filter','input');
-    const file = set('file','change');
-    if (!file) return;
-    file.done(function(){ set('hist'); });
+    if (!Object.keys(args).length) return;
     print(args);
-    // print(args.filter(x => (!x[2] || x[2].is('select'))));
+
+    by_name('file_filter').val(args.file_filter||'').trigger('input');
+    if (!(files.cur = args.file) || !files.all.includes(args.file)) return;
+    $.when(load_file()).done(function(){
+      by_name('hist_filter').val(args.hist_filter||'').trigger('input');
+      if (!(hists.cur.name = args.hist) || !hists.all.includes(args.hist))
+        return;
+      const sel = by_name('hist');
+      sel.val(args.hist);
+      if (!sel.val()) sel.el('option',args.hist).prop('selected',true);
+    });
   })();
 });
 
