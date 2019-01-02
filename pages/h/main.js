@@ -159,9 +159,12 @@ function update_hist(resp) {
   const xedge = function(i) { return xrange[0] + i*xw; };
 
   let bins = hist.bins.map( (b,i) => b==null ? null :
-    [ i, ...(Array.isArray(b[0])
-      ? [ b[0][0], Math.sqrt(b[0][1]), ...b.slice(1) ]
-      : [ b[0], Math.sqrt(b[1]) ]
+    [ i, ...(
+      Array.isArray(b)
+      ? (Array.isArray(b[0])
+        ? [ b[0][0], Math.sqrt(b[0][1]), ...b.slice(1) ]
+        : [ b[0], Math.sqrt(b[1]) ])
+      : [ b, 0 ]
     )]
   );
   const overflow = [ bins.shift(), bins.pop() ];
@@ -304,10 +307,10 @@ $(function(){
     window.location.href.replace(/[?&]+([^=&]+)(?:=([^&]*))?/gi,
       function(m,key,val) {
         if (key=='page') return;
-        args[key] = val;
+        if (!val) by_name(key)[0].checked = true;
+        else args[key] = val;
       });
     if (!Object.keys(args).length) return;
-    print(args);
 
     by_name('file_filter').val(args.file_filter||'').trigger('input');
     if (!(files.cur = args.file) || !files.all.includes(args.file)) return;
@@ -318,7 +321,14 @@ $(function(){
       const sel = by_name('hist');
       sel.val(args.hist);
       if (!sel.val()) sel.el('option',args.hist).prop('selected',true);
+
+      delete args.file;
+      delete args.file_filter;
+      delete args.hist_filter;
+
+      post(args,update_hist,sel).done(resp => { hists.cur.data = resp; });
     });
+
   })();
 });
 
