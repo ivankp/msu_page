@@ -19,6 +19,12 @@ function indices(n) {
 
 function by_name(name) { return $('#form [name='+name+']'); }
 
+function toggle(name) {
+  const box = by_name(name);
+  box[0].checked ^= 1;
+  if (hists.cur.name) update_hist.call(box,hists.cur.data);
+}
+
 function set_options(name,opts) {
   const sel = by_name(name).find('option').remove().end();
   let res = [ ];
@@ -290,15 +296,17 @@ $(function(){
   });
 
   $(document).keypress(function(e) {
-    const x = (key => {
-      if (key=='l') return by_name('logy');
-      if (key=='w') return by_name('divbinw');
-      if (key=='o') return by_name('overflow');
-    })(e.key);
-    if (x) {
-      x[0].checked ^= 1;
-      if (hists.cur.name) update_hist.call(x,hists.cur.data);
-    }
+    const act = $(document.activeElement);
+    if (act.is(':input:not([type="checkbox"])')) return;
+    const key = e.key;
+    if (key=='l') toggle('logy'); else
+    if (key=='w') toggle('divbinw'); else
+    if (key=='o') toggle('overflow'); else
+    if (key=='h') by_name('hist').focus(); else
+    if (key=='f') by_name('file').focus();
+  });
+  $('select').keydown(function(e) {
+    if (e.keyCode==27||e.which==27) this.blur();
   });
 
   // apply url argument ---------------------------------------------
