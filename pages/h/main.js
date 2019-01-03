@@ -137,6 +137,10 @@ function save_svg() {
   a.click();
 }
 
+const cat_rename = function(cat) { return this[cat] || cat; }.bind({
+  'isp': 'initial state'
+});
+
 function update_hist(resp) {
   const hist_name = Object.keys(resp.hists)[0];
   const hist = resp.hists[hist_name];
@@ -146,7 +150,7 @@ function update_hist(resp) {
     const cats_col = $('#cats').find('select').remove().end();
     const cats = hist['categories'];
     for (const cat in cats) {
-      const sel = cats_col.el('div').attr({'tooltip':cat})
+      const sel = cats_col.el('div').attr({'tooltip':cat_rename(cat)})
         .el('select').prop('name',cat);
       let i = hist['selection'][cat];
       for (let opt of cats[cat]) {
