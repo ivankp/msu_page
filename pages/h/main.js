@@ -199,9 +199,9 @@ function update_hist(resp) {
     ]).flat(), logy
   );
   // TODO: put bins<0 on the axis in logy mode
-  // print(yrange);
 
-  const svg = plot.make_svg('#plot',788,533,'white')
+  const svg_w = 788, svg_h = 533;
+  const svg = plot.make_svg('#plot',svg_w,svg_h,'white')
     .attr('version','1.1')
     .attr('xmlns','http://www.w3.org/2000/svg');
   const canv = plot.canvas(svg, [
@@ -220,6 +220,70 @@ function update_hist(resp) {
       'stroke-width': 1,
       'stroke-dasharray': '5 2'
     });
+  }
+
+  canv.svg.append('text').attrs({
+    x: canv.scale[0].range()[0]+10,
+    y: canv.scale[1].range()[1]+14,
+    fill: 'black',
+    'font-weight': 'bold',
+    'font-family': 'sans-serif',
+    'font-size': 16,
+    'text-anchor': 'start'
+  }).text(files.cur+' : '+hists.cur.name);
+
+  const values_ok = hist.values && hist.values.length;
+
+  const scale_i = values_ok ? hist.values.indexOf('scale') : -1;
+  canv.svg.select('#scale_unc_leg').remove();
+  if (scale_i != -1) {
+    // const scale_unc = hist_bins.map(x => x[2].map(x => x*factor));
+    // const scale_unc = bins.map(b => b[scale_i+2])
+    // plot.band('scale_unc', canv, {
+    //     edges: indices(xn+1).map(i=>xedge(i)),
+    //     bins : scale_unc
+    //   },'fill:#FF0000;fill-opacity:0.5;');
+    let g = canv.svg.append('g').attr('id','scale_unc_leg').attrs({
+      transform: 'translate('+(svg_w*0.76)+','+(svg_h*0.01)+')',
+      'font-family': 'sans-serif',
+      'font-size': 14,
+      'text-anchor': 'start'
+    });
+    g.append('rect').attrs({
+      width: svg_h*0.03,
+      height: svg_h*0.03,
+      style: 'fill:#FF0000;fill-opacity:0.5;'
+    });
+    g.append('text').attrs({
+      x: svg_h*0.04,
+      y: svg_h*0.025,
+      fill: 'black'
+    }).text('scale unc');
+  }
+  const pdf_i = values_ok ? hist.values.indexOf('pdf') : -1;
+  canv.svg.select('#pdf_unc_leg').remove();
+  if (pdf_i != -1) {
+    // const pdf_unc = hist_bins.map(x => x[3].map(x => x*factor));
+    // plot.band('pdf_unc', canv, {
+    //     edges: indices(xn+1).map(i=>xedge(i)),
+    //     bins : pdf_unc
+    //   },'fill:#0000FF;fill-opacity:0.5;');
+    let g = canv.svg.append('g').attr('id','pdf_unc_leg').attrs({
+      transform: 'translate('+(svg_w*0.88)+','+(svg_h*0.01)+')',
+      'font-family': 'sans-serif',
+      'font-size': 14,
+      'text-anchor': 'start'
+    });
+    g.append('rect').attrs({
+      width: svg_h*0.03,
+      height: svg_h*0.03,
+      style: 'fill:#0000FF;fill-opacity:0.5;'
+    });
+    g.append('text').attrs({
+      x: svg_h*0.04,
+      y: svg_h*0.025,
+      fill: 'black'
+    }).text('PDF unc');
   }
 
   plot.hist('histogram', canv, bins.map(
@@ -333,6 +397,9 @@ $(function(){
       delete args.file;
       delete args.file_filter;
       delete args.hist_filter;
+
+      for (const key in args)
+        args[key] = decodeURIComponent(args[key]);
 
       post(args,update_hist,sel).done(resp => { hists.cur.data = resp; });
     });
