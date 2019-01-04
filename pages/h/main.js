@@ -236,10 +236,10 @@ function update_hist(resp) {
     'text-anchor': 'start'
   }).text(files.cur+' : '+hists.cur.name);
 
-  const values_ok = hist.values && hist.values.length;
+  const n_envelopes = hist.values && hist.values.length;
 
   (function draw_envelope(name,style,pos) {
-    let k = values_ok ? hist.values.indexOf(name) : -1;
+    let k = n_envelopes ? hist.values.indexOf(name) : -1;
     canv.svg.select('#'+name+'_unc_leg').remove();
     if (k != -1) {
       k += 2;
@@ -253,7 +253,6 @@ function update_hist(resp) {
         a[1].push(b[k]);
         return a;
       }, [[0],[]]);
-      print(envelope);
       plot.band(name+'_unc', canv, {
           edges: envelope[0].map(i => xedge(i)),
           bins : envelope[1]
@@ -283,7 +282,7 @@ function update_hist(resp) {
   plot.hist('histogram', canv, bins.map(
     b => [ xedge(b[0]-1), xedge(b[0]), b[1], b[2] ]
   ),{
-    color: '#000099',
+    color: n_envelopes>1 ? '#000000' : '#000099',
     width: 2
   });
 

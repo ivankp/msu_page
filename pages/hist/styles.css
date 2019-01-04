@@ -1,5 +1,8 @@
 div.float, div.right { margin: auto 10px; }
 
+/* div.right { float: right; } */
+.float > div { float: left; }
+
 fieldset {
   border-radius: 8px;
 }
