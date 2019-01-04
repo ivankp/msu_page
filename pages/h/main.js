@@ -192,7 +192,7 @@ function update_hist(resp) {
   const logy = by_name('logy').prop('checked');
   if (logy) bins = bins.filter(b => b[1]>0);
 
-  let yrange = plot.hist_yrange(
+  const yrange = plot.hist_yrange(
     bins.map(b => [
       Math.min(
         unc_or_val(b[1]-b[2],b[1]),
@@ -238,57 +238,47 @@ function update_hist(resp) {
 
   const values_ok = hist.values && hist.values.length;
 
-  const scale_i = values_ok ? hist.values.indexOf('scale') : -1;
-  canv.svg.select('#scale_unc_leg').remove();
-  if (scale_i != -1) {
-    // const scale_unc = hist_bins.map(x => x[2].map(x => x*factor));
-    // const scale_unc = bins.map(b => b[scale_i+2])
-    // plot.band('scale_unc', canv, {
-    //     edges: indices(xn+1).map(i=>xedge(i)),
-    //     bins : scale_unc
-    //   },'fill:#FF0000;fill-opacity:0.5;');
-    let g = canv.svg.append('g').attr('id','scale_unc_leg').attrs({
-      transform: 'translate('+(svg_w*0.76)+','+(svg_h*0.01)+')',
-      'font-family': 'sans-serif',
-      'font-size': 14,
-      'text-anchor': 'start'
-    });
-    g.append('rect').attrs({
-      width: svg_h*0.03,
-      height: svg_h*0.03,
-      style: 'fill:#FF0000;fill-opacity:0.5;'
-    });
-    g.append('text').attrs({
-      x: svg_h*0.04,
-      y: svg_h*0.025,
-      fill: 'black'
-    }).text('scale unc');
-  }
-  const pdf_i = values_ok ? hist.values.indexOf('pdf') : -1;
-  canv.svg.select('#pdf_unc_leg').remove();
-  if (pdf_i != -1) {
-    // const pdf_unc = hist_bins.map(x => x[3].map(x => x*factor));
-    // plot.band('pdf_unc', canv, {
-    //     edges: indices(xn+1).map(i=>xedge(i)),
-    //     bins : pdf_unc
-    //   },'fill:#0000FF;fill-opacity:0.5;');
-    let g = canv.svg.append('g').attr('id','pdf_unc_leg').attrs({
-      transform: 'translate('+(svg_w*0.88)+','+(svg_h*0.01)+')',
-      'font-family': 'sans-serif',
-      'font-size': 14,
-      'text-anchor': 'start'
-    });
-    g.append('rect').attrs({
-      width: svg_h*0.03,
-      height: svg_h*0.03,
-      style: 'fill:#0000FF;fill-opacity:0.5;'
-    });
-    g.append('text').attrs({
-      x: svg_h*0.04,
-      y: svg_h*0.025,
-      fill: 'black'
-    }).text('PDF unc');
-  }
+  (function draw_envelope(name,style,pos) {
+    let k = values_ok ? hist.values.indexOf(name) : -1;
+    canv.svg.select('#'+name+'_unc_leg').remove();
+    if (k != -1) {
+      k += 2;
+      const envelope = bins.reduce((a,b) => {
+        const i = b[0], last = a[0][a[0].length-1];
+        if (i-last>1) {
+          a[0].push(last+1);
+          a[1].push([yrange[0],yrange[0]]);
+        }
+        a[0].push(i);
+        a[1].push(b[k]);
+        return a;
+      }, [[0],[]]);
+      print(envelope);
+      plot.band(name+'_unc', canv, {
+          edges: envelope[0].map(i => xedge(i)),
+          bins : envelope[1]
+        }, style);
+      let g = canv.svg.append('g').attr('id',name+'_unc_leg').attrs({
+        transform: 'translate('+(svg_w*pos.x)+','+(svg_h*0.01)+')',
+        'font-family': 'sans-serif',
+        'font-size': 14,
+        'text-anchor': 'start'
+      });
+      g.append('rect').attrs({
+        width: svg_h*0.03,
+        height: svg_h*0.03,
+        style: style
+      });
+      g.append('text').attrs({
+        x: svg_h*0.04,
+        y: svg_h*0.025,
+        fill: 'black'
+      }).text(name+' unc');
+    }
+    return draw_envelope;
+  })
+  ('scale','fill:#FF0000;fill-opacity:0.5;',{x:0.76})
+  ('pdf'  ,'fill:#0000FF;fill-opacity:0.5;',{x:0.88});
 
   plot.hist('histogram', canv, bins.map(
     b => [ xedge(b[0]-1), xedge(b[0]), b[1], b[2] ]
@@ -364,14 +354,15 @@ $(function(){
   });
 
   $(document).keypress(function(e) {
-    const act = $(document.activeElement);
-    if (act.is(':input:not([type="checkbox"])')) return;
-    const key = e.key;
-    if (key=='l') toggle('logy'); else
-    if (key=='w') toggle('divbinw'); else
-    if (key=='o') toggle('overflow'); else
-    if (key=='h') by_name('hist').focus(); else
-    if (key=='f') by_name('file').focus();
+    // const act = $(document.activeElement);
+    // if (act.is(':input:not([type="checkbox"])')) return;
+    switch (e.key) {
+      case 'l': toggle('logy'); break;
+      case 'w': toggle('divbinw'); break;
+      case 'o': toggle('overflow'); break;
+      case 'H': by_name('hist').focus(); break;
+      case 'F': by_name('file').focus(); break;
+    }
   });
   $('select').keydown(function(e) {
     if (e.keyCode==27||e.which==27) this.blur();
