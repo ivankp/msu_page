@@ -41,7 +41,10 @@ foreach (scandir($files_dir) as $f) {
 <div class="form_row" id="hist_info"></div>
 </div>
 
+<div>
 <div id="plot"></div>
+<div id="bin_info"></div>
+</div>
 
 <script src="<?php echo $dir;?>/plot.js"></script>
 <script src="<?php echo $dir;?>/main.js"></script>

@@ -166,7 +166,8 @@ function update_hist(resp) {
   const xrange = ['min','max'].map(x => hist.axes[xi][x]);
   const xn = hist.axes[xi].nbins;
   const xw = (xrange[1]-xrange[0])/xn;
-  const xedge = function(i) { return xrange[0] + i*xw; };
+  const xedge = (i => xrange[0] + i*xw);
+  const xindex = (x => Math.ceil((x-xrange[0])/xw));
 
   let bins = hist.bins.map( (b,i) => b==null ? null :
     [ i, ...(
@@ -286,6 +287,34 @@ function update_hist(resp) {
     width: 2
   });
 
+  // histogram tooltip ----------------------------------------------
+  let bini = null;
+  svg.on('mousemove', function() {
+    const s = canv.scale;
+    const i = xindex(s[0].invert(d3.mouse(this)[0]));
+    if (bini==i || i==0) return;
+    bini = i;
+    /*
+    print(`${i}: ${hist.bins[i]}`);
+    svg.select('#hovered_bin').remove();
+    svg.append('line').attrs({
+      id: 'hovered_bin',
+      x1: s[0](xedge(i-1)),
+      x2: s[0](xedge(i)),
+      y1: s[1].range()[0],
+      y2: s[1].range()[0],
+      stroke: '#ff0000',
+      'stroke-width': 2
+    });
+    */
+    const bi = bins.findIndex(b => b[0]==i);
+    if (bi!=-1) {
+      $('.bin').each((i,b) =>
+        $(b).children('line').attr('stroke-width',(i==bi ? 6 : 2)));
+      $('#bin_info').empty().el('p',JSON.stringify(bins[bi],null,1));
+    }
+  });
+
   // print info -----------------------------------------------------
   if (this.prop('type')!='checkbox') (function f(e,o) {
     if (typeof o == 'object') {
@@ -298,7 +327,17 @@ function update_hist(resp) {
           f(obj,o[key]);
         }
       }
-    } else e.el('span',o).addClass('val');
+    } else {
+      const val = e.el('span').addClass('val');
+      const str = `${o}`;
+      if (/^\d+$/.test(str)) {
+        const n = str.length;
+        let i = n%3 || 3;
+        if (i>0) val.el('span',str.substr(0,i)).addClass('num_chunk_0');
+        for (; i<n; i+=3)
+          val.el('span',str.substr(i,3)).addClass('num_chunk');
+      } else val.text(str);
+    }
   })($('#hist_info').empty(),resp.info);
 
   // links ----------------------------------------------------------

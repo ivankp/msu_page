@@ -19,6 +19,11 @@
 }
 
 #plot { margin: 0 20px; }
+#bin_info {
+  margin: 0 20px;
+  font-size: small;
+}
+#bin_info p { margin: 0; }
 
 .tall_select {
   border: 1px solid #999;
@@ -64,7 +69,8 @@ label {
 }
 #hist_info span.obj { display: block; }
 #hist_info span.obj > span.obj { margin: 0 0 0 1ch; }
-#hist_info span.val::before { content: " "; }
+#hist_info span.val { margin: 0 0 0 1ch; }
+#hist_info span.num_chunk { margin: 0 0 0 0.4ch; }
 
 [tooltip]::after {
   content: attr(tooltip);
