@@ -291,16 +291,19 @@ function update_hist(resp) {
   });
 
   // bin info -------------------------------------------------------
+  let bininfo_box = by_name('bininfo')[0];
   let bini = null;
   svg.on('mousemove', function() {
+    if (!bininfo_box.checked) return;
     const s = canv.scale;
     const i = xindex(s[0].invert(d3.mouse(this)[0]));
     if (bini==i || i==0) return;
     bini = i;
     const bi = bins.findIndex(b => b[0]==i);
     if (bi!=-1) {
-      $('.bin').each((i,b) =>
-        $(b).children('line').attr('stroke-width',(i==bi ? 6 : 2)));
+      $('g.bin').each((i,b) =>
+        $(b).attr('style',
+          i==bi ? 'outline: 2px solid green; outline-offset: 2px;' : ''));
       $('#bin_info').empty().el('samp',
         (function f(o){
           let out = '';
@@ -409,7 +412,7 @@ $(function(){
     [ 'logy', 'log y', 'l' ],
     [ 'divbinw', '&divide; width', 'w' ],
     [ 'overflow', '&#x25C2; overflow', 'o' ],
-    // [ 'bininfo', 'bin info', 'i' ]
+    [ 'bininfo', 'bin info', 'i' ]
   ].forEach(x => {
     const label = sw.el('label');
     label.el('input').prop({name:x[0],type:'checkbox'}).change(function(){
@@ -424,7 +427,7 @@ $(function(){
       case 'l': toggle('logy'); break;
       case 'w': toggle('divbinw'); break;
       case 'o': toggle('overflow'); break;
-      // case 'i': toggle('bininfo'); break;
+      case 'i': toggle('bininfo'); break;
       case 'H': by_name('hist').focus(); break;
       case 'F': by_name('file').focus(); break;
     }
