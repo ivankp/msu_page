@@ -30,12 +30,7 @@ foreach (scandir($files_dir) as $f) {
 <div class="form_col" id="cats">
 <p>Options</p>
 </div>
-<div class="form_col" id="switches">
-<p>&nbsp;</p>
-<label><input name="logy" type="checkbox">log y<kbd>l</kbd></label><br>
-<label><input name="divbinw" type="checkbox">&divide; width<kbd>w</kbd></label><br>
-<label><input name="overflow" type="checkbox">&#x25C2; overflow<kbd>o</kbd></label>
-</div>
+<div class="form_col" id="switches"> <p>&nbsp;</p> </div>
 </div>
 <div class="form_row" id="links"></div>
 <div class="form_row" id="hist_info"></div>

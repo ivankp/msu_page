@@ -11,6 +11,10 @@
 .form_col > * { width: 100%; }
 #cats select { width: 100%; }
 
+#switches label {
+  font-size: 11pt;
+}
+
 .form_col p {
   margin: 0;
   border: 0;

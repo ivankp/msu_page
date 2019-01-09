@@ -194,14 +194,17 @@ function update_hist(resp) {
   if (logy) bins = bins.filter(b => b[1]>0);
 
   const yrange = plot.hist_yrange(
-    bins.map(b => [
-      Math.min(
-        unc_or_val(b[1]-b[2],b[1]),
-        ...b.slice(3).map(x => unc_or_val(x[0],b[1]))),
-      Math.max(
-        unc_or_val(b[1]+b[2],b[1]),
-        ...b.slice(3).map(x => unc_or_val(x[1],b[1])))
-    ]).flat(), logy
+    bins.reduce((a,b) => {
+      a.push(
+        Math.min(
+          unc_or_val(b[1]-b[2],b[1]),
+          ...b.slice(3).map(x => unc_or_val(x[0],b[1]))),
+        Math.max(
+          unc_or_val(b[1]+b[2],b[1]),
+          ...b.slice(3).map(x => unc_or_val(x[1],b[1])))
+      );
+      return a;
+    },[]), logy
   );
   // TODO: put bins<0 on the axis in logy mode
 
@@ -287,31 +290,49 @@ function update_hist(resp) {
     width: 2
   });
 
-  // histogram tooltip ----------------------------------------------
+  // bin info -------------------------------------------------------
   let bini = null;
   svg.on('mousemove', function() {
     const s = canv.scale;
     const i = xindex(s[0].invert(d3.mouse(this)[0]));
     if (bini==i || i==0) return;
     bini = i;
-    /*
-    print(`${i}: ${hist.bins[i]}`);
-    svg.select('#hovered_bin').remove();
-    svg.append('line').attrs({
-      id: 'hovered_bin',
-      x1: s[0](xedge(i-1)),
-      x2: s[0](xedge(i)),
-      y1: s[1].range()[0],
-      y2: s[1].range()[0],
-      stroke: '#ff0000',
-      'stroke-width': 2
-    });
-    */
     const bi = bins.findIndex(b => b[0]==i);
     if (bi!=-1) {
       $('.bin').each((i,b) =>
         $(b).children('line').attr('stroke-width',(i==bi ? 6 : 2)));
-      $('#bin_info').empty().el('p',JSON.stringify(bins[bi],null,1));
+      $('#bin_info').empty().el('samp',
+        (function f(o){
+          let out = '';
+          if (typeof o == 'object') {
+            if (Array.isArray(o)) {
+              out += '[ ';
+              let first = true;
+              for (const x of o) {
+                if (first) first = false;
+                else out += ', ';
+                out += f(x);
+              }
+              out += ' ]';
+            } else {
+              out += '{ ';
+              let first = true;
+              for (const key in o) {
+                if (first) first = false;
+                else out += ', ';
+                out += key + ': ' + f(o[key]);
+              }
+              out += ' }';
+            }
+            return out;
+          } else if (typeof o == 'number') {
+            if (!(1e-2 < o && o < 10000)) out += o.toExponential(3);
+            else if (o == Math.trunc(o)) out += o;
+            else out += o.toPrecision(4);
+          } else out += o;
+          return out;
+        })(bins[bi])
+      );
     }
   });
 
@@ -383,21 +404,27 @@ $(function(){
     load_hist.call(x);
   });
 
-  $('#switches :input').change(function(){
-    if (hists.cur.name) update_hist.call($(this),hists.cur.data);
-  });
-
-  $('#switches kbd').each(function(){
-    $(this).prop('title','press '+$(this).text()+' to toggle');
+  const sw = $('#switches');
+  [
+    [ 'logy', 'log y', 'l' ],
+    [ 'divbinw', '&divide; width', 'w' ],
+    [ 'overflow', '&#x25C2; overflow', 'o' ],
+    // [ 'bininfo', 'bin info', 'i' ]
+  ].forEach(x => {
+    const label = sw.el('label');
+    label.el('input').prop({name:x[0],type:'checkbox'}).change(function(){
+      if (hists.cur.name) update_hist.call($(this),hists.cur.data);
+    });
+    label.el('kbd',x[2]).prop('title','press '+x[2]+' to toggle').before(x[1]);
+    label.after('<br>');
   });
 
   $(document).keypress(function(e) {
-    // const act = $(document.activeElement);
-    // if (act.is(':input:not([type="checkbox"])')) return;
     switch (e.key) {
       case 'l': toggle('logy'); break;
       case 'w': toggle('divbinw'); break;
       case 'o': toggle('overflow'); break;
+      // case 'i': toggle('bininfo'); break;
       case 'H': by_name('hist').focus(); break;
       case 'F': by_name('file').focus(); break;
     }
