@@ -11,10 +11,6 @@
 .form_col > * { width: 100%; }
 #cats select { width: 100%; }
 
-#switches label {
-  font-size: 11pt;
-}
-
 .form_col p {
   margin: 0;
   border: 0;
@@ -54,12 +50,29 @@ input[type=search]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
 
+#switches label {
+  font-size: 11pt;
+  line-height: 11pt;
+}
+
 label {
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+label * {
+  vertical-align: middle;
+}
+
+#links {
+  font-size: 12pt;
+  line-height: 12pt;
+}
+#links * {
+  vertical-align: middle;
 }
 
 #hist_info {
@@ -103,7 +116,10 @@ label {
   visibility: hidden;
 }
 
-.form_col kbd { float: right; }
+.form_col kbd {
+  float: right;
+  font-size: 9pt;
+}
 
 #links a {
   margin: 0 10px 0 0;

@@ -386,9 +386,17 @@ function update_hist(resp) {
       if (val) link += '='+encodeURIComponent(val);
     }
   }
-  links.el('a','&#x1f517; link').prop('href',link);
+  links.el('a').prop('href',link).el('img').prop({
+      src: 'img/icons/share.svg',
+      alt: 'share',
+      height: '16'
+  }).after(' link');
 
-  links.el('a','&#x2B73; save svg').click(save_svg);
+  links.el('a').click(save_svg).el('img').prop({
+      src: 'img/icons/download.svg',
+      alt: 'svg',
+      height: '16'
+  }).after(' svg');
 }
 
 $(function(){
