@@ -69,18 +69,26 @@
       "name": "Code on GitHub",
       "icon": "github.png",
       "page": false,
-      "sub": ["ntuple_analysis","bh_analysis","bh_analysis2"]
+      "sub": ["ntuple_analysis","this_site"]
     },
     "ntuple_analysis": {
       "link": "https://github.com/ivankp/ntuple_analysis",
-      "_blank": true
+      "_blank": true,
+      "sub": ["bh_analysis","bh_analysis2"]
     },
     "bh_analysis": {
+      "name": "old: bh_analysis",
       "link": "https://github.com/ivankp/bh_analysis",
       "_blank": true
     },
     "bh_analysis2": {
+      "name": "old: bh_analysis2",
       "link": "https://github.com/ivankp/bh_analysis2",
+      "_blank": true
+    },
+    "this_site": {
+      "name": "This site",
+      "link": "https://github.com/ivankp/msu_page",
       "_blank": true
     },
     "refs": {
