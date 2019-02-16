@@ -127,6 +127,7 @@ function unc_or_val(unc,val) {
 }
 
 function save_svg() {
+  print('save svg');
   const svgBlob = new Blob(
     [ '<?xml version="1.0" encoding="UTF-8" ?>\n', $("#plot").html() ],
     { type:"image/svg+xml;charset=utf-8" }
@@ -134,7 +135,9 @@ function save_svg() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(svgBlob);
   a.download = files.cur+'-'+hists.cur.name+'.svg';
-  a.click();
+  // a.click();
+  a.dispatchEvent(new MouseEvent('click'));
+  // window.location = URL.createObjectURL(svgBlob);
 }
 
 const cat_rename = function(cat) { return this[cat] || cat; }.bind({
@@ -390,13 +393,15 @@ function update_hist(resp) {
       src: 'img/icons/share.svg',
       alt: 'share',
       height: '16'
-  }).after(' link');
+  }).after('link');
+
+  links.el('a','{JSON}').prop('href',link);
 
   links.el('a').click(save_svg).el('img').prop({
       src: 'img/icons/download.svg',
-      alt: 'svg',
+      alt: 'save',
       height: '16'
-  }).after(' svg');
+  }).after('svg');
 }
 
 $(function(){

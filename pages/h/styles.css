@@ -74,6 +74,9 @@ label * {
 #links * {
   vertical-align: middle;
 }
+#links img {
+  margin: 0 4px 0 0;
+}
 
 #hist_info {
   width: 250px;
