@@ -13,8 +13,6 @@
 !/img
 
 !/js
-/js/*
-!/js/my
 
 **.swp
 **.vim
