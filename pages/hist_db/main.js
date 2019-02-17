@@ -31,17 +31,15 @@ function load_labels(name) {
   return load(dir+'/db/'+name+'-cols.json').done(function(resp){
     const labels = $('#labels').empty();
     for (col of resp) {
-      $('<select>').appendTo(labels).attr({'name':col[0],'multiple':''})
+      $('<select>').appendTo(labels).attr({name:col[0],size:10,multiple:''})
       .append(col[1].map((x,i) => {
         const opt = $('<option>').text(x);
         if (i==0) opt.attr('selected','');
         return opt;
       }))
       .change(function(){
-        // console.log(`${this.name}: ${this.value}`);
         const labels = { };
         $('#labels [name]').each((i,x) => { labels[x.name] = $(x).val() });
-        // console.log(labels);
         load_hist({ db: name, labels: labels}).done($(this).focus());
       });
     }
