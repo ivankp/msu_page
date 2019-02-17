@@ -3,7 +3,12 @@
   "pages": {
     "hist": {
       "name": "Histograms",
-      "title": "Histograms from GoSam ntuples"
+      "title": "Histograms from GoSam ntuples",
+      "sub": ["hist_db"]
+    },
+    "hist_db": {
+      "name": "Studies",
+      "title": "Histogram studies"
     },
     "scales": {
       "name": "Scale dependence",
