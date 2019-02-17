@@ -50,6 +50,54 @@ function load_hist(req) {
   console.log(req);
   return load(dir+'/req.php',req).done(function(resp){
     console.log(resp);
+
+    $('#plot1').empty();
+    if (resp.length==0) {
+      $('#plot1').text("No data");
+      return;
+    }
+
+    let plot = new Plot('#plot1',700,500,'white');
+
+    let hists = [ ];
+    for (let h=0, nh=resp.length; h<nh; ++h) {
+      const r = resp[h];
+
+      const xs = r[0];
+      const ys = r[1].filter((x,i) => !(i%2));
+      const us = r[1].filter((x,i) =>  (i%2));
+
+      let hist = [ ];
+      for (let i=1, n=xs.length; i<n; ++i) {
+        const x1 = xs[i-1], x2 = xs[i], dx = x2 - x1;
+        hist.push([ x1, x2, ys[i]/dx, us[i]/dx ]);
+      }
+
+      hists.push({ name: r[2], hist: hist });
+    }
+
+    console.log(req.labels.var1[0]);
+    plot.axes(
+      { range: d3.extent(hists.reduce((a,h) => {
+          a.push(h.hist[0][0]);
+          a.push(h.hist[h.hist.length-1][1]);
+          return a;
+        },[])), padding: [35,10], label: req.labels.var1[0] },
+      { range: plot.hist_yrange(hists.reduce((a,h) => {
+          const y = d3.extent(h.hist.map(x => x[2]));
+          a.push(y[0]);
+          a.push(y[1]);
+          return a;
+        },[])), padding: [45,5], nice: true, label: 'dσ/dx [pb/x]' }
+    );
+
+    for (h of hists)
+      plot.hist(h.hist).attrs({
+        // id: ('hist '+h.name).replace(/ +/g,'_'),
+        stroke: '#000099',
+        'stroke-width': 2
+      });
+
   });
 }
 

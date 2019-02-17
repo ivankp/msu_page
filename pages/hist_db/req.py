@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import sys, json, sqlite3, struct
+import sys, json, sqlite3
+# import struct
 
 req = json.load(sys.stdin)
 db = sqlite3.connect('db/'+req['db']+'.db')
@@ -17,12 +18,6 @@ hs = db.execute(
 ).fetchall()
 db.close()
 
-# hs = [ (','.join(h[0].split()),h[1]) for h in hs ]
-# print '[' + ','.join( '[[' +
-#     ','.join(h[0].split()) + '],["' +
-#     struct.unpack('d'*(), h[1]) + '"]]'
-# for h in hs ) + ']'
-
 sys.stdout.write('[')
 first = True
 for h in hs:
@@ -30,6 +25,4 @@ for h in hs:
     else: sys.stdout.write(',')
     sys.stdout.write('[['+h[0]+'],['+h[1]+'],\"'+' '.join(h[2:])+'\"]')
 sys.stdout.write(']')
-
-# json.dump(hs, sys.stdout, separators=(',',':'))
 

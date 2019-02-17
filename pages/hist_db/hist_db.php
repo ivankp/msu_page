@@ -1,6 +1,7 @@
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/d3.v5.min.js"></script>
 <script src="js/d3-selection-multi.v1.min.js"></script>
+<script src="js/d3-plot.js"></script>
 <script>
 const dir = "<?php echo $dir;?>";
 const dbs = [<?php
@@ -19,6 +20,7 @@ foreach (scandir($files_dir) as $f) {
 <div id="plot_opts"></div>
 </form>
 
-<div id="plot"></div>
+<div id="plot1"></div>
+<div id="plot2"></div>
 
 <script src="<?php echo $dir;?>/main.js"></script>
