@@ -148,12 +148,10 @@ function single_plot() {
         a.push(h.hist[h.hist.length-1][1]);
         return a;
       },[])), padding: [35,10], label: this.x },
-    { range: plot.hist_yrange(this.hists.reduce((a,h) => {
-        const y = d3.extent(h.hist.map(x => x[2]));
-        a.push(y[0]);
-        a.push(y[1]);
-        return a;
-      },[]),this.logy), padding: [45,5], label: this.y,
+    { range: plot.hist_yrange(function*(){
+        for (const h of this.hists)
+          for (const b of h.hist) yield b[2];
+      }.call(this),this.logy), padding: [45,5], label: this.y,
       nice: this.nice, log: this.logy }
   );
 
