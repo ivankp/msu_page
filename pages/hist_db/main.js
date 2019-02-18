@@ -1,5 +1,5 @@
 const cache = { };
-// var color_picker, hist_color;
+var color_hist;
 const colors = [
   '#000099', '#dd0000', '#00dd00'
 ];
@@ -117,7 +117,6 @@ function draw(req,resp) {
   });
 
   if (hists.length > 1) {
-    // const picker = new CP(document.documentElement,true);
     const g = plot.svg.append('g');
     g.selectAll('text').data(hists).enter()
     .append('text').text(h => h.name).attrs((h,i) => ({
@@ -126,40 +125,16 @@ function draw(req,resp) {
       'alignment-baseline': 'hanging',
       'class': 'plot_legend',
       fill: h.g.attr('stroke')
-    }))
-    // .each(function(h,i){
-      // (new CP(this,true,this)).on('change', function(color) {
-      //   // this.source.style.color = '#' + color;
-      //   print(color);
-      // });
-
-      // picker.set(colors[i % colors.length]);
-      // const cl = ('hist_'+h.name).replace(/ +/g,'_');
-      // picker.on('change', color => {
-      //   this.style = 'fill:#'+color;
-      //   $('.'+cl)[0].style = 'stroke:#'+color;
-      // });
-      // // print(picker.source);
-      // const leg = $(this);
-      // const offset = leg.offset();
-      // $(picker.source).css({'top':offset.top+'px','left':offset.left+'px'});
-      // print(picker.self);
-    // })
-    .on('click',function(h,i){
-      print([this,h.g]);
-      // color_picker[color_picker.visible ? 'exit' : 'enter']();
-      // print(document.getElementById('color-picker').jscolor.show());
+    })).on('click',function(h,i){
+      color_hist = [this,h.g];
       const leg = $(this);
       const offset = leg.offset();
-      // const bbox = this.getBBox();
-      const picker = $('#color_picker').css({
+      $('#color_picker').css({
         top: (offset.top)+'px',
         left: (offset.left+g.node().getBBox().width)+'px'
-      });
-      picker.find('> input')[0].jscolor.fromString(leg.attr('fill'));
-        // .val(print(leg.attr('fill')));
-
-      picker.show();
+      })
+      .show()
+      .find('> input')[0].jscolor.fromString(leg.attr('fill'));
     });
     g.attrs({
       'transform': 'translate('+
@@ -188,9 +163,10 @@ $(function() {
     }
   }).after($('<span>').addClass('hint').text('🠬 select histogram set'));
 
-  // color_picker = new CP($('#color_picker')[0],true);
-  // color_picker.on('change', function(color) {
-  //   // this.source.style.color = '#' + color;
-  //   print(color);
-  // });
+  $('#color_picker > input').change(function(){
+    color_hist[0].setAttribute('fill',this.value);
+    color_hist[1].attr('stroke',this.value);
+  }).focusout(function(){
+    $('#color_picker').hide();
+  });
 });

@@ -3,7 +3,6 @@
 <script src="js/d3-selection-multi.v1.min.js"></script>
 <script src="js/d3-plot.js"></script>
 <script src="js/jscolor.min.js"></script>
-<!-- <script src="https://tovic.github.io/color&#45;picker/color&#45;picker.min.js"></script> -->
 <script>
 const dir = "<?php echo $dir;?>";
 const dbs = [<?php
