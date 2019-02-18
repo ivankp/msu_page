@@ -1,3 +1,21 @@
 #plot1, #plot2 {
   margin: 15px 0;
 }
+
+#db > .hint {
+  color: red;
+  margin: 0 0 0 5px;
+}
+
+.plot_legend:hover {
+  cursor: pointer;
+}
+
+#color_picker {
+  position: absolute;
+  z-index: 1000;
+  padding-left: 5px;
+}
+#color_picker > input {
+  width: 60px;
+}

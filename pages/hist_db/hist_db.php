@@ -2,6 +2,8 @@
 <script src="js/d3.v5.min.js"></script>
 <script src="js/d3-selection-multi.v1.min.js"></script>
 <script src="js/d3-plot.js"></script>
+<script src="js/jscolor.min.js"></script>
+<!-- <script src="https://tovic.github.io/color&#45;picker/color&#45;picker.min.js"></script> -->
 <script>
 const dir = "<?php echo $dir;?>";
 const dbs = [<?php
@@ -19,6 +21,10 @@ foreach (scandir($files_dir) as $f) {
 <div id="labels"></div>
 <div id="plot_opts"></div>
 </form>
+
+<div id="color_picker" style="display:none;">
+<input class="jscolor {hash:true}">
+</div>
 
 <div id="plot1"></div>
 <div id="plot2"></div>

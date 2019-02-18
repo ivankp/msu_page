@@ -1,5 +1,8 @@
 function Plot(select,width,height,bkg) {
 
+this.width = width;
+this.height = height;
+
 this.container = d3.select(select);
 this.container.select('svg').remove();
 this.svg = this.container.append('svg').attrs({
