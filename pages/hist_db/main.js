@@ -3,13 +3,16 @@ var color_hist;
 const colors = [
   '#000099', '#ee0000', '#00dd00'
 ];
-const plot_options = [{
-  logy: false,
-  nice: false
-},{
-  logy: false,
-  nice: false
+const plots = [{
+  width: 700, height: 500,
+  logy: false, nice: false,
+  assign: function(o){
+    for (const key in o) this[key] = o[key];
+    return this;
+  },
+  draw: single_plot
 }];
+plots.push(Object.assign({},plots[0]));
 
 function print(x) {
   console.log(x);
@@ -23,6 +26,7 @@ function load(url,data) {
     data: data,
     beforeSend: function() {
       $('form :input').prop("disabled", true);
+      $('#loading').show();
     },
     dataType: 'text',
     dataFilter: function(resp) {
@@ -33,12 +37,14 @@ function load(url,data) {
           alert('Bad server response: '+resp);
           console.log(resp);
           $('form :input').prop("disabled", false);
+          $('#loading').hide();
         }
       } else alert('Empty server response');
       return false;
     },
     success: function(resp) {
       $('form :input').prop("disabled", false);
+      $('#loading').hide();
     }
   });
 }
@@ -57,13 +63,13 @@ function load_labels(name) {
         const sel = this;
         const labels = { };
         $('#labels [name]').each((i,x) => { labels[x.name] = $(x).val() });
-        load_hist($(this),{ db: name, labels: labels});
+        load_hists($(this),{ db: name, labels: labels});
       });
     }
   });
 }
 
-function load_hist(sel,req) {
+function load_hists(sel,req) {
   const req_str = JSON.stringify(req);
   if (req_str in cache) {
     draw(req,cache[req_str]);
@@ -76,10 +82,7 @@ function load_hist(sel,req) {
   }
 }
 
-var draw_plots = [ ];
-
 function draw(req,resp) {
-  draw_plots = [ ];
   const div = $('#plots > *');
   if (resp.length==0) {
     $("#nodata").show();
@@ -108,11 +111,10 @@ function draw(req,resp) {
 
   const xtitle = req.labels.var1.join(', ');
 
-  draw_plots.push(function(){
-    single_plot(hists,div[0],xtitle,'dσ/dx [pb]',plot_options[0]);
-  });
+  plots[0].assign({
+    hists: hists, div: div[0], x: xtitle, y: 'dσ/dx [pb]'
+  }).draw();
   $(div[0]).show();
-  draw_plots[0]();
 
   if (hists.length<2) {
     $(div[1]).hide();
@@ -131,45 +133,43 @@ function draw(req,resp) {
     })
   }));
 
-  draw_plots.push(function(){
-    single_plot(rats,div[1],xtitle,'ratio',plot_options[1]);
-  });
+  plots[1].assign({
+    hists: rats, div: div[1], x: xtitle, y: 'ratio'
+  }).draw();
   $(div[1]).show();
-  draw_plots[1]();
 }
 
-function single_plot(hists,div,xtitle,ytitle,opts) {
-  const plot = new Plot(div,700,500,'white');
+function single_plot() {
+  const plot = new Plot(this.div,this.width,this.height,'white');
 
   plot.axes(
-    { range: d3.extent(hists.reduce((a,h) => {
+    { range: d3.extent(this.hists.reduce((a,h) => {
         a.push(h.hist[0][0]);
         a.push(h.hist[h.hist.length-1][1]);
         return a;
-      },[])), padding: [35,10], label: xtitle },
-    { range: plot.hist_yrange(hists.reduce((a,h) => {
+      },[])), padding: [35,10], label: this.x },
+    { range: plot.hist_yrange(this.hists.reduce((a,h) => {
         const y = d3.extent(h.hist.map(x => x[2]));
         a.push(y[0]);
         a.push(y[1]);
         return a;
-      },[]),opts.logy), padding: [45,5], label: ytitle,
-      nice: opts.nice, log: opts.logy }
+      },[]),this.logy), padding: [45,5], label: this.y,
+      nice: this.nice, log: this.logy }
   );
 
-  hists.forEach((h,i) => {
+  this.hists.forEach((h,i) => {
     h.g = plot.hist(h.hist).attrs({
       stroke: colors[i % colors.length],
       'stroke-width': 2
     });
   });
 
-  if (hists.length > 1) {
+  if (this.hists.length > 1) {
     const g = plot.svg.append('g');
-    g.selectAll('text').data(hists).enter()
+    g.selectAll('text').data(this.hists).enter()
     .append('text').text(h => h.name).attrs((h,i) => ({
       x: 0,
       y: 15*i,
-      'alignment-baseline': 'hanging',
       'class': 'plot_legend',
       fill: h.g.attr('stroke')
     })).on('click',function(h,i){
@@ -185,9 +185,8 @@ function single_plot(hists,div,xtitle,ytitle,opts) {
     });
     g.attrs({
       'transform': 'translate('+
-        (plot.width-g.node().getBBox().width-5)+',5)',
+        (plot.width-g.node().getBBox().width-5)+',15)',
       'text-anchor': 'start',
-      'alignment-baseline': 'hanging',
       'font-family': 'sans-serif',
       'font-size': '15px'
     });
@@ -202,13 +201,21 @@ $(function() {
     const sel = $(this);
     const name = this.value;
     if (name!=='') {
-      load_labels(name).done(function(){
-        sel.next().hide();
-      });
+      sel.next().next().hide();
+      load_labels(name);
     } else {
-      sel.next().show();
+      sel.next().next().show();
     }
-  }).after($('<span>').addClass('hint').text('🠬 select histogram set'));
+  })
+  .after($('<span>').addClass('hint').text('← select histogram set'))
+  .after($('<img>').prop({
+    id: 'loading',
+    src: 'img/icons/loading.gif',
+    alt: 'loading'
+  }).css({
+    display: 'none',
+    'vertical-align': 'middle'
+  }));
 
   $('#color_picker > input').change(function(){
     color_hist[0].setAttribute('fill',this.value);
@@ -221,14 +228,13 @@ $(function() {
   $.contextMenu({
     selector: '#plots > *',
     callback: function(key, options) {
-      const i = this.index();
-      const opt = plot_options[i];
-      opt[key] = !opt[key];
-      draw_plots[i]();
+      const plot = plots[this.index()];
+      plot[key] = !plot[key];
+      plot.draw();
     },
     items: {
-      "logy": {name: "log y scale"},
-      "nice": {name: "nice y range"}
+      'logy': {name: 'log y scale'},
+      'nice': {name: 'nice y range'}
     }
   });
 });

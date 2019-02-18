@@ -5,9 +5,11 @@
   color: red;
 }
 
+#db > [name="db"] {
+  margin: 0 6px 1px 0;
+}
 #db > .hint {
   color: red;
-  margin: 0 0 0 5px;
 }
 
 .plot_legend:hover {

@@ -19,6 +19,11 @@ foreach (scandir($files_dir) as $f) {
 ?>];
 </script>
 
+<p style="color:red;font-size:large;">
+The page is currently under construction.
+Please, visit later, when this note has been removed.
+</p>
+
 <form>
 <div id="db"></div>
 <div id="labels"></div>
