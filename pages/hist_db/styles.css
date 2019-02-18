@@ -1,5 +1,8 @@
-#plot1, #plot2 {
+#plots > *, #nodata {
   margin: 15px 0;
+}
+#nodata {
+  color: red;
 }
 
 #db > .hint {

@@ -1,8 +1,15 @@
 const cache = { };
 var color_hist;
 const colors = [
-  '#000099', '#dd0000', '#00dd00'
+  '#000099', '#ee0000', '#00dd00'
 ];
+const plot_options = [{
+  logy: false,
+  nice: false
+},{
+  logy: false,
+  nice: false
+}];
 
 function print(x) {
   console.log(x);
@@ -69,14 +76,18 @@ function load_hist(sel,req) {
   }
 }
 
-function draw(req,resp) {
-  $('#plot1').empty();
-  if (resp.length==0) {
-    $('#plot1').text("No data");
-    return;
-  }
+var draw_plots = [ ];
 
-  let plot = new Plot('#plot1',700,500,'white');
+function draw(req,resp) {
+  draw_plots = [ ];
+  const div = $('#plots > *');
+  if (resp.length==0) {
+    $("#nodata").show();
+    div.hide();
+    return;
+  } else {
+    $("#nodata").hide();
+  }
 
   let hists = [ ];
   for (let h=0, nh=resp.length; h<nh; ++h) {
@@ -95,18 +106,54 @@ function draw(req,resp) {
     hists.push({ name: r[2], hist: hist });
   }
 
+  const xtitle = req.labels.var1.join(', ');
+
+  draw_plots.push(function(){
+    single_plot(hists,div[0],xtitle,'dσ/dx [pb]',plot_options[0]);
+  });
+  $(div[0]).show();
+  draw_plots[0]();
+
+  if (hists.length<2) {
+    $(div[1]).hide();
+    return;
+  }
+
+  const h0 = hists[0];
+  const rats = hists.slice(1).map(h => ({
+    name: h.name,
+    hist: h.hist.map((b,i) => {
+      const b0 = h0.hist[i];
+      if (b[0]!=b0[0] || b[1]!=b0[1])
+        return [ b[0], b[1], 0, 0 ];
+      const rat = b[2]/b0[2];
+      return [ b[0], b[1], rat, rat * Math.hypot(b[3]/b[2], b0[3]/b0[2]) ];
+    })
+  }));
+
+  draw_plots.push(function(){
+    single_plot(rats,div[1],xtitle,'ratio',plot_options[1]);
+  });
+  $(div[1]).show();
+  draw_plots[1]();
+}
+
+function single_plot(hists,div,xtitle,ytitle,opts) {
+  const plot = new Plot(div,700,500,'white');
+
   plot.axes(
     { range: d3.extent(hists.reduce((a,h) => {
         a.push(h.hist[0][0]);
         a.push(h.hist[h.hist.length-1][1]);
         return a;
-      },[])), padding: [35,10], label: req.labels.var1.join(', ') },
+      },[])), padding: [35,10], label: xtitle },
     { range: plot.hist_yrange(hists.reduce((a,h) => {
         const y = d3.extent(h.hist.map(x => x[2]));
         a.push(y[0]);
         a.push(y[1]);
         return a;
-      },[])), padding: [45,5], nice: true, label: 'dσ/dx [pb]' }
+      },[]),opts.logy), padding: [45,5], label: ytitle,
+      nice: opts.nice, log: opts.logy }
   );
 
   hists.forEach((h,i) => {
@@ -168,5 +215,20 @@ $(function() {
     color_hist[1].attr('stroke',this.value);
   }).focusout(function(){
     $('#color_picker').hide();
+  });
+
+  // https://swisnl.github.io/jQuery-contextMenu/docs.html
+  $.contextMenu({
+    selector: '#plots > *',
+    callback: function(key, options) {
+      const i = this.index();
+      const opt = plot_options[i];
+      opt[key] = !opt[key];
+      draw_plots[i]();
+    },
+    items: {
+      "logy": {name: "log y scale"},
+      "nice": {name: "nice y range"}
+    }
   });
 });

@@ -3,6 +3,10 @@
 <script src="js/d3-selection-multi.v1.min.js"></script>
 <script src="js/d3-plot.js"></script>
 <script src="js/jscolor.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
+
 <script>
 const dir = "<?php echo $dir;?>";
 const dbs = [<?php
@@ -18,14 +22,13 @@ foreach (scandir($files_dir) as $f) {
 <form>
 <div id="db"></div>
 <div id="labels"></div>
-<div id="plot_opts"></div>
 </form>
 
 <div id="color_picker" style="display:none;">
 <input class="jscolor {hash:true}">
 </div>
 
-<div id="plot1"></div>
-<div id="plot2"></div>
+<div id="nodata" style="display:none;">No data</div>
+<div id="plots"><div></div><div></div></div>
 
 <script src="<?php echo $dir;?>/main.js"></script>
