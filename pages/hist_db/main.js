@@ -1,5 +1,4 @@
 const cache = { };
-var cols = [ ];
 var color_hist;
 const colors = [
 // '#000099', '#ee0000', '#00dd00'
@@ -58,7 +57,7 @@ function load(url,data) {
 function load_labels(name) {
   return load(dir+'/db/'+name+'-cols.json').done(function(resp){
     const labels = $('#labels').empty();
-    cols = [ ];
+    const cols = [ ];
     for (const col of resp.cols) {
       const sel = $('<select>').appendTo(labels);
       cols.push(sel[0]);
@@ -69,6 +68,25 @@ function load_labels(name) {
         return opt;
       }))
       .change(function(){
+        const xs1 = $(this).val();
+        if (xs1.length<1) return;
+        const v1 = this.name;
+        const v2 = resp.vals[v1];
+        if (v2) {
+          const xs2 = [ ]; // accumulate unique values
+          for (const x1 of xs1) {
+            for (const x2 of v2[1][x1])
+              if (!xs2.includes(x2)) xs2.push(x2);
+          }
+          const s2 = $('#labels > [name='+v2[0]+']');
+          const prev = s2.val();
+          xs2.reduce((s,x) => s.append($('<option>').text(x)), s2.empty());
+          if (xs2.length==1 && xs2[0].length==0) {
+            s2.val('').hide();
+          } else {
+            s2.val(prev).show();
+          }
+        }
         if (cols.find(s => {
           const n = s.options.length;
           for (let i=0; i<n; ++i)
@@ -76,7 +94,7 @@ function load_labels(name) {
           return true;
         })) return;
         const labels = { };
-        $('#labels [name]').each((i,x) => { labels[x.name] = $(x).val() });
+        $('#labels > [name]').each((i,x) => { labels[x.name] = $(x).val() });
         load_hists(sel,{ db: name, labels: labels});
       });
     }
