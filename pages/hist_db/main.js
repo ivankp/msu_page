@@ -1,7 +1,11 @@
 const cache = { };
 var color_hist;
 const colors = [
-  '#000099', '#ee0000', '#00dd00'
+// '#000099', '#ee0000', '#00dd00'
+// https://mokole.com/palette.html
+'#000080','#FF0000','#006400','#FFA500','#C71585','#778899','#00FF00','#000000',
+'#FFFF00','#00FA9A','#00FFFF','#0000FF','#FF00FF','#1E90FF','#FA8072','#EEE8AA',
+'#47260F'
 ];
 const set_colors = { };
 const plots = [{
@@ -161,7 +165,11 @@ function single_plot() {
     let color = null;
     if (h.name in set_colors) {
       color = set_colors[h.name];
-    } else {
+      if (used_colors.includes(color)) color = null;
+      else used_colors.push(color);
+      print(color);
+    }
+    if (color==null) {
       color = colors.find(x => !used_colors.includes(x));
       if (color) {
         used_colors.push(color);
