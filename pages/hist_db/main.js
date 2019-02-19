@@ -3,6 +3,7 @@ var color_hist;
 const colors = [
   '#000099', '#ee0000', '#00dd00'
 ];
+const set_colors = { };
 const plots = [{
   width: 700, height: 500,
   logy: false, nice: false,
@@ -155,9 +156,20 @@ function single_plot() {
       nice: this.nice, log: this.logy }
   );
 
+  const used_colors = [ ];
   this.hists.forEach((h,i) => {
+    let color = null;
+    if (h.name in set_colors) {
+      color = set_colors[h.name];
+    } else {
+      color = colors.find(x => !used_colors.includes(x));
+      if (color) {
+        used_colors.push(color);
+        set_colors[h.name] = color;
+      } else color = '#000000';
+    }
     h.g = plot.hist(h.hist).attrs({
-      stroke: colors[i % colors.length],
+      stroke: color,
       'stroke-width': 2
     });
   });
@@ -171,7 +183,7 @@ function single_plot() {
       'class': 'plot_legend',
       fill: h.g.attr('stroke')
     })).on('click',function(h,i){
-      color_hist = [this,h.g];
+      color_hist = [this,h];
       const leg = $(this);
       const offset = leg.offset();
       $('#color_picker').css({
@@ -216,8 +228,10 @@ $(function() {
   }));
 
   $('#color_picker > input').change(function(){
-    color_hist[0].setAttribute('fill',this.value);
-    color_hist[1].attr('stroke',this.value);
+    const color = this.value;
+    color_hist[0].setAttribute('fill',color);
+    color_hist[1].g.attr('stroke',color);
+    set_colors[color_hist[1].name] = color;
   }).focusout(function(){
     $('#color_picker').hide();
   });
