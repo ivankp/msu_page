@@ -23,6 +23,8 @@ first = True
 for h in hs:
     if first: first = False
     else: sys.stdout.write(',')
-    sys.stdout.write('[['+h[0]+'],['+h[1]+'],\"'+' '.join(h[2:])+'\"]')
+    sys.stdout.write(
+      '[['+h[0]+'],['+h[1]+'],\"'+
+      ' '.join('*' if x=='' else x for x in h[2:])+'\"]')
 sys.stdout.write(']')
 
