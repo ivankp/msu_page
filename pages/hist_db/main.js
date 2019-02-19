@@ -126,12 +126,12 @@ function draw(req,resp) {
     return;
   }
 
-  const h0 = hists[0];
+  const h0 = hists[0].hist;
   const rats = hists.slice(1).map(h => ({
     name: h.name,
     hist: h.hist.map((b,i) => {
-      const b0 = h0.hist[i];
-      if (b[0]!=b0[0] || b[1]!=b0[1])
+      const b0 = h0[i];
+      if (b0===undefined || b[0]!=b0[0] || b[1]!=b0[1])
         return [ b[0], b[1], 0, 0 ];
       const rat = b[2]/b0[2];
       return [ b[0], b[1], rat, rat * Math.hypot(b[3]/b[2], b0[3]/b0[2]) ];
@@ -167,7 +167,6 @@ function single_plot() {
       color = set_colors[h.name];
       if (used_colors.includes(color)) color = null;
       else used_colors.push(color);
-      print(color);
     }
     if (color==null) {
       color = colors.find(x => !used_colors.includes(x));
