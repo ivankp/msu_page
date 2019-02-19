@@ -1,4 +1,5 @@
 const cache = { };
+var cols = [ ];
 var color_hist;
 const colors = [
 // '#000099', '#ee0000', '#00dd00'
@@ -57,18 +58,26 @@ function load(url,data) {
 function load_labels(name) {
   return load(dir+'/db/'+name+'-cols.json').done(function(resp){
     const labels = $('#labels').empty();
-    for (const col of resp) {
-      $('<select>').appendTo(labels).attr({name:col[0],size:10,multiple:''})
+    cols = [ ];
+    for (const col of resp.cols) {
+      const sel = $('<select>').appendTo(labels);
+      cols.push(sel[0]);
+      sel.attr({name:col[0],size:10,multiple:''})
       .append(col[1].map((x,i) => {
         const opt = $('<option>').text(x);
-        if (i==0) opt.attr('selected','');
+        if (i==0 && !/^var[0-9]+$/.test(col[0])) opt.attr('selected','');
         return opt;
       }))
       .change(function(){
-        const sel = this;
+        if (cols.find(s => {
+          const n = s.options.length;
+          for (let i=0; i<n; ++i)
+            if (s.options[i].selected) return false;
+          return true;
+        })) return;
         const labels = { };
         $('#labels [name]').each((i,x) => { labels[x.name] = $(x).val() });
-        load_hists($(this),{ db: name, labels: labels});
+        load_hists(sel,{ db: name, labels: labels});
       });
     }
   });
