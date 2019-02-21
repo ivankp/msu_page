@@ -36,4 +36,7 @@ foreach (scandir($files_dir) as $f) {
 <div id="nodata" style="display:none;">No data</div>
 <div id="plots"><div></div><div></div></div>
 
+<div id="show_notes" style="display:none;">[show notes]</div>
+<div id="notes"></div>
+
 <script src="<?php echo $dir;?>/main.js"></script>

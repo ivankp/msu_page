@@ -160,7 +160,8 @@ function draw(req,resp) {
       const b0 = h0[i];
       if (b0===undefined || b[0]!=b0[0] || b[1]!=b0[1])
         return [ b[0], b[1], 0, 0 ];
-      const rat = b[2]/b0[2];
+      let rat = b[2]/b0[2];
+      if (rat > 1e10) rat = 0;
       return [ b[0], b[1], rat, rat * Math.hypot(b[3]/b[2], b0[3]/b0[2]) ];
     })
   }));
@@ -247,6 +248,19 @@ $(function() {
     if (name!=='') {
       sel.next().next().hide();
       load_labels(name);
+      $.ajax({
+        url: dir+'/notes/'+name+'.html',
+        context: document.body,
+        success: function(resp) {
+          const note = $("#notes").empty();
+          if (!resp) {
+            $("#show_notes").hide();
+            return;
+          }
+          $("#show_notes").show();
+          note.hide().html(resp);
+        }
+      });
     } else {
       sel.next().next().show();
     }
@@ -282,5 +296,12 @@ $(function() {
       'logy': {name: 'log y scale'},
       'nice': {name: 'nice y range'}
     }
+  });
+
+  $('#show_notes').click(function(){
+    const notes = $('#notes');
+    const hidden = notes.is(':hidden');
+    $(this).text('[' + (hidden ? 'hide' : 'show') + ' notes]');
+    notes.slideToggle('fast');
   });
 });

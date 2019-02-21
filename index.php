@@ -64,6 +64,8 @@ foreach (scandir($dir) as $f) {
 <head>
 <title><?php echo get_prop('title',get_prop('name',$this_page)); ?></title>
 
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
 <?php
 function link_css($css) {
   echo '<link rel="stylesheet" href="'.$css.'" type="text/css">'."\n";

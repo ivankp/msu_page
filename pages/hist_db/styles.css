@@ -24,3 +24,17 @@
 #color_picker > input {
   width: 60px;
 }
+
+#show_notes {
+  color: blue;
+  font-size: small;
+  margin-left: 2px;
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+#show_notes:hover{
+  cursor: pointer;
+}
