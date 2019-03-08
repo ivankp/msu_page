@@ -11,7 +11,10 @@ a:visited { color: #551A8B; }
 a:active { color: #EE0000; }
 a:hover { text-decoration: underline; }
 
-#main { margin: 0 10px; }
+#main {
+  margin: 0 10px;
+  padding: 0 0 20px 0;
+}
 
 kbd {
   border-radius: 3px;

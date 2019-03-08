@@ -39,6 +39,10 @@
   cursor: pointer;
 }
 
+.tt {
+  font-family: monospace;
+}
+
 .context-menu-icon {
   max-height: 18px;
   background-repeat: no-repeat;
