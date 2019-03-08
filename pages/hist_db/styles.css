@@ -35,6 +35,16 @@
   -moz-user-select: none;
   -ms-user-select: none;
 }
-#show_notes:hover{
+#show_notes:hover {
   cursor: pointer;
+}
+
+.context-menu-icon {
+  max-height: 18px;
+  background-repeat: no-repeat;
+  background-position: 4px center;
+  vertical-align: middle;
+}
+.context-menu-icon-checkmark {
+  background-image: url(https://hep.pa.msu.edu/people/ivanp/img/icons/check.png);
 }

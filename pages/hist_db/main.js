@@ -289,7 +289,10 @@ $(function() {
     selector: '#plots > *',
     callback: function(key, options) {
       const plot = plots[this.index()];
-      plot[key] = !plot[key];
+      options.items[key].$node.toggleClass(
+        'context-menu-icon context-menu-icon-checkmark',
+        (plot[key] = !plot[key])
+      );
       plot.draw();
     },
     items: {
