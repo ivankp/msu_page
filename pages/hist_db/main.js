@@ -252,13 +252,18 @@ $(function() {
         url: dir+'/notes/'+name+'.html',
         context: document.body,
         success: function(resp) {
+          print(resp);
           const note = $("#notes").empty();
           if (!resp) {
             $("#show_notes").hide();
-            return;
+          } else {
+            $("#show_notes").show();
+            note.hide().html(resp);
           }
-          $("#show_notes").show();
-          note.hide().html(resp);
+        },
+        error: function() {
+          $("#notes").empty();
+          $("#show_notes").hide().text('[show notes]');
         }
       });
     } else {
