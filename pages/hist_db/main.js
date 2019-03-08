@@ -341,6 +341,14 @@ $(function() {
       sel.nextAll('#share').hide();
     }
   })
+  .after($('<img>').prop({
+    id: 'loading',
+    src: 'img/icons/loading.gif',
+    alt: 'loading'
+  }).css({
+    display: 'none',
+    'vertical-align': 'middle'
+  }))
   .after($('<span>').prop({
     id: 'share'
   }).css({
@@ -355,19 +363,11 @@ $(function() {
     'vertical-align': 'middle'
   })).append('share this page')))
   .after($('<span>').addClass('hint').text('← select histogram set'))
-  .after($('<img>').prop({
-    id: 'loading',
-    src: 'img/icons/loading.gif',
-    alt: 'loading'
-  }).css({
-    display: 'none',
-    'vertical-align': 'middle'
-  }))
   ;
 
-  let plot_arg = decodeURIComponent(getUrlVars()['plot']);
+  let plot_arg = getUrlVars()['plot'];
   if (plot_arg) {
-    plot_arg = decode(plot_arg)[0];
+    plot_arg = decode(decodeURIComponent(plot_arg))[0];
     const db = plot_arg['db'][0];
     if (dbs.includes(db))
       $('form [name=db]').val(db).triggerHandler('change')
