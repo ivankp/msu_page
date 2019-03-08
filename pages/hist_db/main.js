@@ -24,6 +24,13 @@ function print(x) {
   return x;
 }
 
+function getUrlVars() {
+  const vars = {};
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+    function(m,key,value) { vars[key] = value; });
+  return vars;
+}
+
 function load(url,data) {
   return $.ajax({
     type: 'POST',
@@ -101,8 +108,71 @@ function load_labels(name) {
   });
 }
 
+function encode(o) {
+  let str = '';
+  if (typeof o == 'object') {
+    if (Array.isArray(o)) {
+      let first = true;
+      for (const x of o) {
+        if (first) first = false;
+        else str += ';';
+        str += encode(x);
+      }
+    } else {
+      str += '{';
+      let first = true;
+      for (const key in o) {
+        if (first) first = false;
+        else str += ';';
+        str += key+'='+encode(o[key]);
+      }
+      str += '}';
+    }
+  } else str += o;
+  return str;
+}
+function find_closing(str,a=0,b=0) {
+  if (b==0) b = str.length - a;
+  let n = 0;
+  for (let i=a; i<b; ++i) {
+    if (str[i] == '{') ++n;
+    else if (str[i] == '}') if ((--n)==0) return i;
+  }
+  return b;
+}
+function decode(str,a=0,b=0) {
+  if (b==0) b = str.length - a;
+  let arr = [ ], obj = { }, key = null;
+  let i = a, j = a, c;
+  while (i<b) {
+    c = str[i];
+    if (c==';') {
+      arr.push(str.slice(j,i));
+      j = ++i;
+    } else if (c=='=') {
+      if (key!=null) {
+        obj[key] = arr;
+        arr = [ ];
+      }
+      key = str.slice(j,i);
+      j = ++i;
+    } else if (c=='{') {
+      const e = find_closing(str,i,b);
+      arr.push(decode(str,i+1,e));
+      j = i = e+1;
+    } else ++i;
+  }
+  if (c!='{') arr.push(str.slice(j,i));
+  if (key!=null) {
+    obj[key] = arr;
+    return obj;
+  } else return arr;
+}
+
 function load_hists(sel,req) {
-  const req_str = JSON.stringify(req);
+  const req_str = encode(req);
+  $('#share > a').prop('href',
+    '?page='+page+'&plot='+encodeURIComponent(req_str));
   if (req_str in cache) {
     draw(req,cache[req_str]);
   } else {
@@ -246,13 +316,12 @@ $(function() {
     const sel = $(this);
     const name = this.value;
     if (name!=='') {
-      sel.next().next().hide();
-      load_labels(name);
+      sel.nextAll('.hint').hide();
+      sel.nextAll('#share').show();
       $.ajax({
         url: dir+'/notes/'+name+'.html',
         context: document.body,
         success: function(resp) {
-          print(resp);
           const note = $("#notes").empty();
           if (!resp) {
             $("#show_notes").hide();
@@ -266,10 +335,25 @@ $(function() {
           $("#show_notes").hide().text('[show notes]');
         }
       });
+      return load_labels(name);
     } else {
-      sel.next().next().show();
+      sel.nextAll('.hint').show();
+      sel.nextAll('#share').hide();
     }
   })
+  .after($('<span>').prop({
+    id: 'share'
+  }).css({
+    display: 'none'
+  }).append($('<a>').prop({
+    href: '?page='+page
+  }).append($('<img>').prop({
+    src: 'img/icons/share.svg',
+    alt: 'share',
+    height: 16
+  }).css({
+    'vertical-align': 'middle'
+  })).append('share this page')))
   .after($('<span>').addClass('hint').text('← select histogram set'))
   .after($('<img>').prop({
     id: 'loading',
@@ -278,7 +362,33 @@ $(function() {
   }).css({
     display: 'none',
     'vertical-align': 'middle'
-  }));
+  }))
+  ;
+
+  let plot_arg = decodeURIComponent(getUrlVars()['plot']);
+  if (plot_arg) {
+    plot_arg = decode(plot_arg)[0];
+    const db = plot_arg['db'][0];
+    if (dbs.includes(db))
+      $('form [name=db]').val(db).triggerHandler('change')
+      .done(function(resp){
+        const labels = plot_arg['labels'][0];
+        for (let name in labels) {
+          const vals = labels[name];
+          if (vals.length==0) vals.push('');
+          $('form [name='+name+']').children().each( (i,x) => {
+            if (vals.includes(x.value)) x.selected = true;
+          });
+        }
+        const sels = $('form select');
+        if (sels.toArray().findIndex(
+          s => Array.from(s.childNodes).findIndex(
+            opt => (opt).selected) == -1) == -1)
+        {
+          sels.last().trigger('change');
+        }
+      });
+  }
 
   $('#color_picker > input').change(function(){
     const color = this.value;

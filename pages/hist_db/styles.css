@@ -5,11 +5,12 @@
   color: red;
 }
 
-#db > [name="db"] {
-  margin: 0 6px 5px 0;
-}
-#db > .hint {
-  color: red;
+#db > [name="db"] { margin: 0 0 5px 0; }
+#db > .hint { color: red; }
+#share img { margin-right: 5px; }
+
+#db :not(:first-child) {
+  margin-left: 6px;
 }
 
 .plot_legend:hover {
