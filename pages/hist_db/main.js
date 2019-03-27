@@ -377,7 +377,7 @@ $(function() {
           const vals = labels[name];
           if (vals.length==0) vals.push('');
           $('form [name='+name+']').children().each( (i,x) => {
-            if (vals.includes(x.value)) x.selected = true;
+            x.selected = vals.includes(x.value);
           });
         }
         const sels = $('form select');
