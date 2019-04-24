@@ -1,8 +1,6 @@
 <?php
 function get($var, $default=null) { return isset($var) ? $var : $default; }
 
-function test($x) { echo "\n<!-- ".$x." -->\n"; }
-
 $is_mobile = preg_match(
   "/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini".
   "|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i",
@@ -10,7 +8,7 @@ $is_mobile = preg_match(
 
 $menu = json_decode(file_get_contents('menu.json'),true);
 $pages = $menu['pages'];
-$this_page = get($_GET['page'],'hist');
+$this_page = get($_GET['page'],$menu['top'][0]);
 function get_prop($prop,$default=null) {
   global $pages, $this_page;
   return get($pages[$this_page][$prop],$default);
@@ -26,7 +24,8 @@ if ($forward) {
 }
 
 $page_base = preg_split('~/(?=[^/]*$)~',get_prop('page',$this_page));
-$dir = 'pages';
+$dir0 = 'pages';
+$dir = $dir0;
 if (count($page_base)==1) $page_base = $page_base[0];
 else {
   $dir = $dir.'/'.$page_base[0];
@@ -129,7 +128,8 @@ if ($page_is_txt) echo "</div>\n";
 <?php if (!$is_mobile) { ?>
 <div id="date"> Last updated:
 <?php
-  echo $page_file ? date("F d Y H:i",filemtime($page_file)) : '?';
+  $date_of = ($dir!=$dir0) ? $dir : $page_file;
+  echo $date_of ? date("F d Y H:i",filemtime($date_of)) : '?';
 ?>
 </div>
 
