@@ -115,14 +115,11 @@ foreach ($menu['top'] as $page) make_menu($page,$pages[$page]);
 </ul>
 </div>
 
-<div id="main">
-<?php
+<div id="main"<?php
 if ($page_is_txt)
-  echo "<div style=\"white-space: pre-wrap; font-family:monospace;\">\n";
-if ($page_file) include $page_file;
-else include 'not_found.html';
-if ($page_is_txt) echo "</div>\n";
-?>
+  echo ' style="white-space: pre-wrap; font-family:monospace;"';
+?>>
+<?php include $page_file ?: 'not_found.html'; ?>
 </div>
 
 <?php if (!$is_mobile) { ?>
