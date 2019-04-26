@@ -1,20 +1,9 @@
-/*
-
-!.gitignore
-
-!*.html
-!*.php
-!*.css
-!*.js
-!*.json
-
-!/pages
-!/styles
-!/img
-
-!/js
-
 **.swp
 **.vim
 **.db
+
+bg/
+lib/
+z/
+jose/
 

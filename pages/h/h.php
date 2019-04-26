@@ -2,7 +2,6 @@
 <script src="js/d3.v5.min.js"></script>
 <script src="js/d3-selection-multi.v1.min.js"></script>
 <script>
-const dir = "<?php echo $dir;?>";
 var files = [<?php
 $files_dir = "$dir/files";
 foreach (scandir($files_dir) as $f) {
