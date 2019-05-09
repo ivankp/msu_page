@@ -19,10 +19,20 @@ for f in glob.glob('data/*.db'):
         if exists(fcols) and (getmtime(f) <= getmtime(fcols)): continue
     print f
     db = sqlite3.connect(f)
-    cols = [ [x[1]] for x in db.execute('pragma table_info(hist)').fetchall() ][:-2]
+    cols = [ ]
+    blob = False
+    for col in db.execute('pragma table_info(hist)'):
+        if col[1]=='_data' and col[2]=='BLOB':
+            blob = True
+        cols.append([col[1]])
+    if blob:
+        cols = filter(lambda c: c[0][0]!='_', cols)
+    else:
+        cols = cols[:-2]
     for col in cols:
         print col[0]
-        c = [ x[0] for x in db.execute('select distinct %s from hist' % col[0]).fetchall() ]
+        c = [ x[0] for x in db.execute(
+            'select distinct %s from hist' % col[0]).fetchall() ]
         c.sort(key=sorter)
         col.append(c)
 
