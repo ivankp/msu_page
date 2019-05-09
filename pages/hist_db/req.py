@@ -4,7 +4,7 @@ import sys, json, sqlite3
 # import struct
 
 req = json.load(sys.stdin)
-db = sqlite3.connect('db/'+req['db']+'.db')
+db = sqlite3.connect('data/'+req['db']+'.db')
 
 multi = ''.join( ', '+k for k,xs in req['labels'].items() if len(xs)>1 )
 

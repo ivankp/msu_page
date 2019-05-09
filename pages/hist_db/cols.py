@@ -3,14 +3,18 @@
 import sys, glob, sqlite3, json, re
 from os.path import *
 
-sort_re = re.compile(r'\[(\d+(?:\.\d*)?),(\d+(?:\.\d*)?)\)')
-def sorter(x):
-    return [ x if not i%3 else float(x) for i,x in enumerate(
-      sort_re.split(x)
-    )]
+def safe_float(s):
+    try:
+        return float(s)
+    except ValueError:
+        return s
 
-for f in glob.glob('db/*.db'):
-    fcols = f[:-3] + '-cols.json'
+sort_re = re.compile(r'([+-]?(?:\d*\.\d+|\d+\.?)(?:[eE][+-]?\d+)?)')
+def sorter(x):
+    return [ safe_float(x) for x in sort_re.split(x) ]
+
+for f in glob.glob('data/*.db'):
+    fcols = f[:-3] + '.cols'
     if '-f' not in sys.argv:
         if exists(fcols) and (getmtime(f) <= getmtime(fcols)): continue
     print f

@@ -24,166 +24,6 @@ function print(x) {
   return x;
 }
 
-function getUrlVars() {
-  const vars = {};
-  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
-    function(m,key,value) { vars[key] = value; });
-  return vars;
-}
-
-function load(url,data) {
-  return $.ajax({
-    type: 'POST',
-    url: url,
-    data: data,
-    beforeSend: function() {
-      $('form :input').prop("disabled", true);
-      $('#loading').show();
-    },
-    dataType: 'text',
-    dataFilter: function(resp) {
-      if (resp.length) {
-        try {
-          return JSON.parse(resp);
-        } catch(e) {
-          alert('Bad server response: '+resp);
-          console.log(resp);
-          $('form :input').prop("disabled", false);
-          $('#loading').hide();
-        }
-      } else alert('Empty server response');
-      return false;
-    },
-    success: function(resp) {
-      $('form :input').prop("disabled", false);
-      $('#loading').hide();
-    }
-  });
-}
-
-function load_labels(name) {
-  return load(dir+'/db/'+name+'-cols.json').done(function(resp){
-    const labels = $('#labels').empty();
-    const cols = [ ];
-    for (const col of resp.cols) {
-      const sel = $('<select>').appendTo(labels);
-      cols.push(sel[0]);
-      sel.attr({name:col[0],size:10,multiple:''})
-      .append(col[1].map((x,i) => {
-        const opt = $('<option>').text(x);
-        if (i==0 && !/^var[0-9]+$/.test(col[0])) opt.attr('selected','');
-        return opt;
-      }))
-      .change(function(){
-        const xs1 = $(this).val();
-        if (xs1.length<1) return;
-        const v1 = this.name;
-        const v2 = resp.vals[v1];
-        if (v2) {
-          const xs2 = [ ]; // accumulate unique values
-          for (const x1 of xs1) {
-            for (const x2 of v2[1][x1])
-              if (!xs2.includes(x2)) xs2.push(x2);
-          }
-          const s2 = $('#labels > [name='+v2[0]+']');
-          const prev = s2.val();
-          xs2.reduce((s,x) => s.append($('<option>').text(x)), s2.empty());
-          if (xs2.length==1 && xs2[0].length==0) {
-            s2.val('').hide();
-          } else {
-            s2.val(prev).show();
-          }
-        }
-        if (cols.find(s => {
-          const n = s.options.length;
-          for (let i=0; i<n; ++i)
-            if (s.options[i].selected) return false;
-          return true;
-        })) return;
-        const labels = { };
-        $('#labels > [name]').each((i,x) => { labels[x.name] = $(x).val() });
-        load_hists(sel,{ db: name, labels: labels});
-      });
-    }
-  });
-}
-
-function encode(o) {
-  let str = '';
-  if (typeof o == 'object') {
-    if (Array.isArray(o)) {
-      let first = true;
-      for (const x of o) {
-        if (first) first = false;
-        else str += ';';
-        str += encode(x);
-      }
-    } else {
-      str += '{';
-      let first = true;
-      for (const key in o) {
-        if (first) first = false;
-        else str += ';';
-        str += key+'='+encode(o[key]);
-      }
-      str += '}';
-    }
-  } else str += o;
-  return str;
-}
-function find_closing(str,a=0,b=0) {
-  if (b==0) b = str.length - a;
-  let n = 0;
-  for (let i=a; i<b; ++i) {
-    if (str[i] == '{') ++n;
-    else if (str[i] == '}') if ((--n)==0) return i;
-  }
-  return b;
-}
-function decode(str,a=0,b=0) {
-  if (b==0) b = str.length - a;
-  let arr = [ ], obj = { }, key = null;
-  let i = a, j = a, c;
-  while (i<b) {
-    c = str[i];
-    if (c==';') {
-      arr.push(str.slice(j,i));
-      j = ++i;
-    } else if (c=='=') {
-      if (key!=null) {
-        obj[key] = arr;
-        arr = [ ];
-      }
-      key = str.slice(j,i);
-      j = ++i;
-    } else if (c=='{') {
-      const e = find_closing(str,i,b);
-      arr.push(decode(str,i+1,e));
-      j = i = e+1;
-    } else ++i;
-  }
-  if (c!='{') arr.push(str.slice(j,i));
-  if (key!=null) {
-    obj[key] = arr;
-    return obj;
-  } else return arr;
-}
-
-function load_hists(sel,req) {
-  const req_str = encode(req);
-  $('#share > a').prop('href',
-    '?page='+page+'&plot='+encodeURIComponent(req_str));
-  if (req_str in cache) {
-    draw(req,cache[req_str]);
-  } else {
-    return load(dir+'/req.php',req).done(function(resp){
-      cache[req_str] = resp;
-      draw(req,resp);
-      sel.focus();
-    });
-  }
-}
-
 function draw(req,resp) {
   const div = $('#plots > *');
   if (resp.length==0) {
@@ -231,7 +71,7 @@ function draw(req,resp) {
       if (b0===undefined || b[0]!=b0[0] || b[1]!=b0[1])
         return [ b[0], b[1], 0, 0 ];
       let rat = b[2]/b0[2];
-      if (rat > 1e10) rat = 0;
+      if (!(rat < 1e10)) rat = 0;
       return [ b[0], b[1], rat, rat * Math.hypot(b[3]/b[2], b0[3]/b0[2]) ];
     })
   }));
@@ -309,86 +149,13 @@ function single_plot() {
 }
 
 $(function() {
-  const form = $('form');
-  $('<select>').appendTo(form.find('#db')).prop('name','db')
-  .append([''].concat(dbs).map(x => $('<option>').text(x)))
-  .change(function(){
-    const sel = $(this);
-    const name = this.value;
-    if (name!=='') {
-      sel.nextAll('.hint').hide();
-      sel.nextAll('#share').show();
-      $.ajax({
-        url: dir+'/notes/'+name+'.html',
-        context: document.body,
-        success: function(resp) {
-          const note = $("#notes").empty();
-          if (!resp) {
-            $("#show_notes").hide();
-          } else {
-            $("#show_notes").show();
-            note.hide().html(resp);
-          }
-        },
-        error: function() {
-          $("#notes").empty();
-          $("#show_notes").hide().text('[show notes]');
-        }
-      });
-      return load_labels(name);
-    } else {
-      sel.nextAll('.hint').show();
-      sel.nextAll('#share').hide();
-    }
-  })
-  .after($('<img>').prop({
-    id: 'loading',
-    src: 'img/icons/loading.gif',
-    alt: 'loading'
-  }).css({
-    display: 'none',
-    'vertical-align': 'middle'
-  }))
-  .after($('<span>').prop({
-    id: 'share'
-  }).css({
-    display: 'none'
-  }).append($('<a>').prop({
-    href: '?page='+page
-  }).append($('<img>').prop({
-    src: 'img/icons/share.svg',
-    alt: 'share',
-    height: 16
-  }).css({
-    'vertical-align': 'middle'
-  })).append('share this page')))
-  .after($('<span>').addClass('hint').text('← select histogram set'))
-  ;
-
-  let plot_arg = getUrlVars()['plot'];
-  if (plot_arg) {
-    plot_arg = decode(decodeURIComponent(plot_arg))[0];
-    const db = plot_arg['db'][0];
-    if (dbs.includes(db))
-      $('form [name=db]').val(db).triggerHandler('change')
-      .done(function(resp){
-        const labels = plot_arg['labels'][0];
-        for (let name in labels) {
-          const vals = labels[name];
-          if (vals.length==0) vals.push('');
-          $('form [name='+name+']').children().each( (i,x) => {
-            x.selected = vals.includes(x.value);
-          });
-        }
-        const sels = $('form select');
-        if (sels.toArray().findIndex(
-          s => Array.from(s.childNodes).findIndex(
-            opt => (opt).selected) == -1) == -1)
-        {
-          sels.last().trigger('change');
-        }
-      });
-  }
+  DBView({
+    div: $('#dbview'),
+    dir: dir,
+    dbs: dbs,
+    default_selection: (col,i) => (i==0 && !/^var\d+$/.test(col)),
+    process_data: draw
+  });
 
   $('#color_picker > input').change(function(){
     const color = this.value;
