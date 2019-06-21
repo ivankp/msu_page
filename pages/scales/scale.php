@@ -10,7 +10,7 @@
 <ul>
   <!-- http://www.codecogs.com/latex/eqneditor.php -->
   <li><object data="img/eq/HT1.svg" type="image/svg+xml" class="eq" height="55">
-    <img src="eq/HT1.png" height="50"
+    <img src="img/eq/HT1.png" height="50"
     alt="\hat{H}_\mathrm{T}' = \sqrt{\left(p_\mathrm{T}^\mathrm{H}\right)^2 + m_\mathrm{H}^2} + \sum_{j\in\mathrm{jets}} p_\mathrm{T}^{j}">
   </object></li>
   <li><object data="img/eq/HT2.svg" type="image/svg+xml" class="eq" height="57">

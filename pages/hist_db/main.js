@@ -1,7 +1,5 @@
-const cache = { };
 var color_hist;
 const colors = [
-// '#000099', '#ee0000', '#00dd00'
 // https://mokole.com/palette.html
 '#000080','#FF0000','#006400','#FFA500','#C71585','#778899','#00FF00','#000000',
 '#FFFF00','#00FA9A','#00FFFF','#0000FF','#FF00FF','#1E90FF','#FA8072','#EEE8AA',
@@ -148,6 +146,41 @@ function single_plot() {
   }
 }
 
+const dummy_a = document.createElement('a');
+function save_json(plot) {
+  const hists = plot.hists.reduce((m,h) => {
+    m[h.name] = h.hist;
+    return m;
+  },{});
+  let json = '{';
+  let d1 = true;
+  for (const key in hists) {
+    if (d1) d1 = false; else json += ',';
+    json += '\n\"' + key + '\":[';
+    let d2 = true;
+    for (const bin of hists[key]) {
+      if (d2) d2 = false; else json += ',';
+      json += '\n[' + bin.join(',') + ']';
+    }
+    json += '\n]';
+  }
+  json += '\n}';
+
+  dummy_a.href = URL.createObjectURL(
+    new Blob( [json], {type:'application/json'} )
+  );
+  dummy_a.download = 'hists.json';
+  dummy_a.dispatchEvent(new MouseEvent('click'));
+}
+function save_svg(plot) {
+  dummy_a.href = URL.createObjectURL(new Blob(
+      [ '<?xml version="1.0" encoding="UTF-8" ?>\n', plot.div.innerHTML ],
+      { type:"image/svg+xml;charset=utf-8" }
+  ));
+  dummy_a.download = 'plot.svg';
+  dummy_a.dispatchEvent(new MouseEvent('click'));
+}
+
 $(function() {
   DBView({
     div: $('#dbview'),
@@ -171,15 +204,35 @@ $(function() {
     selector: '#plots > *',
     callback: function(key, options) {
       const plot = plots[this.index()];
-      options.items[key].$node.toggleClass(
-        'context-menu-icon context-menu-icon-checkmark',
-        (plot[key] = !plot[key])
-      );
+      switch (key) {
+        case 'logy':
+        case 'nice':
+          plot[key] = !plot[key];
+          break;
+        case 'save_json':
+        case 'save_svg':
+          window[key](plot);
+          break;
+      }
       plot.draw();
     },
     items: {
       'logy': {name: 'log y scale'},
-      'nice': {name: 'nice y range'}
+      'nice': {name: 'nice y range'},
+      'separator': {type: 'cm_separator'},
+      'save_json': {name: 'save as JSON'},
+      'save_svg': {name: 'save as SVG'}
+    },
+    events: {
+      show: function(options) {
+        const plot = plots[this.index()];
+        for (const key of ['logy','nice']) {
+          options.items[key].$node.toggleClass(
+            'context-menu-icon context-menu-icon-checkmark',
+            plot[key]
+          );
+        }
+      }
     }
   });
 
