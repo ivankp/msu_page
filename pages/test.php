@@ -27,6 +27,8 @@ run('gcc -v');
 run('xz -V');
 run('ls /usr/include');
 
+run('inkscape -V');
+
 // run('ls '.$_SERVER['DOCUMENT_ROOT']);
 // print_r($_SERVER);
 ?>

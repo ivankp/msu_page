@@ -35,6 +35,20 @@ kbd {
 }
 #w3c * { z-index: 1; }
 
+.inline_form { display: inline-block; }
+.inline_form input { display: inline-block; }
+.inline_form input[type="submit"] {
+  background-color: inherit;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #0000EE;
+}
+.inline_form input[type="submit"]:hover {
+  text-decoration: underline;
+}
+
 /* Navigation panel =============================================== */
 #nav {
   z-index: 1;

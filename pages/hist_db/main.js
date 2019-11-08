@@ -174,8 +174,9 @@ function save_json(plot) {
 }
 function save_svg(plot) {
   dummy_a.href = URL.createObjectURL(new Blob(
-      [ '<?xml version="1.0" encoding="UTF-8" ?>\n', plot.div.innerHTML ],
-      { type:"image/svg+xml;charset=utf-8" }
+    [ '<?xml version="1.0" encoding="UTF-8" ?>\n',
+      plot.div.getElementsByTagName('svg')[0].outerHTML ],
+    { type:"image/svg+xml;charset=utf-8" }
   ));
   dummy_a.download = 'plot.svg';
   dummy_a.dispatchEvent(new MouseEvent('click'));

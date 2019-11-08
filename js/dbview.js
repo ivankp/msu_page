@@ -94,6 +94,8 @@ function load_data(sel,req) {
           + '='+x[1].map(encodeURIComponent).join('+'), '');
 
   args.div.find('.share > a').prop('href','?page='+page+req_url);
+  args.div.find('.share > form').show().find('[name="url"]')
+    .prop('value',window.location.href.split('?')[0]+'?page='+page+req_url);
   if (req_url in cache) {
     args.process_data(req,cache[req_url]);
   } else {
@@ -126,17 +128,31 @@ $('<select>').appendTo(db_div).prop('name','db')
   display: 'none',
   'vertical-align': 'middle'
 }).addClass('loading')).after(
-$('<span>').addClass('share').css({
-  display: 'none'
-}).append($('<a>').prop({
-  href: '?page='+page
-}).append($('<img>').prop({
-  src: 'img/icons/share.svg',
-  alt: 'share',
-  height: 16
-}).css({
-  'vertical-align': 'middle'
-})).append('link to this selection')))
+  $('<span>').addClass('share').css({
+    display: 'none'
+  }).append(
+    $('<a>').prop({
+      href: '?page='+page
+    }).append($('<img>').prop({
+      src: 'img/icons/share.svg',
+      alt: 'share',
+      height: 16
+    }).css({
+      'vertical-align': 'middle'
+    })).append('link to this selection')
+  ).append(
+    [{type:'hidden',name:'source',value:'index'},
+     {type:'hidden',name:'url',value:'?page='+page},
+     {type:'hidden',name:'alias',value:''},
+     {type:'submit',value:'TinyURL'}
+    ].reduce((a,x) => a.append($('<input>').prop(x)),
+      $('<form>').prop({
+        action: 'https://tinyurl.com/create.php',
+        method: 'get', name: 'f', target:'_blank'
+      })
+    ).addClass('inline_form').hide()
+  )
+)
 .after($('<span>').addClass('hint').text('← select plot set'));
 
 // load from URL
