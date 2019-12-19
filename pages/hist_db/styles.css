@@ -1,9 +1,7 @@
-#plots > *, #nodata {
-  margin: 15px 0;
-}
-#nodata {
-  color: red;
-}
+#plots > *, #nodata { margin: 15px 0; }
+#plots > div { display: inline-block; }
+
+#nodata { color: red; }
 
 #dbview_db > [name="db"] { margin: 0 0 5px 0; }
 #dbview_db .hint { color: red; }
@@ -13,6 +11,13 @@
 #dbview_labels .label_name {
   font-family: sans-serif;
   font-size: 11px;
+}
+#dbview_labels .label_name { padding-right: 10px; }
+#dbview_labels > div { display: inline-block; }
+#dbview_labels > div > div.select { display: flex; }
+#dbview_labels select {
+  flex-grow: 1;
+  width: auto;
 }
 
 .plot_legend:hover {

@@ -1,14 +1,13 @@
 {
-  "top": ["hist","scales","hgam","github","refs","other"],
+  "top": ["hist_db","scales","hgam","github","refs","other"],
   "pages": {
     "hist": {
-      "name": "Histograms",
-      "title": "Histograms from GoSam ntuples",
-      "sub": ["hist_db"]
+      "name": "Histograms 2",
+      "title": "Histograms from GoSam ntuples"
     },
     "hist_db": {
-      "name": "Studies",
-      "title": "Histogram studies",
+      "name": "Histograms",
+      "title": "Histograms from GoSam ntuples",
       "css": ["https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css"]
     },
     "scales": {
@@ -125,7 +124,7 @@
     "other": {
       "name": "Other",
       "page": false,
-      "sub": ["notes","old_hist","sherpa","unweighted","csv_files"]
+      "sub": ["notes","old_hist","hist","sherpa","unweighted","csv_files"]
     },
     "notes": {
       "name": "Notes",

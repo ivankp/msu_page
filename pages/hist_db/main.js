@@ -7,7 +7,7 @@ const colors = [
 ];
 const set_colors = { };
 const plots = [{
-  width: 700, height: 500,
+  width: 700*0.95, height: 500*0.95,
   logy: false, nice: false,
   assign: function(o){
     for (const key in o) this[key] = o[key];

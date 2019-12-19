@@ -38,13 +38,29 @@ function load(url,data) {
 }
 
 function load_labels(dbname) {
+  const notes = $('#notes');
+  if (notes.length==1) {
+    notes.empty();
+    $.post(args.dir+'/notes.php',
+      {'note': dbname},
+      function(note) {
+        if (note.length) {
+          notes.append(note);
+          $("#show_notes").show();
+        } else {
+          $("#show_notes").hide();
+        }
+      });
+  }
   return load(args.dir+'/data/'+dbname+'.cols').done(function(resp){
     labels_div.empty();
     const cols = [ ];
     for (const col of resp.cols) {
       const div = $('<div>').appendTo(labels_div);
       $('<div>').appendTo(div).text(col[0]).addClass('label_name');
-      const sel = $('<select>').appendTo(div);
+      // const sel = $('<select>').appendTo(div);
+      const sel = $('<select>').appendTo(
+        $('<div>').appendTo(div).addClass('select'));
       cols.push(sel[0]);
       sel.attr({ name: col[0], size: 10, multiple: '' })
       .append(col[1].map((x,i) => {
@@ -92,10 +108,13 @@ function load_data(sel,req) {
     .reduce((a,x) =>
         a + '&'+encodeURIComponent(x[0])
           + '='+x[1].map(encodeURIComponent).join('+'), '');
+  const full_url = window.location.href.split('?')[0]+'?page='+page+req_url;
 
-  args.div.find('.share > a').prop('href','?page='+page+req_url);
+  args.div.find('.share > a').prop('href',full_url);
   args.div.find('.share > form').show().find('[name="url"]')
-    .prop('value',window.location.href.split('?')[0]+'?page='+page+req_url);
+    .prop('value',full_url);
+  if (window.history.replaceState)
+    window.history.replaceState(null,'Histograms',full_url);
   if (req_url in cache) {
     args.process_data(req,cache[req_url]);
   } else {
@@ -140,17 +159,17 @@ $('<select>').appendTo(db_div).prop('name','db')
     }).css({
       'vertical-align': 'middle'
     })).append('link to this selection')
-  ).append(
-    [{type:'hidden',name:'source',value:'index'},
-     {type:'hidden',name:'url',value:'?page='+page},
-     {type:'hidden',name:'alias',value:''},
-     {type:'submit',value:'TinyURL'}
-    ].reduce((a,x) => a.append($('<input>').prop(x)),
-      $('<form>').prop({
-        action: 'https://tinyurl.com/create.php',
-        method: 'get', name: 'f', target:'_blank'
-      })
-    ).addClass('inline_form').hide()
+  // ).append(
+  //   [{type:'hidden',name:'source',value:'index'},
+  //    {type:'hidden',name:'url',value:'?page='+page},
+  //    {type:'hidden',name:'alias',value:''},
+  //    {type:'submit',value:'TinyURL'}
+  //   ].reduce((a,x) => a.append($('<input>').prop(x)),
+  //     $('<form>').prop({
+  //       action: 'https://tinyurl.com/create.php',
+  //       method: 'get', name: 'f', target:'_blank'
+  //     })
+  //   ).addClass('inline_form').hide()
   )
 )
 .after($('<span>').addClass('hint').text('← select plot set'));
