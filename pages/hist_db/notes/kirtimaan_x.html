@@ -1,0 +1,138 @@
+<div style="max-width: 750px;">
+<p>
+Collected here are plots of differential cross sections as functions
+of kinematic invariants that should exhibit behavior that gives rise to
+singularities in expressions for amplitudes for the
+<span class="it nw">
+  g(k<sub>1</sub>) + g(k<sub>2</sub>)
+  &rarr; h(k<sub>3</sub>) + g(k<sub>4</sub>) + g(k<sub>5</sub>)
+</span>
+process.
+Details can be found in
+<a href="Hgg_thresholds.pdf" target="_blank">Kirtimaan's note</a>.
+The histograms were made from GoSam ntuples.
+The histogramming code can be found
+<a href="https://github.com/ivankp/ntuple_analysis/blob/master/studies/kirtimaan_x/analysis.cc" target="_blank">here</a>.
+The top quark mass for the finite mtop ntuples is
+<span class="nw"><span class="it">172.3</span> GeV.</span>
+</p>
+
+<p>
+Variables' definitions:
+</p>
+<ul>
+  <li>
+    <span class="sf">s??</span> and <span class="sf">t??</span>
+    are Mandelstam invariants,
+  </li><li>
+    <span class="sf">x1</span> and <span class="sf">x2</span>
+    are momentum fractions of initial state partons,
+  </li><li>
+    <span class="sf">x_n_3</span>
+    are the kinematic invariants in question.
+  </li>
+</ul>
+
+<p>
+Square roots of the invariants are plotted, so that units on the horizontal
+axes are GeV.<br>
+The signs are preserved, i.e.
+<span class="tt nw">
+  x &lt; 0 ? -sqrt(-x) : sqrt(x)
+</span>
+is plotted.
+</p>
+
+<p>
+By default,
+<span class="it nw">
+  k<sub>4</sub>
+</span>
+and
+<span class="it nw">
+  k<sub>5</sub>
+</span>
+are the 4-momenta of the leading and subleading jet respectively.<br>
+Histograms with the reverse assignment can be viewed by selecting
+<span class="sf">yes</span>
+in the
+<span class="sf">swap_45</span>
+column.
+</p>
+
+<p>
+You might want to change to logarithmic y axis for some of the plots.
+</p>
+
+<p class="bf">
+Observed features:
+</p>
+<ul>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_0_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>0</sub></span></a>
+    negative, sharply cuts off at
+    <span class="nw"><span class="it">&minus;350</span> GeV.</span>
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_1_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>1</sub></span></a>
+    mostly positive, sharply cuts off at
+    <span class="nw"><span class="it">&minus;300</span> GeV,</span>
+    has a zero at
+    <span class="nw"><span class="it">0</span> GeV.</span>
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_2_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>2</sub></span></a>
+    same as above, but
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no+yes&var1=x_2_3_zoom">reverses</a>
+    jet assignment.
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_3_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>3</sub></span></a>
+    mostly positive, sharply cuts off at
+    <span class="nw"><span class="it">&minus;350</span> GeV,</span>
+    has a zero at
+    <span class="nw"><span class="it">0</span> GeV.</span>
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_4_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>4</sub></span></a>
+    mostly positive, more smoothly cuts off at
+    <span class="nw"><span class="it">&minus;300</span> GeV,</span>
+    has a zero at
+    <span class="nw"><span class="it">0</span> GeV.</span>
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_5_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>5</sub></span></a>
+    positive, sharply cuts off at
+    <span class="nw"><span class="it">450</span> GeV.</span>
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_6_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>6</sub></span></a>
+    similar to above,
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no+yes&var1=x_6_3_zoom">reverses</a>
+    jet assignment.
+  </li>
+  <li>
+    <a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=H2jB&type=eft+mtop&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_7_3_zoom">
+    <span class="it">&radic;x<sup>3</sup><sub>7</sub></span></a>
+    negative, sharply cuts off at
+    <span class="nw"><span class="it">&minus;450</span> GeV.</span>
+  </li>
+  <li>
+    No substantial difference between eft and mtop behavior.
+  </li>
+  <li>
+    Same asymptotic behavior as for non-resonant diphoton production,
+    except for derivatives
+    (<a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=AA2jB+H2jB&type=eft&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_2_3_zoom">example</a>)
+    and in some cases tails
+    (<a href="https://hep.pa.msu.edu/people/ivanp/?page=hist_db&db=kirtimaan_x&proc=AA2jB+H2jB&type=eft&diag=all&jet=antikt4&weight=weight2&isp=all&photon_cuts=all&swap_45=no&var1=x_3_3">example</a>).
+  </li>
+</ul>
+</div>

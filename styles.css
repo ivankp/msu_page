@@ -125,3 +125,10 @@ kbd {
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
+// notes
+#notes .it { font-style: italic; }
+#notes .nw { white-space: nowrap; }
+#notes .sf { font-family: Arial, Helvetica, sans-serif; }
+#notes .tt { font-family: monospace; }
+#notes .bf { font-weight: bold; }
+
