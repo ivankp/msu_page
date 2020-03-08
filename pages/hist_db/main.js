@@ -1,3 +1,13 @@
+function str_bool(s) {
+  switch (s.toLowerCase()) {
+    case "false":
+    case "no":
+    case "0":
+    case "": return false;
+    default: return true;
+  }
+}
+
 var color_hist;
 const colors = [
 // https://mokole.com/palette.html
@@ -190,6 +200,16 @@ $(function() {
     default_selection: (col,i) => (i==0 && !/^var\d+$/.test(col)),
     process_data: draw
   });
+
+  let logy1 = window.location.href.match(/.*[?&](logy)(?:&|$|=([^&]+))/i);
+  if (logy1) {
+    logy1 = logy1[2];
+    if (logy1) logy1 = str_bool(logy1);
+    else logy1 = true;
+  } else {
+    logy1 = false;
+  }
+  plots[0].logy = logy1;
 
   $('#color_picker > input').change(function(){
     const color = this.value;
