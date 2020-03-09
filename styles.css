@@ -126,6 +126,7 @@ kbd {
 }
 
 // notes
+#notes .rm { font-style: normal; }
 #notes .it { font-style: italic; }
 #notes .nw { white-space: nowrap; }
 #notes .sf { font-family: Arial, Helvetica, sans-serif; }

@@ -29,6 +29,16 @@ this.axes = function(xa,ya) {
     if (a.nice) scale = scale.nice();
     let axis = (i==0 ? d3.axisBottom : d3.axisLeft)(scale);
     axis.tickSizeOuter(0);
+    // axis.tickFormat(d3.format("~g"));
+    if (!a.log) {
+      const abs_range = a.range.map(x => {
+        if (x<0) x = -x;
+        if (0<x && x<1) x = 1./x;
+        return x;
+      });
+      if (Math.max(...abs_range) >= 1e4)
+        axis.tickFormat(d3.format("~e"));
+    }
     if (a.values) axis.tickValues(a.values);
     let g = this.svg.append('g').attr('class','axis')
        .attr('transform','translate('+(
