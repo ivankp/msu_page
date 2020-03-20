@@ -62,7 +62,7 @@ function draw(req,resp) {
   const xtitle = req.labels.var1.join(', ');
 
   plots[0].assign({
-    hists: hists, div: div[0], x: xtitle, y: 'dσ/dx [pb]'
+    hists: hists, div: div[0], x: xtitle, y: 'dσ/dx, pb/[x]'
   }).draw();
   $(div[0]).show();
 
