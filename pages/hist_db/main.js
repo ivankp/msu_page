@@ -19,6 +19,7 @@ const set_colors = { };
 const plots = [{
   width: 700*0.95, height: 500*0.95,
   logy: false, nice: false,
+  ymin: null, ymax: null,
   assign: function(o){
     for (const key in o) this[key] = o[key];
     return this;
@@ -26,11 +27,6 @@ const plots = [{
   draw: single_plot
 }];
 plots.push(Object.assign({},plots[0]));
-
-function print(x) {
-  console.log(x);
-  return x;
-}
 
 function draw(req,resp) {
   const div = $('#plots > *');
@@ -61,6 +57,8 @@ function draw(req,resp) {
 
   const xtitle = req.labels.var1.join(', ');
 
+  plots[0].ymin = null;
+  plots[0].ymax = null;
   plots[0].assign({
     hists: hists, div: div[0], x: xtitle, y: 'dσ/dx, pb/[x]'
   }).draw();
@@ -84,6 +82,8 @@ function draw(req,resp) {
     })
   }));
 
+  plots[1].ymin = null;
+  plots[1].ymax = null;
   plots[1].assign({
     hists: rats, div: div[1], x: xtitle, y: 'ratio'
   }).draw();
@@ -93,16 +93,24 @@ function draw(req,resp) {
 function single_plot() {
   const plot = new Plot(this.div,this.width,this.height,'white');
 
+  const yrange =
+    plot.hist_yrange(function*(){
+      for (const h of this.hists)
+        for (const b of h.hist) yield b[2];
+    }.call(this),this.logy);
+
+  if (this.ymin!==null) yrange[0] = this.ymin;
+  else this.ymin = yrange[0];
+  if (this.ymax!==null) yrange[1] = this.ymax;
+  else this.ymax = yrange[1];
+
   plot.axes(
     { range: d3.extent(this.hists.reduce((a,h) => {
         a.push(h.hist[0][0]);
         a.push(h.hist[h.hist.length-1][1]);
         return a;
       },[])), padding: [35,10], label: this.x },
-    { range: plot.hist_yrange(function*(){
-        for (const h of this.hists)
-          for (const b of h.hist) yield b[2];
-      }.call(this),this.logy), padding: [45,5], label: this.y,
+    { range: yrange, padding: [45,5], label: this.y,
       nice: this.nice, log: this.logy }
   );
 
@@ -220,39 +228,76 @@ $(function() {
     $('#color_picker').hide();
   });
 
+  function parse_flt(text) {
+    let x = parseFloat(text);
+    if (isNaN) return null;
+    return x;
+  }
+
   // https://swisnl.github.io/jQuery-contextMenu/docs.html
   $.contextMenu({
     selector: '#plots > *',
+    items: {
+      logy: {
+        name: 'log y scale',
+        type: 'checkbox',
+        selected: false,
+        events: { click: function(e) {
+          const plot = plots[e.data.$trigger.index()];
+          plot.logy = !plot.logy;
+          plot.ymin = null;
+          plot.ymax = null;
+          plot.draw();
+          const items = e.data.items;
+          items.ymin.$input.val(items.ymin.value = plot.ymin);
+          items.ymax.$input.val(items.ymax.value = plot.ymax);
+        } }
+      },
+      // nice: {name: 'nice y range'},
+      sep1: "---------",
+      save_json: {name: 'save as JSON'},
+      save_svg: {name: 'save as SVG'},
+      sep2: "---------",
+      ymin: {
+        name: "Ymin",
+        type: 'text',
+        events: { keyup: function(e) { if (e.keyCode === 13) {
+          const plot = plots[e.data.$trigger.index()];
+          const item = e.data.items.ymin;
+          const y = parseFloat(this.value);
+          plot.ymin = isNaN(y) ? null : y;
+          plot.draw();
+          item.$input.val(item.value = plot.ymin);
+        } } }
+      },
+      ymax: {
+        name: "Ymax",
+        type: 'text',
+        events: { keyup: function(e) { if (e.keyCode === 13) {
+          const plot = plots[e.data.$trigger.index()];
+          const item = e.data.items.ymax;
+          const y = parseFloat(this.value);
+          plot.ymax = isNaN(y) ? null : y;
+          plot.draw();
+          item.$input.val(item.value = plot.ymax);
+        } } }
+      },
+    },
     callback: function(key, options) {
       const plot = plots[this.index()];
       switch (key) {
-        case 'logy':
-        case 'nice':
-          plot[key] = !plot[key];
-          break;
         case 'save_json':
         case 'save_svg':
           window[key](plot);
           break;
       }
-      plot.draw();
-    },
-    items: {
-      'logy': {name: 'log y scale'},
-      'nice': {name: 'nice y range'},
-      'separator': {type: 'cm_separator'},
-      'save_json': {name: 'save as JSON'},
-      'save_svg': {name: 'save as SVG'}
     },
     events: {
       show: function(options) {
         const plot = plots[this.index()];
-        for (const key of ['logy','nice']) {
-          options.items[key].$node.toggleClass(
-            'context-menu-icon context-menu-icon-checkmark',
-            plot[key]
-          );
-        }
+        options.items.logy.selected = plot.logy;
+        options.items.ymin.value = plot.ymin || '0';
+        options.items.ymax.value = plot.ymax || '0';
       }
     }
   });
